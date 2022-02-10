@@ -518,7 +518,7 @@ def makeComments(exam_id):
     weakCategoryList1 = ""
     weakCategoryList2 = ""
 
-# なぜ、NumOfCategory-1か？
+#
     for i in range(NumOfCheckArea):
         if categoryNumber[i] != 0:
             if categoryPercent[i] == 0:
@@ -539,7 +539,7 @@ def makeComments(exam_id):
     n = 0
     for i in range(NumOfArea):
         if areaNumber[i] != 0:
-            areaPercent[i] = areaScore[i] / areaNumber[i]
+#            areaPercent[i] = areaScore[i] / areaNumber[i]
             if areaPercent[i] == 0:
                 weakArea[i] = 1
                 n += 1
