@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="ja"><head><meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>選択メニュー</title>
+
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+</head><body><div class="content">
+    <h2><center><b><ul>ＭＰ移行研修ログイン</ul></b></center></h2>
+    <!-- メニュー -->
+<form action="login" method="POST">
+    <center><table>
+        <tr>
+            <td><label>ログイン名</label>
+            <input type="text" name="id"></td>
+        </tr>
+        <tr>
+            <td><label>パスワード</label>
+            <input type="password" name="pw"></td>
+        </tr>
+    </table></center>
+
+    <div>
+        <center><input type="submit" value="ログイン"></center>
+    </div>
+</form>
+
+</div></body>
+</html>

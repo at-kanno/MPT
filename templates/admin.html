@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<!-- {{ user_id }}
+-->
+
+<html lang="ja"><head><meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <title>管理画面</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+{% if user_id <= 5 %}
+<body bgcolor="#FFFFCC">
+{% else %}
+<body bgcolor="#CCFFCC">
+{% endif %}
+<div class="content">
+
+    <h2 style="text-align:center;"><b><ul>管理画面</ul></b></h2>
+
+    <!-- 管理画面 -->
+
+        <div id="mainX">
+            <div class="row">
+                <div class="six cols">
+                    <div class="row">
+                        <div class="six mobile-two cols">
+    <form action="admin" method="POST">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" name="command" value="20" style="background:#3D6793">
+                                  演習<br>履歴
+                            </button>
+    </form>
+                        </div>
+                        <div class="six mobile-two cols">
+    <form action="resetpassword" method="POST">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" style="background:#902562">
+                                パスワード<br>再設定
+                            </button>
+    </form>
+                        </div>
+                    </div>
+                </div>
+{% if user_id < 4 %}
+                <div class="six cols">
+                    <div class="row">
+                        <div class="six mobile-two cols">
+    <form action="registration" method="POST">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" style="background:#219B9A">
+                                 ユーザ<br>登録
+                            </button>
+    </form>
+                        </div>
+                        <div class="six mobile-two cols">
+    <form action="admin" method="POST">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" name="command" value="10" style="background:#642852">
+                                ユーザリスト<br>の表示
+                            </button>
+    </form>
+                        </div>
+                    </div>
+                </div>
+ {% else %}
+                <div class="six cols">
+                    <div class="row">
+                        <div class="six mobile-two cols">
+                        <form action="display" method="POST">
+                            <input type="hidden" name = "command" value="status" >
+                            <input type="hidden" name="user_id" value={{ user_id }} />
+                                <button class="top-buttons" type="submit" style="background:#219B9A"
+                                    name="id" id="id" value="{{ user_id }}">
+                                 ステータス<br>の表示
+                                </button>
+                        </form>
+                        </div>
+                        <div class="six mobile-two cols">
+                        </div>
+                    </div>
+                </div>
+ {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% if user_id < 5 %}
+
+        <div id="mainY" >
+            <div class="row">
+                <div class="six cols">
+
+    <form action="database" method="POST">
+
+                    <div class="row">
+                        <div class="six mobile-two cols">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" name="command" value="questions"
+                                    style="background:#8080FF">演習問題<br>データ更新
+                            </button>
+                        </div>
+                        <div class="six mobile-two cols">
+                <input type="hidden" name="user_id" value={{ user_id }} />
+                            <button class="top-buttons" type="submit" name="command" value="comments"
+                                    style="background:#FF8080">コメント<br>データ更新
+                            </button>
+                        </div>
+                    </div>
+    </form>
+                </div>
+ {% endif %}
+            </div>
+        </div>
+
+<div class="buttonwrap" >
+
+<form action="summary" >
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        <input type="hidden" name="category" value="99" />
+        <input type="submit" name="category" value="メインメニューへ戻る"
+               style="background:#d13415">
+</form>
+
+</div>
+
+
+<div class="buttonwrap" style="display:inline-flex">
+
+{% if user_id == 1 %}
+
+    <form action="sendMsg" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        <button type="submit" name="type" value="inform" style="background:#ff8888">
+            メールを送る</button>
+        <input type="hidden" name="mail_to" value="at.kanno17@gmail.com" />
+        <input type="hidden" name="mail_from" value="kanno@olivenet.co.jp" />
+        <input type="hidden" name="message" value="Hello!" />
+    </form>
+
+
+<form action="setData" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        <button type="submit" name="grade" value="30" style="background:#ff8888">
+            修了試験到達データ設定</button>
+        <button type="submit" name="grade" value="31" style="background:#ff8888">
+            修了試験１回合格設定</button>
+        <button type="submit" name="grade" value="40" style="background:#ff8888">
+            修了試験終了設定</button>
+</form>
+ {% endif %}
+
+</div>
+
+</div>
+
+</div></body>
+</html>
