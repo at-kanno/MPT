@@ -1,0 +1,412 @@
+from flask import Flask, session
+import sqlite3, os, json, hashlib, base64
+from page import make_button, make_pager
+
+base_path = os.path.dirname(__file__)
+DATA_FILE = base_path + '/venv/data/users.json'
+db_path = base_path + '/exam.sqlite'
+form_path = base_path + '/templates'
+
+def get_form(action, caption):
+    return '''
+    <form action="{0}" method="post">
+    <center>ID:<br>
+    <input type="text" name="id"><br>
+    パスワード:<br>
+    <input type="password" name="pw"><br><br>
+    <input type="submit" value="{1}">
+    </center></form>
+    '''.format(action, caption)
+
+# パスワードからハッシュを生成する
+def password_hash(password):
+    salt = os.urandom(16)
+    digest = hashlib.pbkdf2_hmac('sha256',
+                                 password.encode('utf-8'), salt, 10000)
+    return base64.b64encode(salt + digest).decode('ascii')
+
+
+# パスワードが正しいかを検証する
+def password_verify(password, hash):
+    b = base64.b64decode(hash)
+    salt, digest_v = b[:16], b[16:]
+    digest_n = hashlib.pbkdf2_hmac('sha256',
+                                   password.encode('utf-8'), salt, 10000)
+    return digest_n == digest_v
+
+# ファイルからログイン情報を読む
+def load_users():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'rt') as fp:
+            return json.load(fp)
+    return {}
+
+
+# ファイルへログイン情報を保存
+def save_users(users):
+    with open(DATA_FILE, 'wt', encoding='utf-8') as fp:
+        json.dump(users, fp)
+
+
+# 新規ユーザーを追加
+def add_user(id, password):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    try:
+        # CREATE
+        c.execute("DROP TABLE IF EXISTS USER_TABLE")
+#        c.execute("CREATE TABLE IF NOT EXISTS USER_TABLE "\
+#                    "(user_id INTEGER PRIMARY KEY, name TEXT,"\
+#                    "password TEXT, stage INTEGER)")
+
+        c.execute("CREATE TABLE IF NOT EXISTS USER_TABLE "\
+                    "(user_id INTEGER PRIMARY KEY, "\
+                    "lastname TEXT, firstname TEXT, lastyomi TEXT, firstyomi TEXT,"\
+                    "tel1 TEXT, tel2 TEXT, tel3 TEXT, zip1 TEXT, zip2 TEXT,"\
+                    "company TEXT, department TEXT, prefecture INTEGER, city TEXT, "\
+                    "town TEXT, building TEXT, mail_adr TEXT, status INTEGER, "\
+                    "password TEXT, stage INTEGER)")
+
+        # INSERT
+        c.execute("INSERT INTO USER_TABLE (mail_adr, password) VALUES "\
+                      "('" + id + "' , '" + password + "' )")
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+# 新規ユーザーを追加
+def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
+            company, department, prefecture, city, town, building, status, password, mail_adr):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'INSERT INTO USER_TABLE (lastname, firstname, lastyomi, firstyomi,'\
+          'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, town,'\
+          'building, status, password, mail_adr) VALUES ("'\
+           + lastname + '", "' + firstname + '", "' + lastyomi + '", "' + firstyomi + '", "'\
+           + str(tel1) + '", "' + str(tel2) + '", "' + str(tel3) + '", "' + str(zip1) + '", "' + str(zip2) + '", "'\
+           + company + '", "' + department + '", "' + str(prefecture) + '", "' + city + '", "' + town + '", "'\
+           + building + '", ' + str(status) + ', "' + password + '", "' + mail_adr + '")'
+    try:
+        # INSERT
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+# 既存ユーザー情報を更新
+def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
+            company, department, prefecture, city, town, building, status, password, mail_adr):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'UPDATE USER_TABLE SET lastname="' + lastname + '", firstname="' + firstname +\
+          '", lastyomi="' + lastyomi +'", firstyomi="' + firstyomi + \
+          '", tel1="' + tel1 + '", tel2="' + tel2 + '", tel3="' + tel3 +\
+          '", zip1="' + zip1 + '", zip2="' + zip2 + '", company="' + company +\
+          '", department="' + department + '", prefecture="' + prefecture + \
+          '", city="' + city + '", town="' + town + '", building="' + building + \
+          '", mail_adr="' + mail_adr + '" where user_id = ' + id
+    try:
+        # INSERT
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+# ログインできるか確認
+def check_login(id, password):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT USER_ID, PASSWORD FROM USER_TABLE WHERE MAIL_ADR = "' + id + '"'
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return False
+        user_id = items[0][0]
+        password2 = items[0][1]
+        if password == password2:
+            sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
+            c.execute(sql)
+            conn.commit()
+            conn.close()
+            return user_id
+        else:
+            conn.close()
+            return False
+#        return password_verify(user_id, password)
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+#    users = load_users()
+#    if id not in users:
+#        return False
+#    return password_verify(password, users[id])
+
+def getUserInfo(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT lastname, firstname, lastyomi, firstyomi, ' \
+          'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, ' \
+          'town, building ,mail_adr ,status FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        conn.close()
+        return items
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def getStage(user_id):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT STAGE FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        conn.close()
+        return items[0][0]
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def setStage(user_id, stage):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'UPDATE USER_TABLE SET STAGE = ' + str(stage) + \
+          ' WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def getUserList():
+
+    userlist = []
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT USER_ID, LASTNAME, MAIL_ADR FROM USER_TABLE'
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+
+        conn.close()
+        return items
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def deleteUser(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'DELETE FROM USER_TABLE where USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def compareAddrss( address1, address2):
+    upper1 = address1.upper()
+    upper2 = address2.upper()
+    if(upper1 == upper2):
+        return True
+    else:
+        return False
+
+def setPassword(user_id, password):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'UPDATE USER_TABLE SET PASSWORD = "' + password \
+          + '" WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def resetPassword(user_id, old_password, new_password):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    sql1 = 'SELECT PASSWORD FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
+    sql2 = 'UPDATE USER_TABLE SET PASSWORD = "' + new_password + '" WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql1)
+        items = c.fetchall()
+        conn.close()
+        if items[0][0] != old_password :
+            return False
+        c.execute(sql2)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def getLoginName(id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT MAIL_ADR FROM USER_TABLE where USER_ID = ' + str(id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        conn.close()
+        return items[0][0]
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+
+def getLoginPassword(id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT PASSWORD FROM USER_TABLE where USER_ID = ' + str(id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        conn.close()
+        return items[0][0]
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def getStatus(user_id):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT STATUS FROM USER_TABLE where USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return 0
+        conn.close()
+        return items[0][0]
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def rankUp(user_id, level):
+
+    old_status = getStatus(user_id)
+    flag = 0
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT STATUS FROM USER_TABLE where USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n >= 1:
+            rank = items[0][0]
+        if n < 1:
+            status = 1
+        elif level == 0 and n < 10:     # 模擬試験表示
+            status = 10
+        elif level >= 1 and rank < 20:  # 模擬試験カウント = 1
+            status = 20
+        elif level >= 1 and rank < 23:  # 模擬試験カウント < 5
+            status = rank + 1
+        elif level >=1 and rank < 30:   # 模擬試験カウント >= 5 → 修了試験表示
+            status = 30
+            flag = 1
+        elif level < 2:                 # 修了試験は75点以上
+            status = rank
+        elif rank == 30:                # 修了試験カウント = 1
+            status = 31
+            flag = 2
+        else:                           # 修了試験合格
+            status = 40
+            flag = 3
+        sql = 'UPDATE USER_TABLE SET STATUS = ' + str(status) +\
+              ' WHERE USER_ID = ' + str(user_id)
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return status, flag
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False, flag
+
+def rankDown(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    status = 30
+    sql = 'UPDATE USER_TABLE SET STATUS = 30'\
+              ' WHERE USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def getMailadress(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT LASTNAME, FIRSTNAME, MAIL_ADR FROM USER_TABLE where USER_ID = ' + str(user_id)
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return False
+        conn.close()
+        return items
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
