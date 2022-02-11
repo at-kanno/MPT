@@ -89,6 +89,7 @@ prefec = ["都道府県",
           "鹿児島県",
           "沖縄県", ]
 
+
 # ブラウザのメイン画面
 @app.route('/')
 def index():
@@ -538,43 +539,51 @@ def makeExam():
                                    user_id=user_id,
                                    status=status,
                                    )
+#            amount = 10
+#            title = '確認問題（全領域）'
+#            examlist, arealist = makeExam2(user_id, amount, int(category), level, 900, '')
+        elif (category == '80'):
             amount = 10
             title = '確認問題（全領域）'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 900, '')
-        elif (category == '60'):
-            amount = 10
-            title = '確認問題（全領域）'
-            examlist, arealist = makeExam2(user_id, amount, int(category), level, 900, '')
-        elif (category == '70'):
+        elif (category == '85'):
             amount = 40
             title = '模擬試験'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
-        elif (category == '80'):
+        elif (category == '86'):
             amount = 40
             title = '修了試験'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '10'):
             amount = 5
-            title = 'FND：確認問題'
+            title = '基本概念：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '20'):
             amount = 5
-            title = 'CDS：確認問題'
+            title = '従うべき原則：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '30'):
             amount = 5
-            title = 'DSV：確認問題'
+            title = '４つの側面：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '40'):
             amount = 5
-            title = 'HVIT：確認問題'
+            title = 'サービスバリュー・システム：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '50'):
             amount = 5
-            title = 'DPI：確認問題'
+            title = 'サービスバリュー・チェーン：確認問題'
+            examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
+        elif (category == '60'):
+            amount = 5
+            title = '主要プラクティス：確認問題'
+            examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
+        elif (category == '70'):
+            amount = 5
+            title = '重要プラクティス：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '91' or category == '92' or category == '93' \
-              or category == '94' or category == '95'):
+              or category == '94' or category == '95' or category == '96' or category == '97'):
             amount = 5
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         else:
@@ -582,6 +591,7 @@ def makeExam():
             return render_template('admin.html', user_id=int(user_id))
         try:
             exam_id = saveExam(user_id, category, level, amount, examlist, arealist)
+
             return render_template('startExam.html',
                                    user_id=user_id,
                                    exam_id=exam_id,
@@ -683,7 +693,8 @@ def makeExam3():
                                    status=status,
                                    )
 
-    area = ['FND', 'CDS', 'DSV', 'HVIT', 'DPI']
+    area = ['基本概念', '従うべき原則', '４つの側面', 'サービスバリュー・システム', 'サービスバリュー・チェーン', \
+            '主要プラクティス', '７つの重要プラクティス']
     n = int(category) - 91
     return render_template('exercise2.html',
                            user_id=user_id,
@@ -716,6 +727,7 @@ def exercise():
     examlist = request.args.get("examlist", "")
     arealist = request.args.get("arealist", "")
     m = request.args.get("timeMin", "")
+
     if m == '':
         timeMin = 0
     else:
@@ -958,8 +970,7 @@ def exercise():
             userInfo = getMailadress(user_id)
             username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
             to_email = str(userInfo[0][2])
-            if old_staus == 31:
-                sendMail(username, to_email, "合格です！")
+            sendMail(username, to_email, "合格です！")
 
         if old_status >= 30 and type == '修了試験(40問)':
             if rate < 75:
@@ -967,10 +978,10 @@ def exercise():
             else:
                 message = "合格です。おめでとうございます。"
             return render_template('finish2.html',
-                               user_id=user_id,
-                               title=title,
-                               message=message,
-                               )
+                                       user_id=user_id,
+                                       title=title,
+                                       message=message,
+                                       )
         else:
             return render_template('finish.html',
                                user_id=user_id,
@@ -989,6 +1000,7 @@ def exercise():
                                title=title,
                                flag=flag,
                                )
+
 
 # 分析結果をフィードバックする
 @app.route('/summary', methods=['POST', 'GET'])
@@ -1014,30 +1026,22 @@ def summary():
         setStage(user_id, 5)
 
         areaname = [
-            ["ファンデーション(FND)", 5, "", "", ""],
-            ["構築,供給,サポート(CDS)", 3, "", "", ""],
-            ["利害関係者の価値を主導(DSV)", 6, "", "", ""],
-            ["ハイベロシティIT(HVIT)", 3, "", "", ""],
-            ["方向付け,計画,改善(DPI)", 3, "", "", ""],
-            #                  ["基本概念(FND)",5,"","",""],
-            #                  ["構築・供給・サポート(CDS)",3,"","",""],
-            #                  ["価値の共創(DSV)",6,"","",""],
-            #                  ["デジタルトランスフォーメーション［DX］(HVIT)",3,"","",""],
-            #                  ["組織経営(DPI)",3,"","",""],
+            ["サービスの基本概念", 3, "", "", ""],
+            ["従うべき原則", 2, "", "", ""],
+            ["４つの側面", 1, "", "", ""],
+            ["サービスバリュー・システム", 1, "", "", ""],
+            ["サービスバリュー・チェーン", 2, "", "", ""],
+            ["主要なプラクティス", 2, "", "", ""],
+            ["７つの重要プラクティス", 1, "", "", ""],
         ]
         practice = [
-            ["サービスマネジメントの主要概念", "ITILの従うべき原則", "サービスマネジメントの４つの側面", "ITILサービスバリュー・システム", "サービスバリュー・チェーン"],
-            ["組織構造", "バリューストリームに基づくサービス提供", "サービスを作成、提供およびサポートする方法を知る"],
-            ["カスタマジャニーの概念", "利害関係者との関係を発展させる方法を知る", "需要を具体化し、サービス提供物を定義する", "顧客およびユーザのオンボード",
-             "継続的な価値共創", "サービスの価値を実現し、その妥当性を確認する方法"],
-            ["デジタル企業の高速性", "デジタル製品のライフサイクルおよびITIL", "原則、モデルおよび概念"],
-            ["DPIの主な原則と手法", "GRCの役割とSVSへの統合方法", "組織変更の管理"],
-            #                  ["サービス関係","従うべき原則","４つの側面","サービスバリューシステム（SVS）","サービスバリューチェーン"],
-            #                  ["バリューシステムの構築","バリューシステムの供給","バリューシステムのサポート"],
-            #                  ["カスタマジャニーの概念","顧客との関係構築","ユーザ中心のサービス提案","サービス開始［終了］までの作業",
-            #                   "価値共創を継続する仕組み","サービス価値の監視と改善"],
-            #                  ["HVIT(DX)の概念","HVIT(DX)とITILの関係","HVIT(DX)組織における原則"],
-            #                  ["コントロールの役割","ガバナンス機関の活動","組織変更の管理"],
+            ["サービスマネジメントの基本概念", "価値創出の基本概念", "サービス関係"],
+            ["従うべき原則の概念", "７つの原則"],
+            ["４つの側面"],
+            ["サービスバリュー・システム"],
+            ["サービスバリュー・チェーン", "バリュー・チェーン活動"],
+            ["主要プラクティスの目的", "プラクティスにおける重要概念"],
+            ["７つの重要プラクティス"],
         ]
         practice2 = [
             [
@@ -1275,7 +1279,7 @@ def summary():
         #            else:
         #                practice2[5][i][1] = "-"
 
-        if rate >= 70:
+        if rate > 65:
             result = "合格"
         else:
             result = "不合格"
@@ -1377,7 +1381,7 @@ def summary():
 
     elif (command == 40):
         print('command=40')
-        if rate >= 70:
+        if rate > 65:
             result = "合格"
         else:
             result = "不合格"
@@ -1400,7 +1404,7 @@ def summary():
         comments = makeComments(exam_id)
 
         if total != 0:
-            if correct / total * 100 >= 70:
+            if correct / total * 100 >= 65:
                 result = '合格'
             else:
                 result = '不合格'
@@ -1904,15 +1908,6 @@ def sendMsg():
     mail_to = request.form.get('mail_to')
     message = request.form.get('massage')
 
-    user_id = 13;
-
-    userInfo = ["", "", ""]
-    userInfo = getMailadress(user_id)
-    username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
-    to_email = str(userInfo[0][2])
-    sendMail(username, to_email, "合格です！")
-
-
 #    result = sendMail(mail_from, mail_to, message)
     result = sendMail("staff@olivenet.co.jp", "kanno@olivenet.co.jp", "合格です！")
     if result:
@@ -1958,8 +1953,16 @@ def upload():
 
     # アップロードしたファイルのオブジェクト
     upfile = request.files.get('upfile', None)
-    if upfile is None: return msg('アップロード失敗')
-    if upfile.filename == '': return msg('アップロード失敗')
+    if upfile is None:
+        return render_template('error2.html',
+                           user_id=user_id,
+                           message='ファイル名が入力されていません。アップロードが失敗しました。'
+                           )
+    if upfile.filename == '':
+        return render_template('error2.html',
+                               user_id=user_id,
+                               message='ファイル名が入力されていません。アップロードが失敗しました。'
+                               )
     # ファイルを保存
     upfile.save(FILES_DIR + '/' + filename)
     # ダウンロード先の表示

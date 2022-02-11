@@ -426,17 +426,13 @@ def saveExam(user, category, level, amount, examlist, arealist):
 # 出題カテゴリから問題列を生成する
 MaxQuestions = 40
 
-NumOfArea = 5
-NumOfCategory = 33
-categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW" \
-               + "XYZ[]^`abcdefghijklmnopqrstuvwxyz"
+NumOfArea = 7
+NumOfCategory = 12
 
-categoryNumber = [11, 12, 13, 14, 15, 16, 17, \
-                  21, 22, 23, 24, 25, \
-                  31, 32, 33, 34, 35, 36, 37, 38, 39, \
-                  41, 42, 43, 44, 45, 46, \
-                  51, 52, 53, 54, 55, 56]
+categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+categoryNumber = [11, 12, 13, 21, 22, \
+                  31, 41, 51, 52, 61, 62, 71]
 
 def makeExam2(userid, amount, category: int, level, time, arealist):
     print('userid={0},amount={1}, category={2}, level={3},\
@@ -462,12 +458,13 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
 
 # 選択された「エリア（領域）の個数」と「カテゴリの個数」を算出する
 
-    NumOfCategory1=7
-    NumOfCategory2=12
-    NumOfCategory3=21
-    NumOfCategory4=27
-    NumOfCategory5=33
-    NumOfCategory6=0
+    NumOfCategory1=3
+    NumOfCategory2=2
+    NumOfCategory3=1
+    NumOfCategory4=1
+    NumOfCategory5=2
+    NumOfCategory6=2
+    NumOfCategory7=1
 
     arealist = ''
     for i in range(total):
@@ -488,12 +485,12 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
                     selectArea[3] += 1
                 elif (j < NumOfCategory5):
                     selectArea[4] += 1
-                else:
+                elif (j < NumOfCategory6):
                     selectArea[5] += 1
-#                elif (j < NumOfCategory6):
-#                    selectArea[5] += 1
-#                else:
-#                    selectArea[6] += 1
+                elif (j < NumOfCategory7):
+                    selectArea[6] += 1
+                else:                    # ありえないデータ
+                    selectArea[7] += 1
                 break
             else:
                 pass
@@ -576,79 +573,89 @@ def assignQuestions(amount, assign, category:int):
 
 # FND
     if category == 10:
-        assign[0] = 15
-        assign[1] = 12 + random.randint(0, 1)
-        assign[2] = 16 + random.randint(0, 1)
+        assign[0] = 12
+        assign[1] = 11
+        assign[2] = 13
         assign[3] = 11
-        assign[4] = 14
+        assign[4] = 12
     elif category == 20:
-        assign[0] = 24
-        assign[1] = 25
-        assign[2] = 23
-        assign[3] = 21
+        assign[0] = 22
+        assign[1] = 22
+        assign[2] = 21
+        assign[3] = 22
         assign[4] = 22
     elif category == 30:
-        assign[0] = 36 + random.randint(0, 1)
-        assign[1] = 31 + random.randint(0, 2)
-        if assign[1] != 31:
-            assign[1] = 32
-        assign[2] = 34 + random.randint(0, 1)
-        assign[3] = 38 + random.randint(0, 1)
-        assign[4] = 33
+        assign[0] = 31
+        assign[1] = 31
+        assign[2] = 31
+        assign[3] = 31
+        assign[4] = 31
     elif category == 40:
-        assign[0] = 46
-        assign[1] = 43 + random.randint(0, 1)
-        assign[2] = 45
-        assign[3] = 41 + random.randint(0, 1)
-        assign[4] = 46
+        assign[0] = 41
+        assign[1] = 41
+        assign[2] = 41
+        assign[3] = 41
+        assign[4] = 41
     elif category == 50:
-        assign[0] = 53
-        assign[1] = 55
-        assign[2] = 51
-        assign[3] = 56
-        assign[4] = 52 + (random.randint(0, 1)*2)
-    elif category == 60 or category == 70 or category == 80:
-        assign[0] = 24    # バリューストリーム（ユーザサポート）
-        assign[1] = 33    # デジタルサービス体験のデザイン
-        assign[2] = 51    # コントロールの範囲の特定
-        assign[3] = 45    # HVITにおける原則や概念
-        assign[4] = 13    # 従うべき原則（個別）
-        assign[5] = 39    # サービス価値の確認
-        assign[6] = 17    # サービスバリューチェーン活動
-        assign[7] = 21    # SVS導入における課題
-        assign[8] = 56    # コミュニケーションの原則
-        assign[9] = 41    # ＤX関連の概念
+        assign[0] = 51
+        assign[1] = 52
+        assign[2] = 52
+        assign[3] = 51
+        assign[4] = 51 + random.randint(0, 1)
+    elif category == 60:
+        assign[0] = 61
+        assign[1] = 61 + random.randint(0, 1)
+        assign[2] = 61
+        assign[3] = 62
+        assign[4] = 61
+    elif category == 70:
+        assign[0] = 71
+        assign[1] = 71
+        assign[2] = 71
+        assign[3] = 71
+        assign[4] = 71
+    elif category == 80 or category == 85 or category == 86:
+        assign[0] = 31    # ４つの側面
+        assign[1] = 71    # ７つの重要プラクティス
+        assign[2] = 12    # 価値の創出
+        assign[3] = 22    # 従うべき原則（個別）
+        assign[4] = 41    # サービスバリュー・システム
+        assign[5] = 71    # ７つの重要プラクティス
+        assign[6] = 51    # サービスバリュー・チェーン
+        assign[7] = 21    # 従うべき原則の概念
+        assign[8] = 71    # ７つの重要プラクティス
+        assign[9] = 61    # 主要プラクティスの目的
         if amount == 40:
-            assign[10] = 36 + random.randint(0, 1)    # ユーザ・コミュニティ　& フィードバック管理
-            assign[11] = 25                           # キューとバックログの管理
-            assign[12] = 53                           # ガバナンス
-            assign[13] = 46                           # HVITにおける原則や概念を支える行動
-            assign[14] = 32 + random.randint(0, 1)    # エンゲージメント or 提案
-            assign[15] = 11                           # サービス関係
-            assign[16] = 55                           # 組織変更の管理
-            assign[17] = 43                           # デジタル商品の５つの目標
-            assign[18] = 38                           # 実現(DSV)
-            assign[19] = 23                           # バリューストリーム（新サービス）
-            assign[20] = 14                           # ４つの側面
-            assign[21] = 54                           # コントロール(DPI)
-            assign[22] = 22                           # SVS導入におけるリソース管理
-            assign[23] = 46                           # HVITにおける原則や概念を支える行動
-            assign[24] = 31                           # カスタマジャニー
-            assign[25] = 21                           # SVS導入における課題
-            assign[26] = 52                           # リスク管理(DPI)
-            assign[27] = 42                           # DXに求められる環境と能力
-            assign[28] = 12                           # 従うべき原則（全体）
-            assign[29] = 24                           # バリューストリーム（ユーザ・サポート）
-            assign[30] = 45                           # HVITにおける原則や概念
-            assign[31] = 56                           # コミュニケーションの原則
-            assign[32] = 51                           # コントロールの範囲の特定
-            assign[33] = 34                           # オン/オフ・ボーディング
-            assign[34] = 15                           # サービスバリューシステム
-            assign[35] = 32                           # 関係タイプ
-            assign[36] = 44                           # HVITとITILの関係
-            assign[37] = 23                           # バリューストリーム（新サービス）
-            assign[38] = 43                           # HVITにおける原則や概念を支える行動
-            assign[39] = 35                           # オン/オフ・ボーディング
+            assign[10] = 22                           # 従うべき原則
+            assign[11] = 71                           # ７つの重要プラクティス
+            assign[12] = 62                           # プラクティスにおける重要概念
+            assign[13] = 71                           # ７つの重要プラクティス
+            assign[14] = 11                           # サービスマネジメントの基本概念
+            assign[15] = 61                           # 主要プラクティスの目的
+            assign[16] = 71                           # ７つの重要プラクティス
+            assign[17] = 13                           # サービス関係
+            assign[18] = 61                           # 主要プラクティスの目的
+            assign[19] = 71                           #７つの重要プラクティス
+            assign[20] = 22                           # 従うべき原則
+            assign[21] = 71                           # ７つの重要プラクティス
+            assign[22] = 61                           # 主要プラクティスの目的
+            assign[23] = 71                           # ７つの重要プラクティス
+            assign[24] = 11                           # サービスマネジメントの基本概念
+            assign[25] = 62                           # プラクティスにおける重要概念
+            assign[26] = 71                           # ７つの重要プラクティス
+            assign[27] = 22                           #　従うべき原則
+            assign[28] = 71                           # ７つの重要プラクティス
+            assign[29] = 71                           # ７つの重要プラクティス
+            assign[30] = 61                           # 主要プラクティスの目的
+            assign[31] = 31                           # ４つの側面
+            assign[32] = 71                           # ７つの重要プラクティス
+            assign[33] = 12                           # 価値の創出
+            assign[34] = 71                           # ７つの重要プラクティス
+            assign[35] = 71                           # ７つの重要プラクティス
+            assign[36] = 52                           # バリュー・チェーン活動
+            assign[37] = 71                           # ７つの重要プラクティス
+            assign[38] = 22                           # 従うべき原則
+            assign[39] = 71                           # ７つの重要プラクティス
     else:
         print("Error!")
         return -1
