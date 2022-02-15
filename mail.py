@@ -48,8 +48,6 @@ def sendMail(to_name, to_email, message):
     password = items[0][1]
 
     servername = "smtp.gmail.com"
-#    account = "itil4exercise@gmail.com"
-#    password = "Bluewolf1@"
 
 # サーバを指定する
     server = smtplib.SMTP_SSL(servername, 465, context=ssl.create_default_context())
