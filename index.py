@@ -2,16 +2,14 @@ from flask import Flask, session, render_template, request, jsonify
 import logging
 import sqlite3, os, sys, cgi
 import datetime
-from users import add_user, check_login, getStage, setStage, get_form, getUserList, \
-    deleteUser, getUserInfo, addUser, setPassword, resetPassword, getLoginName, \
+from users import check_login, getStage, setStage, getUserList, \
+    deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
     getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress
 from exam_test import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
     getQuestionFromCategory, getQuestionFromNum
 from result_info import putResult, getResult, makeComments, getComment, \
     getUserResultList, getUserResultList1, getUserResultList2, getStartTime
-from page import make_button, make_pager
-import math
 from mail import sendMail
 from test import setGrade
 from sql import convertQuestions, convertComments
@@ -118,21 +116,6 @@ return3 = '<div class="buttonwrap" style="display:inline-flex"><form action="sum
           '<input type="hidden" name="user_id" value="'
 return4 = '" /><button type="submit" style="margin:10px" name="category" value="99">' + \
           'メインメニューへ戻る</button><br></p></form>'
-
-
-# ユーザー登録
-@app.route('/register', methods=['POST'])
-def register():
-    id = request.form.get('id')
-    pw = request.form.get('pw')
-    if id == '':
-        return '<h1>失敗:IDが空です。</h1>'
-    # ユーザーを追加
-    if add_user(id, pw):
-        return '<h1>登録に成功</h1><a href="/">戻る</a>'
-    else:
-        return '<h1>登録に失敗</h1>'
-
 
 @app.route('/registration', methods=['POST'])
 def registration():
@@ -1547,11 +1530,6 @@ def admin():
                                command=command,
                                )
 
-        #            page_s = request.args.get('page', '0')
-        page = int(0)
-        # 表示データの先頭を計算
-        index = page * limit
-        # 表示データを取り出す
         s = '<div>'
         for i, r in enumerate(user_list):
             s += '<div class="item" style="display:inline-flex">'
@@ -1578,8 +1556,7 @@ def admin():
             s += '</form>'
             s += '</td></table></div>'
         s += '</div>'
-        # ページャーを作る
-        #            s += make_pager(page, len(data), limit)
+
         return '''
             <html><meta charset="utf-8">
             <script>
@@ -1655,10 +1632,7 @@ def delete():
     limit = 3
     user_list = [0 for i in range(100)]
     user_list = getUserList()
-    page = int(0)
-    # 表示データの先頭を計算
-    index = page * limit
-    # 表示データを取り出す
+
     s = '<div>'
     for i, r in enumerate(user_list):
         s += '<div class="item" style="display:inline-flex">'
@@ -1685,8 +1659,7 @@ def delete():
         s += '</form>'
         s += '</td></table></div>'
     s += '</div>'
-    # ページャーを作る
-    #    s += make_pager(page, len(data), limit)
+
     return '''
             <html><meta charset="utf-8">
             <script>
@@ -1748,11 +1721,7 @@ def display():
         n = 0
         result_list = [0 for i in range(100)]
         result_list, n = getUserResultList(id)
-        # page_s = request.args.get('page', '0')
-        page = int(0)
-        # 表示データの先頭を計算
-        index = page * limit
-        # 表示データを取り出す
+
         s = '<div>'
 
         return render_template('list2.html',
@@ -1878,11 +1847,12 @@ def resetpassword():
 def resetpasswd():
     user_id = int(request.form.get('user_id'))
     name = request.form.get('name')
-    password = request.form.get('password')
+    hashed_password = request.form.get('password')
     new_password = request.form.get('new_password')
     old_password = request.form.get('old_password')
 
-    if password == old_password:
+#    if password == old_password:
+    if password_verify(old_password, hashed_password):
         status = setPassword(user_id, new_password)
     else:
         return render_template('error.html',

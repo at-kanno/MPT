@@ -1,22 +1,10 @@
 from flask import Flask, session
 import sqlite3, os, json, hashlib, base64
-from page import make_button, make_pager
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
 db_path = base_path + '/exam.sqlite'
 form_path = base_path + '/templates'
-
-def get_form(action, caption):
-    return '''
-    <form action="{0}" method="post">
-    <center>ID:<br>
-    <input type="text" name="id"><br>
-    パスワード:<br>
-    <input type="password" name="pw"><br><br>
-    <input type="submit" value="{1}">
-    </center></form>
-    '''.format(action, caption)
 
 # パスワードからハッシュを生成する
 def password_hash(password):
@@ -25,7 +13,6 @@ def password_hash(password):
                                  password.encode('utf-8'), salt, 10000)
     return base64.b64encode(salt + digest).decode('ascii')
 
-
 # パスワードが正しいかを検証する
 def password_verify(password, hash):
     b = base64.b64decode(hash)
@@ -33,51 +20,6 @@ def password_verify(password, hash):
     digest_n = hashlib.pbkdf2_hmac('sha256',
                                    password.encode('utf-8'), salt, 10000)
     return digest_n == digest_v
-
-# ファイルからログイン情報を読む
-def load_users():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'rt') as fp:
-            return json.load(fp)
-    return {}
-
-
-# ファイルへログイン情報を保存
-def save_users(users):
-    with open(DATA_FILE, 'wt', encoding='utf-8') as fp:
-        json.dump(users, fp)
-
-
-# 新規ユーザーを追加
-def add_user(id, password):
-
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-    try:
-        # CREATE
-        c.execute("DROP TABLE IF EXISTS USER_TABLE")
-#        c.execute("CREATE TABLE IF NOT EXISTS USER_TABLE "\
-#                    "(user_id INTEGER PRIMARY KEY, name TEXT,"\
-#                    "password TEXT, stage INTEGER)")
-
-        c.execute("CREATE TABLE IF NOT EXISTS USER_TABLE "\
-                    "(user_id INTEGER PRIMARY KEY, "\
-                    "lastname TEXT, firstname TEXT, lastyomi TEXT, firstyomi TEXT,"\
-                    "tel1 TEXT, tel2 TEXT, tel3 TEXT, zip1 TEXT, zip2 TEXT,"\
-                    "company TEXT, department TEXT, prefecture INTEGER, city TEXT, "\
-                    "town TEXT, building TEXT, mail_adr TEXT, status INTEGER, "\
-                    "password TEXT, stage INTEGER)")
-
-        # INSERT
-        c.execute("INSERT INTO USER_TABLE (mail_adr, password) VALUES "\
-                      "('" + id + "' , '" + password + "' )")
-        conn.commit()
-        conn.close()
-        return True
-    except sqlite3.Error as e:
-        print('sqlite3.Error occurred:', e.args[0])
-        conn.close()
-        return False
 
 # 新規ユーザーを追加
 def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
@@ -141,7 +83,8 @@ def check_login(id, password):
             return False
         user_id = items[0][0]
         password2 = items[0][1]
-        if password == password2:
+        if password_verify(password, password2):
+#        if password == password2:
             sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
             c.execute(sql)
             conn.commit()
@@ -150,16 +93,10 @@ def check_login(id, password):
         else:
             conn.close()
             return False
-#        return password_verify(user_id, password)
     except sqlite3.Error as e:
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
         return False
-
-#    users = load_users()
-#    if id not in users:
-#        return False
-#    return password_verify(password, users[id])
 
 def getUserInfo(user_id):
 
@@ -249,9 +186,10 @@ def compareAddrss( address1, address2):
         return False
 
 def setPassword(user_id, password):
+    hashed_password = password_hash(password)
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = 'UPDATE USER_TABLE SET PASSWORD = "' + password \
+    sql = 'UPDATE USER_TABLE SET PASSWORD = "' + hashed_password \
           + '" WHERE USER_ID = ' + str(user_id)
     try:
         c.execute(sql)
