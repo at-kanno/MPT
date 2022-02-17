@@ -34,7 +34,8 @@ def convertQuestions():
 # CSVを読んでDBに入れる関数
 def read_csv(conn, fname):
     c = conn.cursor()
-    f = open(fname, encoding='shift-jis')
+    f = open(fname, encoding='cp932')
+#    f = open(fname, encoding='shift-jis')
 #    f = open(fname, encoding='utf_8')
     reader = csv.reader(f)
     for row in reader:
@@ -78,7 +79,8 @@ def convertComments():
 # 事業所用のデータをDBに入れる関数
 def read_comments_csv(conn, fname):
         c = conn.cursor()
-        f = open(fname, encoding='shift-jis')
+        f = open(fname, encoding='cp932')
+        #    f = open(fname, encoding='shift-jis')
         #    f = open(fname, encoding='utf_8')
         reader = csv.reader(f)
         for row in reader:

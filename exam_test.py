@@ -377,20 +377,24 @@ def saveExam(user, category, level, amount, examlist, arealist):
     c.execute(sql)
 
     if category == '10':
-        examType = 'FND(5問)'
+        examType = '基本概念(5問)'
     elif category == '20':
-        examType = 'CDS(5問)'
+        examType = '原則(5問)'
     elif category == '30':
-        examType = 'DSV(5問)'
+        examType = '４側面(5問)'
     elif category == '40':
-        examType = 'HVIT(5問)'
+        examType = 'SVS(5問)'
     elif category == '50':
-        examType = 'DPI(5問)'
+        examType = 'SVC(5問)'
     elif category == '60':
-        examType = '全体(10問)'
+        examType = '主要目的(5問)'
     elif category == '70':
-        examType = '模擬試験(40問)'
+        examType = '重要実践(5問)'
     elif category == '80':
+        examType = '全体(10問)'
+    elif category == '86':
+        examType = '模擬試験(40問)'
+    elif category == '86':
         examType = '修了試験(40問)'
     else:
         examType = 'その他'
@@ -457,19 +461,19 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
     print("Total:" + str(total))
 
 # 選択された「エリア（領域）の個数」と「カテゴリの個数」を算出する
-
+# それまでのカテゴリ数を加算する
     NumOfCategory1=3
-    NumOfCategory2=2
-    NumOfCategory3=1
-    NumOfCategory4=1
-    NumOfCategory5=2
-    NumOfCategory6=2
-    NumOfCategory7=1
+    NumOfCategory2=5
+    NumOfCategory3=6
+    NumOfCategory4=7
+    NumOfCategory5=9
+    NumOfCategory6=11
+    NumOfCategory7=12
 
     arealist = ''
     for i in range(total):
         for j in range(NumOfCategory):
-            #            print( 'categoryNumber[{0}])={1}'.format( j, categoryNumber[j]))
+            print( 'categoryNumber[{0}])={1}'.format( j, categoryNumber[j]))
             if (assign[i] == categoryNumber[j]):
                 arealist = arealist + categoryCode[j]
                 selectCategory[j] += 1

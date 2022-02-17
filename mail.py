@@ -4,6 +4,18 @@ from email.mime.text import MIMEText
 from email.header import Header
 import ssl
 
+PASS1_MASSAGE = "おめでとうございます 。修了試験の前半合格です。\n　頑張ってこられた成果が 出ました。\n" \
+    + "　あと１回修了試験の後半があります。\n　それに合格すると、いよいよ本試験（認定試験）です。\n" \
+    +  "　あと少しです。\n　がんばってください。"
+
+PASS2_MASSAGE = "おめでとうございます 。合格です。\n　頑張ってこられた成果が 出ました。\n" \
+    + "　これより、 本試験（認定試験）の 手配を行います。\n　" \
+    + "試験実施機関のPeopleCer社tから連絡がありますので、 その内容に従い、都合のよい日時を設定してください。"
+
+FAIL_MESSAGE = "残念ながら、今回合格ラインに達していませんでした。\n" \
+              + "　模擬試験に立ち返り、 弱い分野を確認して補強するようにしてください。\n" \
+              + "　あとひと頑張りです。"
+
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
 

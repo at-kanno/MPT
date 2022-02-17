@@ -8,14 +8,15 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 db_path = base_path + '/exam.sqlite'
 form_path = base_path
 
-NumOfArea = 5
-NumOfCategory = 33
-NumOfCategory1 = 7
-NumOfCategory2 = 12
-NumOfCategory3 = 21
-NumOfCategory4 = 27
-NumOfCategory5 = 33
-NumOfCategory6 = 0
+NumOfArea = 7
+NumOfCategory = 12
+NumOfCategory1 = 3
+NumOfCategory2 = 5
+NumOfCategory3 = 6
+NumOfCategory4 = 7
+NumOfCategory5 = 9
+NumOfCategory6 = 11
+NumOfCategory7 = 12
 NumOfCheckArea = 20
 
 # 33だが、多めに設定している
@@ -60,9 +61,15 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
         elif n < NumOfCategory4:
             areaNumber[3] += 1
             areaScore[3] = areaScore[3] + flag
-        else:
+        elif n < NumOfCategory5:
             areaNumber[4] += 1
             areaScore[4] = areaScore[4] + flag
+        elif n < NumOfCategory6:
+            areaNumber[5] += 1
+            areaScore[5] = areaScore[5] + flag
+        else:
+            areaNumber[6] += 1
+            areaScore[6] = areaScore[6] + flag
 
     for i in range(NumOfCategory):
         if categoryNumber[i] != 0:
@@ -111,8 +118,8 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = "DROP TABLE EXAM_TABLE;"
-    #    c.execute(sql)
+    sql = "DROP TABLE RESULT_TABLE;"
+    # c.execute(sql)
     sql = "CREATE TABLE IF NOT EXISTS RESULT_TABLE ( EXAM_ID INTEGER, USER_ID INTEGER, EXAM_TYPE LONG VARCHAR,"\
         + "TOTAL INTEGER, TOTAL_R INTEGER, TOTAL_P FLOAT," \
         + "C1_NUMBER INTEGER, C1_SCORE INTEGER, C1_PERCENT FLOAT," \
@@ -127,32 +134,6 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
         + "C10_NUMBER INTEGER, C10_SCORE INTEGER, C10_PERCENT FLOAT," \
         + "C11_NUMBER INTEGER, C11_SCORE INTEGER, C11_PERCENT FLOAT," \
         + "C12_NUMBER INTEGER, C12_SCORE INTEGER, C12_PERCENT FLOAT," \
-        + "C13_NUMBER INTEGER, C13_SCORE INTEGER, C13_PERCENT FLOAT," \
-        + "C14_NUMBER INTEGER, C14_SCORE INTEGER, C14_PERCENT FLOAT," \
-        + "C15_NUMBER INTEGER, C15_SCORE INTEGER, C15_PERCENT FLOAT," \
-        + "C16_NUMBER INTEGER, C16_SCORE INTEGER, C16_PERCENT FLOAT," \
-        + "C17_NUMBER INTEGER, C17_SCORE INTEGER, C17_PERCENT FLOAT," \
-        + "C18_NUMBER INTEGER, C18_SCORE INTEGER, C18_PERCENT FLOAT," \
-        + "C19_NUMBER INTEGER, C19_SCORE INTEGER, C19_PERCENT FLOAT," \
-        + "C20_NUMBER INTEGER, C20_SCORE INTEGER, C20_PERCENT FLOAT," \
-        + "C21_NUMBER INTEGER, C21_SCORE INTEGER, C21_PERCENT FLOAT," \
-        + "C22_NUMBER INTEGER, C22_SCORE INTEGER, C22_PERCENT FLOAT," \
-        + "C23_NUMBER INTEGER, C23_SCORE INTEGER, C23_PERCENT FLOAT," \
-        + "C24_NUMBER INTEGER, C24_SCORE INTEGER, C24_PERCENT FLOAT," \
-        + "C25_NUMBER INTEGER, C25_SCORE INTEGER, C25_PERCENT FLOAT," \
-        + "C26_NUMBER INTEGER, C26_SCORE INTEGER, C26_PERCENT FLOAT," \
-        + "C27_NUMBER INTEGER, C27_SCORE INTEGER, C27_PERCENT FLOAT," \
-        + "C28_NUMBER INTEGER, C28_SCORE INTEGER, C28_PERCENT FLOAT," \
-        + "C29_NUMBER INTEGER, C29_SCORE INTEGER, C29_PERCENT FLOAT," \
-        + "C30_NUMBER INTEGER, C30_SCORE INTEGER, C30_PERCENT FLOAT," \
-        + "C31_NUMBER INTEGER, C31_SCORE INTEGER, C31_PERCENT FLOAT," \
-        + "C32_NUMBER INTEGER, C32_SCORE INTEGER, C32_PERCENT FLOAT," \
-        + "C33_NUMBER INTEGER, C33_SCORE INTEGER, C33_PERCENT FLOAT," \
-        + "C34_NUMBER INTEGER, C34_SCORE INTEGER, C34_PERCENT FLOAT," \
-        + "C35_NUMBER INTEGER, C35_SCORE INTEGER, C35_PERCENT FLOAT," \
-        + "C36_NUMBER INTEGER, C36_SCORE INTEGER, C36_PERCENT FLOAT," \
-        + "C37_NUMBER INTEGER, C37_SCORE INTEGER, C37_PERCENT FLOAT," \
-        + "C38_NUMBER INTEGER, C38_SCORE INTEGER, C38_PERCENT FLOAT," \
         + "A1_NUMBER INTEGER, A1_SCORE INTEGER, A1_PERCENT FLOAT," \
         + "A2_NUMBER INTEGER, A2_SCORE INTEGER, A2_PERCENT FLOAT," \
         + "A3_NUMBER INTEGER, A3_SCORE INTEGER, A3_PERCENT FLOAT," \
@@ -214,106 +195,18 @@ def getResult(exam_id):
     correct = items[0][4]
     rate = items[0][5]
 
-    for i in range(NumOfCategory+1):
+    for i in range(NumOfCategory):
         a = items[0][i * 3 + 6]
         b = items[0][i * 3 + 7]
-# サービス関係
-        if i == 0:
-            categoryNumber[i] = items[0][i*3+6]
-            categoryScore[i] = items[0][i*3+7]
-            categoryPercent[i] = items[0][i*3+8]
-# 従うべき原則
-        elif i == 1 or i == 2:
-            categoryNumber[1] = categoryNumber[1] + int(a)
-            categoryScore[1] = categoryScore[1] + int(b)
-            if categoryNumber[1] != 0:
-                categoryPercent[1] = categoryScore[1] / categoryNumber[1] * 100
-# ４つの側面、サービスバリューシステム(SVS)
-        elif i == 3 or i == 4:
-            categoryNumber[i-1] = categoryNumber[i-1] + int(a)
-            categoryScore[i-1] = categoryScore[i-1] + int(b)
-            if categoryNumber[i-1] != 0:
-                categoryPercent[i-1] = categoryScore[i-1] / categoryNumber[i-1] * 100
-# サービスバリューチェーン（活動）
-        elif i == 5 or i == 6:
-            categoryNumber[4] = categoryNumber[4] + int(a)
-            categoryScore[4] = categoryScore[4] + int(b)
-            if categoryNumber[4] != 0:
-                categoryPercent[4] = categoryScore[4] / categoryNumber[4] * 100
-# サービスバリューシステムの構築
-        elif i == 7 or i == 8:
-            categoryNumber[5] = categoryNumber[5] + int(a)
-            categoryScore[5] = categoryScore[5] + int(b)
-            if categoryNumber[5] != 0:
-                categoryPercent[5] = categoryScore[5] / categoryNumber[5] * 100
-# サービスバリューシステムの供給
-        elif i == 9 or i == 10:
-            categoryNumber[6] = categoryNumber[6] + int(a)
-            categoryScore[6] = categoryScore[6] + int(b)
-            if categoryNumber[6] != 0:
-                categoryPercent[6] = categoryScore[6] / categoryNumber[6] * 100
-# サービスバリューシステムのサポート
-# カスタマジャニー(12), エンゲージメント(13), 提案(14)
-        elif i >= 11 and i <= 14:
-            categoryNumber[i-4] = categoryNumber[i-4] + int(a)
-            categoryScore[i-4] = categoryScore[i-4] + int(b)
-            if categoryNumber[i-4] != 0:
-                categoryPercent[i-4] = categoryScore[i-4] / categoryNumber[i-4] * 100
-# オンボーディング(15+16)
-        elif i == 15 or i == 16:
-            categoryNumber[11] = categoryNumber[11] + int(a)
-            categoryScore[11] = categoryScore[11] + int(b)
-            if categoryNumber[11] != 0:
-                categoryPercent[11] = categoryScore[11] / categoryNumber[11] * 100
-# 共創(17+18)
-        elif i == 17 or i == 18:
-            categoryNumber[12] = categoryNumber[12] + int(a)
-            categoryScore[12] = categoryScore[12] + int(b)
-            if categoryNumber[12] != 0:
-                categoryPercent[12] = categoryScore[12] / categoryNumber[12] * 100
-# 実現(19+20)
-        elif i == 19 or i == 20:
-            categoryNumber[13] = categoryNumber[13] + int(a)
-            categoryScore[13] = categoryScore[13] + int(b)
-            if categoryNumber[13] != 0:
-                categoryPercent[13] = categoryScore[13] / categoryNumber[13] * 100
-# HVITの概念
-        elif i == 21 or i == 22 or i == 23:
-            categoryNumber[14] = categoryNumber[14] + int(a)
-            categoryScore[14] = categoryScore[14] + int(b)
-            if categoryNumber[14] != 0:
-                categoryPercent[14] = categoryScore[14] / categoryNumber[14] * 100
-        elif i == 24:
-            categoryNumber[15] = categoryNumber[15] + int(a)
-            categoryScore[15] = categoryScore[15] + int(b)
-            if categoryNumber[15] != 0:
-                categoryPercent[15] = categoryScore[15] / categoryNumber[15] * 100
-        elif i == 25 or i == 26:
-            categoryNumber[16] = categoryNumber[16] + int(a)
-            categoryScore[16] = categoryScore[16] + int(b)
-            if categoryNumber[16] != 0:
-                categoryPercent[16] = categoryScore[16] / categoryNumber[16] * 100
-# DPI
-        elif i == 27:
-            categoryNumber[17] = categoryNumber[17] + int(a)
-            categoryScore[17] = categoryScore[17] + int(b)
-            if categoryNumber[17] != 0:
-                categoryPercent[17] = categoryScore[17] / categoryNumber[17] * 100
-        elif i == 28 or i == 29 or i == 30:
-            categoryNumber[18] = categoryNumber[18] + int(a)
-            categoryScore[18] = categoryScore[18] + int(b)
-            if categoryNumber[18] != 0:
-                categoryPercent[18] = categoryScore[18] / categoryNumber[18] * 100
-        elif i == 31 or i == 32:
-            categoryNumber[19] = categoryNumber[19] + int(a)
-            categoryScore[19] = categoryScore[19] + int(b)
-            if categoryNumber[19] != 0:
-                categoryPercent[19] = categoryScore[19] / categoryNumber[19] * 100
+        categoryNumber[i] = categoryNumber[i] + int(a)
+        categoryScore[i] = categoryScore[i] + int(b)
+        if categoryNumber[i] != 0:
+            categoryPercent[i] = categoryScore[i] / categoryNumber[i] * 100
 
     for i in range(NumOfArea):
-        areaNumber[i] = items[0][i*3+120]
-        areaScore[i] = items[0][i*3+121]
-        areaPercent[i] = items[0][i*3+122]
+        areaNumber[i] = items[0][i*3+42]
+        areaScore[i] = items[0][i*3+43]
+        areaPercent[i] = items[0][i*3+44]
 
     return categoryNumber, categoryScore, categoryPercent, areaNumber, \
            areaScore, areaPercent
@@ -364,7 +257,9 @@ def makeComments(exam_id):
           'A2_NUMBER , A2_SCORE, A2_PERCENT,'\
           'A3_NUMBER , A3_SCORE , A3_PERCENT,'\
           'A4_NUMBER , A4_SCORE , A4_PERCENT,'\
-          'A5_NUMBER , A5_SCORE , A5_PERCENT'\
+          'A5_NUMBER , A5_SCORE , A5_PERCENT,'\
+          'A6_NUMBER , A6_SCORE , A6_PERCENT,'\
+          'A7_NUMBER , A7_SCORE , A7_PERCENT'\
           ' FROM RESULT_TABLE WHERE EXAM_ID = ' + str(exam_id)
     c.execute(sql)
     items = c.fetchall()
@@ -389,148 +284,39 @@ def makeComments(exam_id):
           'C9_NUMBER , C9_SCORE , C9_PERCENT ,'\
           'C10_NUMBER , C10_SCORE , C10_PERCENT ,'\
           'C11_NUMBER , C11_SCORE , C11_PERCENT ,'\
-          'C12_NUMBER , C12_SCORE , C12_PERCENT ,'\
-          'C13_NUMBER , C13_SCORE , C13_PERCENT ,'\
-          'C14_NUMBER , C14_SCORE , C14_PERCENT ,'\
-          'C15_NUMBER , C15_SCORE , C15_PERCENT ,'\
-          'C16_NUMBER , C16_SCORE , C16_PERCENT ,'\
-          'C17_NUMBER , C17_SCORE , C17_PERCENT ,'\
-          'C18_NUMBER , C18_SCORE , C18_PERCENT ,'\
-          'C19_NUMBER , C19_SCORE , C19_PERCENT ,'\
-          'C20_NUMBER , C20_SCORE , C20_PERCENT ,'\
-          'C21_NUMBER , C21_SCORE , C21_PERCENT ,'\
-          'C22_NUMBER , C22_SCORE , C22_PERCENT ,'\
-          'C23_NUMBER , C23_SCORE , C23_PERCENT ,'\
-          'C24_NUMBER , C24_SCORE , C24_PERCENT ,'\
-          'C25_NUMBER , C25_SCORE , C25_PERCENT ,'\
-          'C26_NUMBER , C26_SCORE , C26_PERCENT ,'\
-          'C27_NUMBER , C27_SCORE , C27_PERCENT ,'\
-          'C28_NUMBER , C28_SCORE , C28_PERCENT ,'\
-          'C29_NUMBER , C29_SCORE , C29_PERCENT ,'\
-          'C30_NUMBER , C30_SCORE , C30_PERCENT ,'\
-          'C31_NUMBER , C31_SCORE , C31_PERCENT ,'\
-          'C32_NUMBER , C32_SCORE , C32_PERCENT ,'\
-          'C33_NUMBER , C33_SCORE , C33_PERCENT '\
+          'C12_NUMBER , C12_SCORE , C12_PERCENT'\
           ' FROM RESULT_TABLE WHERE EXAM_ID = ' + str(exam_id)
     c.execute(sql)
     items = c.fetchall()
 
-# なぜ、NumOfCategory-1)
-    for i in range(NumOfCategory-1):
+#
+    for i in range(NumOfCategory):
         a = items[0][i * 3]
         b = items[0][i * 3 + 1]
-        if i == 0:
-            categoryNumber[i] = items[0][i*3]
-            categoryScore[i] = items[0][i*3+1]
-            categoryPercent[i] = items[0][i*3+2]
-# 従うべき原則
-        elif i == 1 or i == 2:
-            categoryNumber[1] = categoryNumber[1] + int(a)
-            categoryScore[1] = categoryScore[1] + int(b)
-            if categoryNumber[1] != 0:
-                categoryPercent[1] = categoryScore[1] / categoryNumber[1] * 100
-# ４つの側面、サービスバリューシステム(SVS)
-        elif i == 3 or i == 4:
-            categoryNumber[i - 1] = categoryNumber[i - 1] + int(a)
-            categoryScore[i - 1] = categoryScore[i - 1] + int(b)
-            if categoryNumber[i - 1] != 0:
-                categoryPercent[i - 1] = categoryScore[i - 1] / categoryNumber[i - 1] * 100
-# サービスバリューチェーン（活動）
-        elif i == 5 or i == 6:
-            categoryNumber[4] = categoryNumber[4] + int(a)
-            categoryScore[4] = categoryScore[4] + int(b)
-            if categoryNumber[4] != 0:
-                categoryPercent[4] = categoryScore[4] / categoryNumber[4] * 100
-# サービスバリューシステムの構築
-        elif i == 7 or i == 8:
-            categoryNumber[5] = categoryNumber[5] + int(a)
-            categoryScore[5] = categoryScore[5] + int(b)
-            if categoryNumber[5] != 0:
-                categoryPercent[5] = categoryScore[5] / categoryNumber[5] * 100
-# サービスバリューシステムの供給
-        elif i == 9 or i == 10:
-            categoryNumber[6] = categoryNumber[6] + int(a)
-            categoryScore[6] = categoryScore[6] + int(b)
-            if categoryNumber[6] != 0:
-                categoryPercent[6] = categoryScore[6] / categoryNumber[6] * 100
-# サービスバリューシステムのサポート
-# カスタマジャニー(12), エンゲージメント(13), 提案(14)
-        elif i >= 11 and i <= 14:
-            categoryNumber[i - 4] = categoryNumber[i - 4] + int(a)
-            categoryScore[i - 4] = categoryScore[i - 4] + int(b)
-            if categoryNumber[i - 4] != 0:
-                categoryPercent[i - 4] = categoryScore[i - 4] / categoryNumber[i - 4] * 100
-# オンボーディング(15+16)
-        elif i == 15 or i == 16:
-            categoryNumber[11] = categoryNumber[11] + int(a)
-            categoryScore[11] = categoryScore[11] + int(b)
-            if categoryNumber[11] != 0:
-                categoryPercent[11] = categoryScore[11] / categoryNumber[11] * 100
-# 共創(17+18)
-        elif i == 17 or i == 18:
-            categoryNumber[12] = categoryNumber[12] + int(a)
-            categoryScore[12] = categoryScore[12] + int(b)
-            if categoryNumber[12] != 0:
-                categoryPercent[12] = categoryScore[12] / categoryNumber[12] * 100
-# 実現(19+20)
-        elif i == 19 or i == 20:
-            categoryNumber[13] = categoryNumber[13] + int(a)
-            categoryScore[13] = categoryScore[13] + int(b)
-            if categoryNumber[13] != 0:
-                categoryPercent[13] = categoryScore[13] / categoryNumber[13] * 100
-# HVITの概念
-        elif i == 21 or i == 22 or i == 23:
-            categoryNumber[14] = categoryNumber[14] + int(a)
-            categoryScore[14] = categoryScore[14] + int(b)
-            if categoryNumber[14] != 0:
-                categoryPercent[14] = categoryScore[14] / categoryNumber[14] * 100
-        elif i == 24:
-            categoryNumber[15] = categoryNumber[15] + int(a)
-            categoryScore[15] = categoryScore[15] + int(b)
-            if categoryNumber[15] != 0:
-                categoryPercent[15] = categoryScore[15] / categoryNumber[15] * 100
-        elif i == 25 or i == 26:
-            categoryNumber[16] = categoryNumber[16] + int(a)
-            categoryScore[16] = categoryScore[16] + int(b)
-            if categoryNumber[16] != 0:
-                categoryPercent[16] = categoryScore[16] / categoryNumber[16] * 100
-# DPI
-        elif i == 27:
-            categoryNumber[17] = categoryNumber[17] + int(a)
-            categoryScore[17] = categoryScore[17] + int(b)
-            if categoryNumber[17] != 0:
-                categoryPercent[17] = categoryScore[17] / categoryNumber[17] * 100
-        elif i == 28 or i == 29 or i == 30:
-            categoryNumber[18] = categoryNumber[18] + int(a)
-            categoryScore[18] = categoryScore[18] + int(b)
-            if categoryNumber[18] != 0:
-                categoryPercent[18] = categoryScore[18] / categoryNumber[18] * 100
-        elif i == 31 or i == 32:
-            categoryNumber[19] = categoryNumber[19] + int(a)
-            categoryScore[19] = categoryScore[19] + int(b)
-            if categoryNumber[19] != 0:
-                categoryPercent[19] = categoryScore[19] / categoryNumber[19] * 100
+        categoryNumber[i] = items[0][i*3]
+        categoryScore[i] = items[0][i*3+1]
+        categoryPercent[i] = items[0][i*3+2]
 
     weakArea = [0 for i in range(NumOfArea)]
-    weakCategory = [0 for i in range(NumOfCheckArea)]
+    weakCategory = [0 for i in range(NumOfCategory)]
     weakAreaList1 = ""
     weakAreaList2 = ""
     weakCategoryList1 = ""
     weakCategoryList2 = ""
 
-# なぜ、NumOfCategory-1か？
-    for i in range(NumOfCheckArea):
+# カテゴリごとの正答率で、弱点を２段階（0点、50%以下）でリストする
+    for i in range(NumOfCategory):
         if categoryNumber[i] != 0:
             if categoryPercent[i] == 0:
                 weakCategory[i] = 1
                 if( weakCategoryList1 != ""):
-                    weakCategoryList1 = ',' + weakCategoryList1 + str(i)
+                    weakCategoryList1 = weakCategoryList1 + ',' + str(i)
                 else:
                     weakCategoryList1 = weakCategoryList1 + str(i)
             elif categoryPercent[i] < 50:
                 weakCategory[i] = 2
                 if( weakCategoryList2 != ""):
-                    weakCategoryList2 = ',' + weakCategoryList2 + str(i)
+                    weakCategoryList2 = weakCategoryList2 + ',' + str(i)
                 else:
                     weakCategoryList2 = weakCategoryList2 + str(i)
             else:
@@ -539,7 +325,6 @@ def makeComments(exam_id):
     n = 0
     for i in range(NumOfArea):
         if areaNumber[i] != 0:
-            areaPercent[i] = areaScore[i] / areaNumber[i]
             if areaPercent[i] == 0:
                 weakArea[i] = 1
                 n += 1
@@ -650,7 +435,7 @@ def makeComments(exam_id):
                 if n == 1:
                     if j != 0:
                         list = list + '、'
-                    list = list + '「' + getComment(701 + i) + '」'
+                    list = list + '「' + getComment(750 + i) + '」'
                     j += 1
             list = list + getComment(539)
         comment = comment + list
@@ -667,12 +452,12 @@ def makeComments(exam_id):
         #   不得意領域を指摘する
         m = 0
         list = ""
-        for i in range(NumOfCheckArea):
+        for i in range(NumOfCategory-1):
             if weakCategory[i] == 1:
                 if m != 0:
                     list = list + "、"
                 m = m + 1
-                list = list + '「' + getComment(710 + i) + '」'
+                list = list + '「' + getComment(750 + i) + '」'
         #   不得意領域がない場合
         if m == 0:
             cid = 595
@@ -698,17 +483,17 @@ def getResultData(exam_id):
     area[45] = items[0][3]
     score[45] = items[0][4]
     percent[45] = items[0][5]
-    for i in range(45):
+    for i in range(19):
         area[i]= items[0][i*3+6]
         score[i]= items[0][i*3+7]
         percent[i]= items[0][i*3+8]
-    half1 = items[0][141]
-    half2 = items[0][142]
-    res = items[0][143]
-    correct_rate = items[0][144]
-    remain_time = items[0][145]
-    remain_time_rate = items[0][146]
-    last3 = items[0][147]
+    half1 = items[0][63]
+    half2 = items[0][64]
+    res = items[0][65]
+    correct_rate = items[0][66]
+    remain_time = items[0][67]
+    remain_time_rate = items[0][68]
+    last3 = items[0][69]
 
     conn.close()
     return area, score, percent, user_id, half1, half2, res, correct_rate, \
@@ -816,21 +601,3 @@ def getUserResultList2(user_id):
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
         return False, n
-
-#def getUserStatus(user_id):
-
-#   現在のステータス/総合解答問題数/総合平均正答率
-#    status = getUserStatus(user_id)
-
-#   カテゴリごとの実施回数/平均正答率
-#   FND/CDS/DSV/HVIT/DPI
-
-#   模擬試験の履歴
-#    result_list1 = getUserResultList1(user_id)
-#   修了試験の履歴
-#    result_list2 = getUserResultList2(user_id)
-#    return render_template('status.html',
-#                       user_id=user_id,
-#                       result_list1=result_list1,
-#                       result_list2=result_list2,
-#                       )
