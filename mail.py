@@ -4,6 +4,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 import ssl
 
+PASS3_MASSAGE = "おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n" \
+    + "これより、本試験（認定試験）の手配を行います。\n　" \
+    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
+
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
 
@@ -19,7 +23,7 @@ def sendMail(to_name, to_email, message):
 
     cset = 'utf-8'
 # MIMETextを作成
-    message = to_name + "様、\n\n合格、おめでとうございます。いよいよ本試験です。がんばってください。\n\n株式会社アーク"
+    message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
     msg = MIMEText(message, 'plain', cset)
     msg["Subject"] = "修了試験【合格】"
     msg["From"] = from_email

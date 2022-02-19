@@ -18,6 +18,18 @@ from sql import convertQuestions, convertComments
 
 DIFF_JST_FROM_UTC = 9
 
+PASS1_MASSAGE = "おめでとうございます。修了試験の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
+    + "あと１回修了試験の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
+    +  "あと少しです。がんばってください。"
+
+PASS2_MASSAGE = "おめでとうございます。合格です。<br>頑張ってこられた成果が出ました。<br>" \
+    + "これより、本試験（認定試験）の手配を行います。<br>" \
+    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
+
+FAIL_MESSAGE = "残念ながら、今回合格ラインに達していませんでした。<br>" \
+              + "模擬試験に立ち返り、弱い分野を確認して補強するようにしてください。<br>" \
+              + "あとひと頑張りです。"
+
 app = Flask(__name__, static_folder='./static')
 app.secret_key = '9KStWezD'  # セッション情報を暗号化するための鍵
 # 日本語を使えるように
@@ -40,6 +52,11 @@ log_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(log_handler)
 
 NumOfCategory = 5
+# NumOfArea = 5
+# NumOfCategory = 12
+PassScore1 = 70
+PassScore2 = 75
+
 prefec = ["都道府県",
           "北海道",
           "青森県",
@@ -943,14 +960,14 @@ def exercise():
         old_status = getStatus(user_id)
 
         # ユーザのステータスを更新
-        if rate >= 75 and total == 40:
+        if rate >= PassScore2 and total == 40:
             status, flag = rankUp(user_id, 2)
-        elif rate >= 70 and total == 40:
+        elif rate >= PassScore1 and total == 40:
             status, flag = rankUp(user_id, 1)
         #        elif rate >= 65 and total == 10:
         #            rankUp(user_id, 0)
 
-        if old_status == 31 and rate < 75:
+        if old_status == 31 and rate < PassScore2:
             rankDown(user_id)
             flag = 4
         if flag == 3:
@@ -962,10 +979,18 @@ def exercise():
                 sendMail(username, to_email, "合格です！")
 
         if old_status >= 30 and type == '修了試験(40問)':
-            if rate < 75:
-                message = "残念ながらあと一歩でした。<br>今一度、模擬試験などで実力を高めてチャレンジして下さい。"
+            if rate < PassScore2:
+                if old_status >= 40:
+                    message = "不合格でした。"
+                else:
+                    message = FAIL_MESSAGE
+            elif old_status == 30:
+                message = PASS1_MASSAGE
+            elif old_status == 31:
+                message = PASS2_MASSAGE
             else:
                 message = "合格です。おめでとうございます。"
+
             return render_template('finish2.html',
                                user_id=user_id,
                                title=title,
@@ -1275,7 +1300,7 @@ def summary():
         #            else:
         #                practice2[5][i][1] = "-"
 
-        if rate >= 70:
+        if rate >= PassScore1:
             result = "合格"
         else:
             result = "不合格"
@@ -1377,7 +1402,7 @@ def summary():
 
     elif (command == 40):
         print('command=40')
-        if rate >= 70:
+        if rate >= PassScore1:
             result = "合格"
         else:
             result = "不合格"
@@ -1400,7 +1425,7 @@ def summary():
         comments = makeComments(exam_id)
 
         if total != 0:
-            if correct / total * 100 >= 70:
+            if correct / total * 100 >= PassScore1:
                 result = '合格'
             else:
                 result = '不合格'
