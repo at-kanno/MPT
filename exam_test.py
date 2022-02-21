@@ -4,6 +4,8 @@ import random
 import datetime
 import re
 
+#SECOND_TEST = "修了試験"
+SECOND_TEST = "実力確認試験"
 DIFF_JST_FROM_UTC = 9
 
 # データベースのパスを特定
@@ -392,10 +394,10 @@ def saveExam(user, category, level, amount, examlist, arealist):
         examType = '重要実践(5問)'
     elif category == '80':
         examType = '全体(10問)'
-    elif category == '86':
+    elif category == '85':
         examType = '模擬試験(40問)'
     elif category == '86':
-        examType = '修了試験(40問)'
+        examType = SECOND_TEST + '(40問)'
     else:
         examType = 'その他'
 

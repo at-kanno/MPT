@@ -8,6 +8,9 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 db_path = base_path + '/exam.sqlite'
 form_path = base_path
 
+#SECOND_TEST = "修了試験"
+SECOND_TETST = "実力確認試験"
+
 NumOfArea = 7
 NumOfCategory = 12
 NumOfCategory1 = 3
@@ -517,7 +520,7 @@ def getUserResultList(user_id):
 #       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID '
 #    if user_id > '3':
     sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) + \
-          ' AND EXAM_TABLE.EXAM_TYPE != "修了試験(40問)"'
+          ' AND EXAM_TABLE.EXAM_TYPE != ' + SECOND_TEST + '(40問)'
     try:
         c.execute(sql)
         items = c.fetchall()
@@ -590,7 +593,7 @@ def getUserResultList2(user_id):
        'RESULT_TABLE.USER_ID = USER_TABLE.USER_ID '
 
     sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) \
-          + ' AND (EXAM_TABLE.EXAM_TYPE = "修了試験(40問)") '
+          + ' AND (EXAM_TABLE.EXAM_TYPE = "' + SECOND_TEST + '(40問)") '
     try:
         c.execute(sql)
         items = c.fetchall()

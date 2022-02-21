@@ -4,17 +4,12 @@ from email.mime.text import MIMEText
 from email.header import Header
 import ssl
 
-PASS1_MASSAGE = "おめでとうございます 。修了試験の前半合格です。\n　頑張ってこられた成果が 出ました。\n" \
-    + "　あと１回修了試験の後半があります。\n　それに合格すると、いよいよ本試験（認定試験）です。\n" \
-    +  "　あと少しです。\n　がんばってください。"
+#SECOND_TEST = "修了試験"
+SECOND_TETST = "実力確認試験"
 
-PASS2_MASSAGE = "おめでとうございます 。合格です。\n　頑張ってこられた成果が 出ました。\n" \
-    + "　これより、 本試験（認定試験）の 手配を行います。\n　" \
-    + "試験実施機関のPeopleCer社tから連絡がありますので、 その内容に従い、都合のよい日時を設定してください。"
-
-FAIL_MESSAGE = "残念ながら、今回合格ラインに達していませんでした。\n" \
-              + "　模擬試験に立ち返り、 弱い分野を確認して補強するようにしてください。\n" \
-              + "　あとひと頑張りです。"
+PASS3_MASSAGE = "おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n" \
+    + "これより、本試験（認定試験）の手配を行います。\n　" \
+    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
 
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
@@ -31,9 +26,9 @@ def sendMail(to_name, to_email, message):
 
     cset = 'utf-8'
 # MIMETextを作成
-    message = to_name + "様、\n\n合格、おめでとうございます。いよいよ本試験です。がんばってください。\n\n株式会社アーク"
+    message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
     msg = MIMEText(message, 'plain', cset)
-    msg["Subject"] = "修了試験【合格】"
+    msg["Subject"] = SECOND_TEST + '【合格】'
     msg["From"] = from_email
     msg["To"] = to_email
     msg["Cc"] = cc_email

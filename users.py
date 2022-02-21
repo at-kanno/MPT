@@ -292,15 +292,15 @@ def rankUp(user_id, level):
             status = 20
         elif level >= 1 and rank < 23:  # 模擬試験カウント < 5
             status = rank + 1
-        elif level >=1 and rank < 30:   # 模擬試験カウント >= 5 → 修了試験表示
+        elif level >=1 and rank < 30:   # 模擬試験カウント >= 5 → 第２試験表示
             status = 30
             flag = 1
-        elif level < 2:                 # 修了試験は75点以上
+        elif level < 2:                 # 第２試験は75点以上
             status = rank
-        elif rank == 30:                # 修了試験カウント = 1
+        elif rank == 30:                # 第２試験カウント = 1
             status = 31
             flag = 2
-        else:                           # 修了試験合格
+        else:                           # 第２試験合格
             status = 40
             flag = 3
         sql = 'UPDATE USER_TABLE SET STATUS = ' + str(status) +\

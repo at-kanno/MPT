@@ -15,6 +15,21 @@ from test import setGrade
 from sql import convertQuestions, convertComments
 
 DIFF_JST_FROM_UTC = 9
+#SECOND_TEST = "修了試験"
+SECOND_TEST = "実力確認試験"
+
+
+PASS1_MASSAGE = "おめでとうございます。" + SECOND_TEST + "の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
+    + "あと１回" + SECOND_TEST + "の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
+    +  "あと少しです。がんばってください。"
+
+PASS2_MASSAGE = "おめでとうございます。合格です。<br>頑張ってこられた成果が出ました。<br>" \
+    + "これより、本試験（認定試験）の手配を行います。<br>" \
+    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
+
+FAIL_MESSAGE = "残念ながら、今回合格ラインに達していませんでした。<br>" \
+              + "模擬試験に立ち返り、弱い分野を確認して補強するようにしてください。<br>" \
+              + "あとひと頑張りです。"
 
 app = Flask(__name__, static_folder='./static')
 app.secret_key = '9KStWezD'  # セッション情報を暗号化するための鍵
@@ -536,7 +551,7 @@ def makeExam():
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '86'):
             amount = 40
-            title = '修了試験'
+            title = SECOND_TEST
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '10'):
             amount = 5
@@ -556,7 +571,7 @@ def makeExam():
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '50'):
             amount = 5
-            title = 'サービスバリューチェーン活動：確認問題'
+            title = 'サービスバリュー・チェーン活動：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '60'):
             amount = 5
@@ -958,11 +973,19 @@ def exercise():
             to_email = str(userInfo[0][2])
             sendMail(username, to_email, "合格です！")
 
-        if old_status >= 30 and type == '修了試験(40問)':
+        if old_status >= 30 and type == SECOND_TEST + '(40問)':
             if rate < PassScore2:
-                message = "残念ながらあと一歩でした。<br>今一度、模擬試験などで実力を高めてチャレンジして下さい。"
+                if old_status >= 40:
+                    message = "不合格でした。"
+                else:
+                    message = FAIL_MESSAGE
+            elif old_status == 30:
+                message = PASS1_MASSAGE
+            elif old_status == 31:
+                message = PASS2_MASSAGE
             else:
                 message = "合格です。おめでとうございます。"
+
             return render_template('finish2.html',
                                        user_id=user_id,
                                        title=title,
@@ -1669,11 +1692,11 @@ def display():
         elif status < 24:
             grade = 'グレード２：模擬試験が利用できます。'
         elif status < 31:
-            grade = 'グレード３：模擬試験と修了試験が利用できます。'
+            grade = 'グレード３：模擬試験と' + SECOND_TEST + 'が利用できます。'
         elif status == 31:
-            grade = 'グレード３+：次の修了試験でもう一度70点以上を獲得すると修了です。'
+            grade = 'グレード３+：次の' + SECOND_TEST + 'でもう一度70点以上を獲得すると終了です。'
         else:
-            grade = 'グレード４：修了しました。'
+            grade = 'グレード４：終了しました。'
 
         result_list1 = [0 for i in range(100)]
         result_list1, n = getUserResultList1(id)
