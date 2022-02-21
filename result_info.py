@@ -9,7 +9,7 @@ db_path = base_path + '/exam.sqlite'
 form_path = base_path
 
 #SECOND_TEST = "修了試験"
-SECOND_TETST = "実力確認試験"
+SECOND_TEST = "実力確認試験"
 
 NumOfArea = 7
 NumOfCategory = 12
@@ -520,7 +520,7 @@ def getUserResultList(user_id):
 #       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID '
 #    if user_id > '3':
     sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) + \
-          ' AND EXAM_TABLE.EXAM_TYPE != ' + SECOND_TEST + '(40問)'
+          ' AND EXAM_TABLE.EXAM_TYPE != "' + SECOND_TEST + '(40問)"'
     try:
         c.execute(sql)
         items = c.fetchall()
@@ -536,8 +536,9 @@ def getUserResultList(user_id):
     except sqlite3.Error as e:
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
-        return False, n
-
+        res = ""
+        return res, 0
+#        return False, n   # エラーの時は Falseではなく、"" と 0を返す。
 
 def getStartTime(exam_id):
 

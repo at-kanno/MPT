@@ -1667,12 +1667,6 @@ def display():
                                user_id=user_id,
                                message="模擬試験が受けられるように設定しました。",
                                )
-
-        return render_template('list.html',
-                               user_id=user_id,
-                               user_list=user_list,
-                               command=command,
-                               )
     elif command == 'list':
         n = 0
         result_list = [0 for i in range(100)]
