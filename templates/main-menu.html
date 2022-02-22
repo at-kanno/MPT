@@ -87,7 +87,7 @@
         </form>
 
         <hr size="3" noshade="">
-        <h3 style="text-align:center;"><b><ul>【5分野別確認問題】</ul></b></h3>
+        <h3 style="text-align:center;"><b><ul>【7分野別確認問題】</ul></b></h3>
         <form action="makeExam" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <div id="main3">
@@ -165,7 +165,7 @@
                         <div class="six mobile-two cols">
 {% if status >= 10 %}
                             <button class="top-buttons" type="submit" name="category" value="85" style="background:#A0A0A0" >
-                                模擬試験【40問】<br>［時間：1時間30分］
+                                模擬試験【40問】<br>［時間：60分］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
@@ -178,7 +178,7 @@
                             <button class="top-buttons" type="submit" name="category" value="01"
                                     style="background:#A0A0A0;color:#D0D0D0"
                                     onclick='alert("模擬試験に挑戦することはできません。");'>
-                                    模擬試験【40問】<br>［時間：1時間30分］
+                                    模擬試験【40問】<br>［時間：60分］
                             </button>
 
                         </div>
@@ -195,7 +195,7 @@
                         <div class="six mobile-two cols">
 {% if 30 <= status%}
                             <button class="top-buttons" type="submit" name="category" value="86" style="background:#D4AF37">
-                                実力確認試験【40問】<br>［時間：1時間30分］
+                                実力確認試験【40問】<br>［時間：60分］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
@@ -211,7 +211,7 @@
                             <button class="top-buttons" type="submit" name="category" value="01"
                                     style="background:#D4AF37;color:#D0D0D0"
                                     onclick='alert("模擬試験に挑戦することはできません。");'>
-                                実力確認試験【40問】<br>［時間：1時間30分］
+                                実力確認試験【40問】<br>［時間：60分］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
