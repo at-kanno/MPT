@@ -265,6 +265,7 @@ def confirmation():
     building = request.form.get('building')
     mail_adr = request.form.get('mail_adr')
     retype = request.form.get('retype')
+
     autoPassword =request.form.get('autoPassword')
     if autoPassword == 'on':
         ap = 'Checked'
@@ -482,7 +483,6 @@ def updateX():
     else:
         fin = '0'
 
-
     try:
         if id == 0 or id == '0':
             addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2, \
@@ -503,7 +503,6 @@ def updateX():
                            user_id=user_id,
                            message='成功しました。',
                            )
-
 
 # ユーザー認証
 @app.route('/login', methods=['POST'])
@@ -542,7 +541,6 @@ def is_login():
         return "off"
     return 'login' in session
 
-
 # APIにアクセスがあったとき
 @app.route('/api')
 def api():
@@ -578,7 +576,6 @@ def api():
                            selection3=ans3,
                            selection4=ans4)
 
-
 # 基本概念を選択
 @app.route('/makeExam', methods=['POST'])
 def makeExam():
@@ -609,9 +606,6 @@ def makeExam():
                                    user_id=user_id,
                                    status=status,
                                    )
-            amount = 10
-            title = '確認問題（全領域）'
-            examlist, arealist = makeExam2(user_id, amount, int(category), level, 900, '')
         elif (category == '60'):
             amount = 10
             title = '確認問題（全領域）'
@@ -789,6 +783,7 @@ def exercise():
     examlist = request.args.get("examlist", "")
     arealist = request.args.get("arealist", "")
     m = request.args.get("timeMin", "")
+
     if m == '':
         timeMin = 0
     else:
@@ -1020,10 +1015,8 @@ def exercise():
             status, flag = rankUp(user_id, 2)
         elif rate >= PassScore1 and total == 40:
             status, flag = rankUp(user_id, 1)
-        #        elif rate >= 65 and total == 10:
-        #            rankUp(user_id, 0)
 
-        if old_status == 31 and rate < PassScore2:
+        if old_status == 31 and rate < PassScore2: # 75%を越えなければ、始めからやり直し
             rankDown(user_id)
             flag = 4
         if flag == 3:
@@ -1563,48 +1556,6 @@ def analize():
                                title=title,
                                )
 
-    else:
-        print('analize(GET)')
-        setStage(user_id, 1)
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
-
-
-# 総評を求められた時
-@app.route('/comments', methods=['GET', 'POST'])
-def comments():
-    if request.method == 'POST':
-        print('comments(POST)')
-
-        user_id = request.form['user_id']
-        exam_id = request.form['exam_id']
-        total = int(request.form['total'])
-        rate = int(request.form['rate'])
-        examlist = request.form['examlist']
-        arealist = request.form['arealist']
-        resultlist = request.form['resultlist']
-        result = request.form['result']
-        correct = int(request.form['correct'])
-        stime = request.form['stime']
-    else:
-        print('comments(GET)')
-        setStage(user_id, 1)
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
-
-
-# 管理者用メニュー
-
-# 1ページに表示するデータ数
-limit = 3
-
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     command = request.form.get('command')
@@ -1812,12 +1763,6 @@ def display():
                                user_id=user_id,
                                message="模擬試験が受けられるように設定しました。",
                                )
-
-        return render_template('list.html',
-                               user_id=user_id,
-                               user_list=user_list,
-                               command=command,
-                               )
     elif command == 'list':
         n = 0
         result_list = [0 for i in range(100)]
@@ -1996,14 +1941,12 @@ def sendMsg():
     to_email = str(userInfo[0][2])
     sendMail(username, to_email, "合格です！")
 
-
 #    result = sendMail(mail_from, mail_to, message)
     result = sendMail("staff@olivenet.co.jp", "kanno@olivenet.co.jp", "合格です！")
     if result:
         return 'Success!'
     else:
         return 'Error!'
-
 
 # ユーザー認証
 @app.route('/setData', methods=['POST'])
@@ -2042,8 +1985,16 @@ def upload():
 
     # アップロードしたファイルのオブジェクト
     upfile = request.files.get('upfile', None)
-    if upfile is None: return msg('アップロード失敗')
-    if upfile.filename == '': return msg('アップロード失敗')
+    if upfile is None:
+        return render_template('error2.html',
+                           user_id=user_id,
+                           message='ファイル名が入力されていません。アップロードが失敗しました。'
+                           )
+    if upfile.filename == '':
+        return render_template('error2.html',
+                               user_id=user_id,
+                               message='ファイル名が入力されていません。アップロードが失敗しました。'
+                               )
     # ファイルを保存
     upfile.save(FILES_DIR + '/' + filename)
     # ダウンロード先の表示

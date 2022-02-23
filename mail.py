@@ -20,10 +20,10 @@ db_path = base_path + '/exam.sqlite'
 def sendMail(to_name, to_email, message):
 
 # 送受信先
-    cc_email = "at.kanno@icloud.com"
-    bcc_email = "atsushi.kanno@nifty.com"
-#    cc_email = "ark@gigamall.ne.jp"
-#    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+#    cc_email = "at.kanno@icloud.com"
+#    bcc_email = "atsushi.kanno@nifty.com"
+    cc_email = "ark@gigamall.ne.jp"
+    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 
@@ -31,12 +31,14 @@ def sendMail(to_name, to_email, message):
 # MIMETextを作成
     if message == '合格です。':
         message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
+        subject = "修了試験【合格】"
     else:
         message = to_name + "様、\n\n" + NEW_ACCOUNT_MESSAGE1 \
                   + message + NEW_ACCOUNT_MESSAGE2 + "\n\n株式会社アーク"
+        subject = "ITIL4演習システム【アーク】"
 
     msg = MIMEText(message, 'plain', cset)
-    msg["Subject"] = "修了試験【合格】"
+    msg["Subject"] = subject
     msg["From"] = from_email
     msg["To"] = to_email
     msg["Cc"] = cc_email
