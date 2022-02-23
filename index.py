@@ -1,5 +1,5 @@
 from flask import Flask, session, render_template, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user, logout_user
+#from flask_login import LoginManager, UserMixin, login_user, logout_user
 import logging
 import sqlite3, os, sys, cgi
 import datetime
@@ -39,23 +39,23 @@ app.config['JSON_AS_ASCII'] = False
 books = [{'name': 'EffectivePython', 'price': 3315}, {'name': 'Expert Python Programming', 'price': 3960}]
 
 # セッション管理
-login_manager = LoginManager()
-login_manager.init_app(app)
+#login_manager = LoginManager()
+#login_manager.init_app(app)
 
-class User(UserMixin):
-    def __init__(self, uid):
-        self.id = uid
+#class User(UserMixin):
+#    def __init__(self, uid):
+#        self.id = uid
 
-@login_manager.user_loader
-def load_user(uid):
-    return User(uid)
+#@login_manager.user_loader
+#def load_user(uid):
+#    return User(uid)
 
-@app.before_request
-def before_request():
+#@app.before_request
+#def before_request():
     # リクエストのたびにセッションの寿命を更新する
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=15)
-    session.modified = True
+#    session.permanent = True
+#    app.permanent_session_lifetime = timedelta(minutes=15)
+#    session.modified = True
 # ここまでがセッション管理
 
 base_path = os.path.dirname(__file__)
@@ -140,8 +140,8 @@ def logout():
     user_id = int(request.form['user_id'])
     #    user_id = request.form.get('user_id')
     setStage(user_id, 0)
-    logout_user()  # ログアウト
-    session.pop('login', None)
+#    logout_user()  # ログアウト
+#    session.pop('login', None)
     return render_template(
         'login.html',
         )
@@ -493,7 +493,7 @@ def updateX():
                        company, department, prefecture, city, town, building, status, password, mail_adr, \
                        begin, fin)
     except:
-        return render_template('error.html',
+        return render_template('error2.html',
                                user_id=user_id,
                                error_message='失敗しました。',
                                )
@@ -523,9 +523,9 @@ def login():
         elif result == 101:
             return '<h3>既に、利用期間が過ぎています。</h3>'
         # セッション管理をFlaskに任せる
-        user = load_user(id)
-        login_user(user)
-#        session['login'] = id
+#        user = load_user(id)
+#        login_user(user)
+        session['login'] = id
         setStage(user_id, 1)
         status = getStatus(user_id)
         return render_template('main-menu.html',
@@ -598,9 +598,6 @@ def makeExam():
         <h1>ログインしてください</h1>
         <p><a href="/">→ログインする</a></p>
         """
-
-    before_request()   # セッション管理（15分延長）
-
     if request.method == 'POST':
         category = request.form['category']
         print('category=' + str(category))
@@ -673,8 +670,6 @@ def makeExam():
 # 基本概念を選択
 @app.route('/makeExam3', methods=['POST'])
 def makeExam3():
-
-    before_request()   # セッション管理（15分延長）
 
     user_id = request.form.get('user_id')
     command = request.form.get('command')
@@ -784,8 +779,6 @@ def makeExam3():
 # 問題の出題
 @app.route('/exercise')
 def exercise():
-
-    before_request()   # セッション管理（15分延長）
 
     command = request.args.get("command", "")
     q_no = request.args.get("q_no", "")
@@ -1081,6 +1074,7 @@ def exercise():
 # 分析結果をフィードバックする
 @app.route('/summary', methods=['POST', 'GET'])
 def summary():
+
     if request.method == 'POST':
         print('summary(POST)')
         command = int(request.form['command'])
@@ -1093,7 +1087,6 @@ def summary():
         correct = int(request.form['correct'])
         title = request.form['title']
         stime = getStartTime(exam_id)
-
         stage = getStage(user_id)
         if stage < 4:
             return render_template('error.html',
@@ -1307,6 +1300,13 @@ def summary():
     else:
         print('summary(GET)')
         user_id = int(request.args.get('user_id'))
+
+        stage = getStage(user_id)
+        if stage == 0:
+            return render_template('error.html',
+                                   user_id=user_id,
+                                   error_message='すでにログアウトしています。')
+
         setStage(user_id, 1)
         status = getStatus(user_id)
         return render_template('main-menu.html',
@@ -1935,7 +1935,7 @@ def setpasswd():
                                message='成功しました。',
                                user_id=user_id)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='エラーが発生しました。',
                                user_id=user_id
                                )
@@ -1965,7 +1965,7 @@ def resetpasswd():
     if password_verify(old_password, hashed_password):
         status = setPassword(user_id, new_password)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='現在のパスワードが入力されていない。もしくは、正しくありません。',
                                user_id=user_id
                                )
@@ -1974,7 +1974,7 @@ def resetpasswd():
                                message='成功しました。',
                                user_id=user_id)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='エラーが発生しました。',
                                user_id=user_id
                                )
