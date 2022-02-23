@@ -84,7 +84,6 @@ def check_login(id, password):
         user_id = items[0][0]
         password2 = items[0][1]
         if password_verify(password, password2):
-#        if password == password2:
             sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
             c.execute(sql)
             conn.commit()

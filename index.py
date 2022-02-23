@@ -1,7 +1,10 @@
 from flask import Flask, session, render_template, request, jsonify
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 import logging
 import sqlite3, os, sys, cgi
 import datetime
+import requests
+from datetime import timedelta
 from users import check_login, getStage, setStage, getUserList, \
     deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
     getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress
@@ -33,6 +36,26 @@ app.secret_key = '9KStWezD'  # セッション情報を暗号化するための�
 # 日本語を使えるように
 app.config['JSON_AS_ASCII'] = False
 books = [{'name': 'EffectivePython', 'price': 3315}, {'name': 'Expert Python Programming', 'price': 3960}]
+
+# セッション管理
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+class User(UserMixin):
+    def __init__(self, uid):
+        self.id = uid
+
+@login_manager.user_loader
+def load_user(uid):
+    return User(uid)
+
+@app.before_request
+def before_request():
+    # リクエストのたびにセッションの寿命を更新する
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=15)
+    session.modified = True
+# ここまでがセッション管理
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -108,7 +131,6 @@ prefec = ["都道府県",
 @app.route('/')
 def index():
     return render_template('login.html',
-#                           css_path = css_path
                            )
 
 # ログアウト処理
@@ -117,11 +139,11 @@ def logout():
     user_id = int(request.form['user_id'])
     #    user_id = request.form.get('user_id')
     setStage(user_id, 0)
-    return render_template('login.html',
-# css_path = css_path
-                           )
+    logout_user()  # ログアウト
     session.pop('login', None)
-    return True
+    return render_template(
+        'login.html',
+        )
 
 return1 = '<form action="makeExam" method="POST">' + \
           '<input type="hidden" name="user_id" value="'
@@ -441,25 +463,19 @@ def login():
     if id == '':
         return '<h3>失敗:IDが空です。</h3>'
     # パスワードを照合
-    if id == 'aaa':
-        session['login'] = id
-        user_id = 1
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
     user_id = check_login(id, pw)
     if user_id == False:
         return '<h3>パスワードが一致しません。</h3>'
     else:
-        session['login'] = id
+        # セッション管理をFlaskに任せる
+        user = load_user(id)
+        login_user(user)
+#        session['login'] = id
         status = getStatus(user_id)
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
                                )
-
 
 # ログインしているか調べる
 @app.route('/is_login')
@@ -526,6 +542,8 @@ def makeExam():
         <h1>ログインしてください</h1>
         <p><a href="/">→ログインする</a></p>
         """
+
+    before_request()   # セッション管理（15分延長）
 
     if request.method == 'POST':
         category = request.form['category']
@@ -599,6 +617,9 @@ def makeExam():
 # 基本概念を選択
 @app.route('/makeExam3', methods=['POST'])
 def makeExam3():
+
+    before_request()   # セッション管理（15分延長）
+
     user_id = request.form.get('user_id')
     command = request.form.get('command')
 
@@ -707,6 +728,9 @@ def makeExam3():
 # 問題の出題
 @app.route('/exercise')
 def exercise():
+
+    before_request()   # セッション管理（15分延長）
+
     command = request.args.get("command", "")
     q_no = request.args.get("q_no", "")
     user_id = request.args.get("user_id", "")
