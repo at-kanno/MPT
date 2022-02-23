@@ -5,9 +5,9 @@ import sqlite3, os, sys, cgi
 import datetime
 import requests
 from datetime import timedelta
-from users import check_login, getStage, setStage, getUserList, \
+from users import check_login, getStage, setStage, getUserList, makePassword,\
     deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
-    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress
+    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress, getPeriod
 from exam_test import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
     getQuestionFromCategory, getQuestionFromNum
@@ -264,6 +264,13 @@ def confirmation():
     building = request.form.get('building')
     mail_adr = request.form.get('mail_adr')
     retype = request.form.get('retype')
+    autoPassword =request.form.get('autoPassword')
+    if autoPassword == 'on':
+        ap = 'Checked'
+    else:
+        ap = ''
+    beginDate = request.form.get('beginDate')
+    endDate = request.form.get('endDate')
 
     if firstname == "" or lastname == "":
         error_no = 11
@@ -343,12 +350,14 @@ def confirmation():
                            zip1=zip1,
                            zip2=zip2,
                            prefecture=prefecture,
-                           #                           pref = pref,
                            city=city,
                            town=town,
                            building=building,
                            mail_adr=mail_adr,
                            retype=retype,
+                           autoPassword=ap,
+                           beginDate=beginDate,
+                           endDate=endDate,
                            user_id=user_id,
                            id=id,
                            )
@@ -375,6 +384,8 @@ def modification():
     city = request.form.get('city')
     town = request.form.get('town')
     building = request.form.get('building')
+    beginDate = request.form.get('beginDate')
+    endDate = request.form.get('endDate')
     mail_adr = request.form.get('mail_adr')
     retype = request.form.get('retype')
 
@@ -402,6 +413,8 @@ def modification():
                            city=city,
                            town=town,
                            building=building,
+                           beginDate=beginDate,
+                           endDate=endDate,
                            mail_adr=mail_adr,
                            retype=retype,
                            user_id=user_id,
@@ -434,21 +447,43 @@ def updateX():
     town = request.form.get("town", "")
     building = request.form.get("building", "")
     mail_adr = request.form.get("mail_adr", "")
+
+    autoPassword = request.form.get('autoPassword')
     status = 0
-    password = ""
+    if autoPassword == 'on' or autoPassword == 'Checked':
+        password = makePassword()
+    else:
+        password = ""
+
+    beginDate = request.form.get('beginDate')
+    if beginDate != '':
+        begin,tmp = beginDate.split('T', 1)
+    else:
+        begin = '0'
+
+    endDate = request.form.get('endDate')
+    if endDate != '':
+        fin,tmp = endDate.split('T', 1)
+    else:
+        fin = '0'
+
 
     try:
         if id == 0 or id == '0':
             addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2, \
-                    company, department, prefecture, city, town, building, status, password, mail_adr)
+                    company, department, prefecture, city, town, building, status, password, mail_adr, \
+                    begin, fin)
         else:
             modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2, \
-                       company, department, prefecture, city, town, building, status, password, mail_adr)
+                       company, department, prefecture, city, town, building, status, password, mail_adr, \
+                       begin, fin)
     except:
         return render_template('error.html',
                                user_id=user_id,
                                error_message='失敗しました。',
                                )
+    if autoPassword == 'on' or autoPassword == 'Checked':
+        sendMail(lastname + firstname, mail_adr, password)
     return render_template('success.html',
                            user_id=user_id,
                            message='成功しました。',
@@ -467,6 +502,11 @@ def login():
     if user_id == False:
         return '<h3>パスワードが一致しません。</h3>'
     else:
+        stage, beginDate, endDate = getPeriod(user_id)
+        if stage == 99:
+            return '<h3>まだ、利用期間が始まっていません。</h3>'
+        elif stage == 101:
+            return '<h3>既に、利用期間が過ぎています。</h3>'
         # セッション管理をFlaskに任せる
         user = load_user(id)
         login_user(user)
@@ -1821,6 +1861,9 @@ def display():
         building = user_info[0][14]
         mail_adr = user_info[0][15]
         status = user_info[0][16]
+        beginDate = user_info[0][17]
+        endDate = user_info[0][18]
+
         error_no = 0
 
         return render_template('display.html',
@@ -1841,6 +1884,8 @@ def display():
                                town=town,
                                building=building,
                                mail_adr=mail_adr,
+                               beginDate=beginDate,
+                               endDate=endDate,
                                user_id=user_id,
                                id=id,
                                error_no=error_no,

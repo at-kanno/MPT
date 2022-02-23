@@ -1,5 +1,7 @@
 from flask import Flask, session
 import sqlite3, os, json, hashlib, base64
+import random
+import string
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -23,17 +25,20 @@ def password_verify(password, hash):
 
 # 新規ユーザーを追加
 def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
-            company, department, prefecture, city, town, building, status, password, mail_adr):
+            company, department, prefecture, city, town, building, status, password, mail_adr, beginDate, endDate):
+
+    hashedPassword = password_hash(password)
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     sql = 'INSERT INTO USER_TABLE (lastname, firstname, lastyomi, firstyomi,'\
           'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, town,'\
-          'building, status, password, mail_adr) VALUES ("'\
+          'building, status, password, mail_adr, begin, end) VALUES ("'\
            + lastname + '", "' + firstname + '", "' + lastyomi + '", "' + firstyomi + '", "'\
            + str(tel1) + '", "' + str(tel2) + '", "' + str(tel3) + '", "' + str(zip1) + '", "' + str(zip2) + '", "'\
            + company + '", "' + department + '", "' + str(prefecture) + '", "' + city + '", "' + town + '", "'\
-           + building + '", ' + str(status) + ', "' + password + '", "' + mail_adr + '")'
+           + building + '", ' + str(status) + ', "' + hashedPassword + '", "' + mail_adr + '", "'\
+           + beginDate + '", "' + endDate + '")'
     try:
         # INSERT
         c.execute(sql)
@@ -47,7 +52,7 @@ def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zi
 
 # 既存ユーザー情報を更新
 def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
-            company, department, prefecture, city, town, building, status, password, mail_adr):
+            company, department, prefecture, city, town, building, status, password, mail_adr, beginDate, endDate):
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
@@ -57,7 +62,8 @@ def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, z
           '", zip1="' + zip1 + '", zip2="' + zip2 + '", company="' + company +\
           '", department="' + department + '", prefecture="' + prefecture + \
           '", city="' + city + '", town="' + town + '", building="' + building + \
-          '", mail_adr="' + mail_adr + '" where user_id = ' + id
+          '", mail_adr="' + mail_adr + '", begin="' + beginDate + '", end="' + endDate + \
+          '" where user_id = ' + id
     try:
         # INSERT
         c.execute(sql)
@@ -103,7 +109,8 @@ def getUserInfo(user_id):
     c = conn.cursor()
     sql = 'SELECT lastname, firstname, lastyomi, firstyomi, ' \
           'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, ' \
-          'town, building ,mail_adr ,status FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
+          'town, building ,mail_adr ,status, begin, end ' \
+          'FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
     try:
         c.execute(sql)
         items = c.fetchall()
@@ -347,3 +354,33 @@ def getMailadress(user_id):
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
         return False
+
+def getPeriod(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT STAGE, BEGIN, END FROM USER_TABLE where USER_ID = ' + str(user_id)
+
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return False
+        conn.close()
+        status = items[0][0]
+        beginDate = items[0][1]
+        endDate = items[0][2]
+        return status, beginDate, endDate
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+
+def makePassword():
+    letters_and_digits = string.ascii_letters + string.digits
+    result_str = ''.join((random.choice(letters_and_digits) for i in range(8)))
+    # print("Random alphanumeric String is:", result_str)
+    return result_str
+
