@@ -4,10 +4,11 @@ import logging
 import sqlite3, os, sys, cgi
 import datetime
 import requests
+import re
 from datetime import timedelta
 from users import check_login, getStage, setStage, getUserList, makePassword,\
     deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
-    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress, getPeriod
+    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress, checkPeriod
 from exam_test import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
     getQuestionFromCategory, getQuestionFromNum
@@ -269,8 +270,18 @@ def confirmation():
         ap = 'Checked'
     else:
         ap = ''
-    beginDate = request.form.get('beginDate')
-    endDate = request.form.get('endDate')
+    beginDate = str(request.form.get('beginDate'))
+    endDate = str(request.form.get('endDate'))
+
+    if beginDate is None or beginDate=='':
+        pass
+    elif endDate is None or endDate=='':
+        pass
+    else:
+        begin,tmp = beginDate.split('T', 1)
+        fin,tmp = endDate.split('T', 1)
+        if begin > fin:
+            error_no = 20
 
     if firstname == "" or lastname == "":
         error_no = 11
@@ -305,6 +316,8 @@ def confirmation():
                                    city=city,
                                    town=town,
                                    building=building,
+                                   beginDate=beginDate,
+                                   endDate=endDate,
                                    mail_adr=mail_adr,
                                    retype=retype,
                                    user_id=user_id,
@@ -330,6 +343,8 @@ def confirmation():
                                    city=city,
                                    town=town,
                                    building=building,
+                                   beginDate=beginDate,
+                                   endDate=endDate,
                                    mail_adr=mail_adr,
                                    retype=retype,
                                    user_id=user_id,
@@ -502,15 +517,16 @@ def login():
     if user_id == False:
         return '<h3>パスワードが一致しません。</h3>'
     else:
-        stage, beginDate, endDate = getPeriod(user_id)
-        if stage == 99:
+        result = checkPeriod(user_id)
+        if result == 99:
             return '<h3>まだ、利用期間が始まっていません。</h3>'
-        elif stage == 101:
+        elif result == 101:
             return '<h3>既に、利用期間が過ぎています。</h3>'
         # セッション管理をFlaskに任せる
         user = load_user(id)
         login_user(user)
 #        session['login'] = id
+        setStage(user_id, 1)
         status = getStatus(user_id)
         return render_template('main-menu.html',
                                user_id=user_id,
@@ -1863,6 +1879,10 @@ def display():
         status = user_info[0][16]
         beginDate = user_info[0][17]
         endDate = user_info[0][18]
+        if beginDate != '0':
+            beginDate = beginDate + 'T00:00'
+        if endDate != '0':
+            endDate = endDate + 'T23:59'
 
         error_no = 0
 

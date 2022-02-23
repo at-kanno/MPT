@@ -2,6 +2,8 @@ from flask import Flask, session
 import sqlite3, os, json, hashlib, base64
 import random
 import string
+import time, datetime
+import re
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -90,9 +92,9 @@ def check_login(id, password):
         user_id = items[0][0]
         password2 = items[0][1]
         if password_verify(password, password2):
-            sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
-            c.execute(sql)
-            conn.commit()
+#            sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
+#            c.execute(sql)
+#            conn.commit()
             conn.close()
             return user_id
         else:
@@ -355,11 +357,11 @@ def getMailadress(user_id):
         conn.close()
         return False
 
-def getPeriod(user_id):
+def checkPeriod(user_id):
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = 'SELECT STAGE, BEGIN, END FROM USER_TABLE where USER_ID = ' + str(user_id)
+    sql = 'SELECT BEGIN, END FROM USER_TABLE where USER_ID = ' + str(user_id)
 
     try:
         c.execute(sql)
@@ -368,15 +370,25 @@ def getPeriod(user_id):
         if n < 1:
             return False
         conn.close()
-        status = items[0][0]
-        beginDate = items[0][1]
-        endDate = items[0][2]
-        return status, beginDate, endDate
+        beginDate = items[0][0]
+        endDate = items[0][1]
+
+        date = datetime.date.today()
+        strToday = date.strftime('%Y%m%d')
+        if items[0][0] != '0':
+            beginDate = re.sub('-', '',  items[0][0])
+            if strToday < beginDate:
+                return 99
+
+        if items[0][1] != '0':
+            endDate = re.sub('-', '',  items[0][1])
+            if strToday > endDate:
+                return 101
+        return 1
     except sqlite3.Error as e:
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
         return False
-
 
 def makePassword():
     letters_and_digits = string.ascii_letters + string.digits
