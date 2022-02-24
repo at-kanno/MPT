@@ -465,7 +465,7 @@ def updateX():
     mail_adr = request.form.get("mail_adr", "")
 
     autoPassword = request.form.get('autoPassword')
-    status = 0
+    status = 10    # 模擬試験が受験可能
     if autoPassword == 'on' or autoPassword == 'Checked':
         password = makePassword()
     else:
