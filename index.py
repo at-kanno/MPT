@@ -1,10 +1,14 @@
 from flask import Flask, session, render_template, request, jsonify
+#from flask_login import LoginManager, UserMixin, login_user, logout_user
 import logging
 import sqlite3, os, sys, cgi
 import datetime
-from users import check_login, getStage, setStage, getUserList, \
+#import requests
+import re
+from datetime import timedelta
+from users import check_login, getStage, setStage, getUserList, makePassword, \
     deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
-    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress
+    getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress, checkPeriod
 from exam_test import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
     getQuestionFromCategory, getQuestionFromNum
@@ -13,11 +17,11 @@ from result_info import putResult, getResult, makeComments, getComment, \
 from mail import sendMail
 from test import setGrade
 from sql import convertQuestions, convertComments
+import time
 
 DIFF_JST_FROM_UTC = 9
 #SECOND_TEST = "修了試験"
 SECOND_TEST = "実力確認試験"
-
 
 PASS1_MASSAGE = "おめでとうございます。" + SECOND_TEST + "の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
     + "あと１回" + SECOND_TEST + "の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
@@ -36,6 +40,26 @@ app.secret_key = '9KStWezD'  # セッション情報を暗号化するための�
 # 日本語を使えるように
 app.config['JSON_AS_ASCII'] = False
 books = [{'name': 'EffectivePython', 'price': 3315}, {'name': 'Expert Python Programming', 'price': 3960}]
+
+# セッション管理
+#login_manager = LoginManager()
+#login_manager.init_app(app)
+
+#class User(UserMixin):
+#    def __init__(self, uid):
+#        self.id = uid
+
+#@login_manager.user_loader
+#def load_user(uid):
+#    return User(uid)
+
+#@app.before_request
+#def before_request():
+    # リクエストのたびにセッションの寿命を更新する
+#    session.permanent = True
+#    app.permanent_session_lifetime = timedelta(minutes=15)
+#    session.modified = True
+# ここまでがセッション管理
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -107,12 +131,10 @@ prefec = ["都道府県",
           "鹿児島県",
           "沖縄県", ]
 
-
 # ブラウザのメイン画面
 @app.route('/')
 def index():
     return render_template('login.html',
-#                           css_path = css_path
                            )
 
 # ログアウト処理
@@ -121,11 +143,11 @@ def logout():
     user_id = int(request.form['user_id'])
     #    user_id = request.form.get('user_id')
     setStage(user_id, 0)
-    return render_template('login.html',
-# css_path = css_path
-                           )
-    session.pop('login', None)
-    return True
+#    logout_user()  # ログアウト
+#    session.pop('login', None)
+    return render_template(
+        'login.html',
+        )
 
 return1 = '<form action="makeExam" method="POST">' + \
           '<input type="hidden" name="user_id" value="'
@@ -247,6 +269,24 @@ def confirmation():
     mail_adr = request.form.get('mail_adr')
     retype = request.form.get('retype')
 
+    autoPassword =request.form.get('autoPassword')
+    if autoPassword == 'on':
+        ap = 'Checked'
+    else:
+        ap = ''
+    beginDate = str(request.form.get('beginDate'))
+    endDate = str(request.form.get('endDate'))
+
+    if beginDate is None or beginDate=='':
+        pass
+    elif endDate is None or endDate=='':
+        pass
+    else:
+        begin,tmp = beginDate.split('T', 1)
+        fin,tmp = endDate.split('T', 1)
+        if begin > fin:
+            error_no = 20
+
     if firstname == "" or lastname == "":
         error_no = 11
     if mail_adr == "" or retype == "":
@@ -280,6 +320,8 @@ def confirmation():
                                    city=city,
                                    town=town,
                                    building=building,
+                                   beginDate=beginDate,
+                                   endDate=endDate,
                                    mail_adr=mail_adr,
                                    retype=retype,
                                    user_id=user_id,
@@ -305,6 +347,8 @@ def confirmation():
                                    city=city,
                                    town=town,
                                    building=building,
+                                   beginDate=beginDate,
+                                   endDate=endDate,
                                    mail_adr=mail_adr,
                                    retype=retype,
                                    user_id=user_id,
@@ -325,12 +369,14 @@ def confirmation():
                            zip1=zip1,
                            zip2=zip2,
                            prefecture=prefecture,
-                           #                           pref = pref,
                            city=city,
                            town=town,
                            building=building,
                            mail_adr=mail_adr,
                            retype=retype,
+                           autoPassword=ap,
+                           beginDate=beginDate,
+                           endDate=endDate,
                            user_id=user_id,
                            id=id,
                            )
@@ -357,6 +403,8 @@ def modification():
     city = request.form.get('city')
     town = request.form.get('town')
     building = request.form.get('building')
+    beginDate = request.form.get('beginDate')
+    endDate = request.form.get('endDate')
     mail_adr = request.form.get('mail_adr')
     retype = request.form.get('retype')
 
@@ -384,6 +432,8 @@ def modification():
                            city=city,
                            town=town,
                            building=building,
+                           beginDate=beginDate,
+                           endDate=endDate,
                            mail_adr=mail_adr,
                            retype=retype,
                            user_id=user_id,
@@ -416,26 +466,46 @@ def updateX():
     town = request.form.get("town", "")
     building = request.form.get("building", "")
     mail_adr = request.form.get("mail_adr", "")
+
+    autoPassword = request.form.get('autoPassword')
     status = 0
-    password = ""
+    if autoPassword == 'on' or autoPassword == 'Checked':
+        password = makePassword()
+    else:
+        password = ""
+
+    beginDate = request.form.get('beginDate')
+    if beginDate != '':
+        begin,tmp = beginDate.split('T', 1)
+    else:
+        begin = '0'
+
+    endDate = request.form.get('endDate')
+    if endDate != '':
+        fin,tmp = endDate.split('T', 1)
+    else:
+        fin = '0'
 
     try:
         if id == 0 or id == '0':
             addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2, \
-                    company, department, prefecture, city, town, building, status, password, mail_adr)
+                    company, department, prefecture, city, town, building, status, password, mail_adr, \
+                    begin, fin)
         else:
             modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2, \
-                       company, department, prefecture, city, town, building, status, password, mail_adr)
+                       company, department, prefecture, city, town, building, status, password, mail_adr, \
+                       begin, fin)
     except:
-        return render_template('error.html',
+        return render_template('error2.html',
                                user_id=user_id,
                                error_message='失敗しました。',
                                )
+    if autoPassword == 'on' or autoPassword == 'Checked':
+        sendMail(lastname + firstname, mail_adr, password)
     return render_template('success.html',
                            user_id=user_id,
                            message='成功しました。',
                            )
-
 
 # ユーザー認証
 @app.route('/login', methods=['POST'])
@@ -445,25 +515,25 @@ def login():
     if id == '':
         return '<h3>失敗:IDが空です。</h3>'
     # パスワードを照合
-    if id == 'aaa':
-        session['login'] = id
-        user_id = 1
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
     user_id = check_login(id, pw)
     if user_id == False:
         return '<h3>パスワードが一致しません。</h3>'
     else:
+        result = checkPeriod(user_id)
+        if result == 99:
+            return '<h3>まだ、利用期間が始まっていません。</h3>'
+        elif result == 101:
+            return '<h3>既に、利用期間が過ぎています。</h3>'
+        # セッション管理をFlaskに任せる
+#        user = load_user(id)
+#        login_user(user)
         session['login'] = id
+        setStage(user_id, 1)
         status = getStatus(user_id)
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
                                )
-
 
 # ログインしているか調べる
 @app.route('/is_login')
@@ -473,7 +543,6 @@ def is_login():
     else:
         return "off"
     return 'login' in session
-
 
 # APIにアクセスがあったとき
 @app.route('/api')
@@ -529,7 +598,6 @@ def makeExam():
         <h1>ログインしてください</h1>
         <p><a href="/">→ログインする</a></p>
         """
-
     if request.method == 'POST':
         category = request.form['category']
         print('category=' + str(category))
@@ -590,7 +658,6 @@ def makeExam():
             return render_template('admin.html', user_id=int(user_id))
         try:
             exam_id = saveExam(user_id, category, level, amount, examlist, arealist)
-
             return render_template('startExam.html',
                                    user_id=user_id,
                                    exam_id=exam_id,
@@ -608,6 +675,7 @@ def makeExam():
 # 基本概念を選択
 @app.route('/makeExam3', methods=['POST'])
 def makeExam3():
+
     user_id = request.form.get('user_id')
     command = request.form.get('command')
 
@@ -721,6 +789,7 @@ def makeExam3():
 # 問題の出題
 @app.route('/exercise')
 def exercise():
+
     command = request.args.get("command", "")
     q_no = request.args.get("q_no", "")
     user_id = request.args.get("user_id", "")
@@ -971,7 +1040,8 @@ def exercise():
             userInfo = getMailadress(user_id)
             username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
             to_email = str(userInfo[0][2])
-            sendMail(username, to_email, "合格です！")
+            if old_status == 31:
+                sendMail(username, to_email, "合格です！")
 
         if old_status >= 30 and type == SECOND_TEST + '(40問)':
             if rate < PassScore2:
@@ -987,10 +1057,10 @@ def exercise():
                 message = "合格です。おめでとうございます。"
 
             return render_template('finish2.html',
-                                       user_id=user_id,
-                                       title=title,
-                                       message=message,
-                                       )
+                                user_id=user_id,
+                                title=title,
+                                message=message,
+                                )
         else:
             return render_template('finish.html',
                                user_id=user_id,
@@ -1010,10 +1080,10 @@ def exercise():
                                flag=flag,
                                )
 
-
 # 分析結果をフィードバックする
 @app.route('/summary', methods=['POST', 'GET'])
 def summary():
+
     if request.method == 'POST':
         print('summary(POST)')
         command = int(request.form['command'])
@@ -1026,7 +1096,6 @@ def summary():
         correct = int(request.form['correct'])
         title = request.form['title']
         stime = getStartTime(exam_id)
-
         stage = getStage(user_id)
         if stage < 4:
             return render_template('error.html',
@@ -1129,7 +1198,6 @@ def summary():
                         practice2[5][p-9][2] = practice2[5][p-9][2] + str(i + 1)
                     else:
                         practice2[5][p-9][2] = practice2[5][p-9][2] + "-" + str(i + 1)
-                #   DSV
                 elif p < 12: # 71
                     if (practice2[6][p - 11][2] != ""):
                         practice2[6][p - 11][2] += str(",")
@@ -1146,6 +1214,13 @@ def summary():
     else:
         print('summary(GET)')
         user_id = int(request.args.get('user_id'))
+
+        stage = getStage(user_id)
+        if stage == 0:
+            return render_template('error.html',
+                                   user_id=user_id,
+                                   error_message='すでにログアウトしています。')
+
         setStage(user_id, 1)
         status = getStatus(user_id)
         return render_template('main-menu.html',
@@ -1218,7 +1293,7 @@ def summary():
                 else:
                     practice2[6][i][1] = "-"
 
-        if rate > PassScore1:
+        if rate >= PassScore1:
             result = "合格"
         else:
             result = "不合格"
@@ -1320,7 +1395,7 @@ def summary():
 
     elif (command == 40):
         print('command=40')
-        if rate > 65:
+        if rate >= PassScore1:
             result = "合格"
         else:
             result = "不合格"
@@ -1343,7 +1418,7 @@ def summary():
         comments = makeComments(exam_id)
 
         if total != 0:
-            if correct / total * 100 >= 65:
+            if correct / total * 100 >= PassScore1:
                 result = '合格'
             else:
                 result = '不合格'
@@ -1417,48 +1492,6 @@ def analize():
                                answer=answer,
                                title=title,
                                )
-
-    else:
-        print('analize(GET)')
-        setStage(user_id, 1)
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
-
-
-# 総評を求められた時
-@app.route('/comments', methods=['GET', 'POST'])
-def comments():
-    if request.method == 'POST':
-        print('comments(POST)')
-
-        user_id = request.form['user_id']
-        exam_id = request.form['exam_id']
-        total = int(request.form['total'])
-        rate = int(request.form['rate'])
-        examlist = request.form['examlist']
-        arealist = request.form['arealist']
-        resultlist = request.form['resultlist']
-        result = request.form['result']
-        correct = int(request.form['correct'])
-        stime = request.form['stime']
-    else:
-        print('comments(GET)')
-        setStage(user_id, 1)
-        status = getStatus(user_id)
-        return render_template('main-menu.html',
-                               user_id=user_id,
-                               status=status,
-                               )
-
-
-# 管理者用メニュー
-
-# 1ページに表示するデータ数
-limit = 3
-
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -1726,6 +1759,13 @@ def display():
         building = user_info[0][14]
         mail_adr = user_info[0][15]
         status = user_info[0][16]
+        beginDate = user_info[0][17]
+        endDate = user_info[0][18]
+        if beginDate != '0':
+            beginDate = beginDate + 'T00:00'
+        if endDate != '0':
+            endDate = endDate + 'T23:59'
+
         error_no = 0
 
         return render_template('display.html',
@@ -1746,6 +1786,8 @@ def display():
                                town=town,
                                building=building,
                                mail_adr=mail_adr,
+                               beginDate=beginDate,
+                               endDate=endDate,
                                user_id=user_id,
                                id=id,
                                error_no=error_no,
@@ -1775,7 +1817,7 @@ def setpasswd():
                                message='成功しました。',
                                user_id=user_id)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='エラーが発生しました。',
                                user_id=user_id
                                )
@@ -1805,7 +1847,7 @@ def resetpasswd():
     if password_verify(old_password, hashed_password):
         status = setPassword(user_id, new_password)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='現在のパスワードが入力されていない。もしくは、正しくありません。',
                                user_id=user_id
                                )
@@ -1814,7 +1856,7 @@ def resetpasswd():
                                message='成功しました。',
                                user_id=user_id)
     else:
-        return render_template('error.html',
+        return render_template('error2.html',
                                error_message='エラーが発生しました。',
                                user_id=user_id
                                )
@@ -1828,13 +1870,20 @@ def sendMsg():
     mail_to = request.form.get('mail_to')
     message = request.form.get('massage')
 
+    user_id = 13;
+
+    userInfo = ["", "", ""]
+    userInfo = getMailadress(user_id)
+    username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
+    to_email = str(userInfo[0][2])
+    sendMail(username, to_email, "合格です！")
+
 #    result = sendMail(mail_from, mail_to, message)
     result = sendMail("staff@olivenet.co.jp", "kanno@olivenet.co.jp", "合格です！")
     if result:
         return 'Success!'
     else:
         return 'Error!'
-
 
 # ユーザー認証
 @app.route('/setData', methods=['POST'])

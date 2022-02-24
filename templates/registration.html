@@ -88,7 +88,6 @@
             <label>-</label>
             <input type="text" name="tel3" class="smallinput" value={{ tel3 }}></td>
         </tr>
-
         <tr>
             <th class="hissu"><label><font style="font-size:85%;">メールアドレス</font></label>
             <td><input type="text" name="mail_adr" value={{ mail_adr }}>
@@ -106,6 +105,23 @@
                 ※確認のために再度入力してください
                 {% endif %}
         </tr>
+        <tr>
+            <th class="ninni"><label><font style="font-size:85%;">パスワード<br>（自動設定）</font></label>
+            <td><input id="toggle" class="toggle_input"
+                       type='checkbox' name="autoPassword" />パスワードを自動で設定する
+        </td>
+        </tr>
+        <tr>
+            <th class="ninni"><label><font style="font-size:85%;">利用期間</font></label>
+            <td>開始日<input type="datetime-local" name="beginDate" value={{ beginDate }}><br>
+                終了日<input type="datetime-local" name="endDate" value={{ endDate }}>
+            {% if error_no == 20 %}
+                <font style="color:red;font-size:85%;"><br>開始日が終了日の後になっています。</font>
+            {% endif %}
+             </td>
+        </tr>
+
+
     </table>
 
             <input type="hidden" name="user_id" value={{ user_id }} />

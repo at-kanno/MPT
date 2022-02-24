@@ -1,5 +1,9 @@
 from flask import Flask, session
 import sqlite3, os, json, hashlib, base64
+import random
+import string
+import time, datetime
+import re
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -23,17 +27,20 @@ def password_verify(password, hash):
 
 # 新規ユーザーを追加
 def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
-            company, department, prefecture, city, town, building, status, password, mail_adr):
+            company, department, prefecture, city, town, building, status, password, mail_adr, beginDate, endDate):
+
+    hashedPassword = password_hash(password)
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     sql = 'INSERT INTO USER_TABLE (lastname, firstname, lastyomi, firstyomi,'\
           'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, town,'\
-          'building, status, password, mail_adr) VALUES ("'\
+          'building, status, password, mail_adr, begin, end) VALUES ("'\
            + lastname + '", "' + firstname + '", "' + lastyomi + '", "' + firstyomi + '", "'\
            + str(tel1) + '", "' + str(tel2) + '", "' + str(tel3) + '", "' + str(zip1) + '", "' + str(zip2) + '", "'\
            + company + '", "' + department + '", "' + str(prefecture) + '", "' + city + '", "' + town + '", "'\
-           + building + '", ' + str(status) + ', "' + password + '", "' + mail_adr + '")'
+           + building + '", ' + str(status) + ', "' + hashedPassword + '", "' + mail_adr + '", "'\
+           + beginDate + '", "' + endDate + '")'
     try:
         # INSERT
         c.execute(sql)
@@ -47,7 +54,7 @@ def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zi
 
 # 既存ユーザー情報を更新
 def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
-            company, department, prefecture, city, town, building, status, password, mail_adr):
+            company, department, prefecture, city, town, building, status, password, mail_adr, beginDate, endDate):
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
@@ -57,7 +64,8 @@ def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, z
           '", zip1="' + zip1 + '", zip2="' + zip2 + '", company="' + company +\
           '", department="' + department + '", prefecture="' + prefecture + \
           '", city="' + city + '", town="' + town + '", building="' + building + \
-          '", mail_adr="' + mail_adr + '" where user_id = ' + id
+          '", mail_adr="' + mail_adr + '", begin="' + beginDate + '", end="' + endDate + \
+          '" where user_id = ' + id
     try:
         # INSERT
         c.execute(sql)
@@ -85,9 +93,9 @@ def check_login(id, password):
         password2 = items[0][1]
         if password_verify(password, password2):
 #        if password == password2:
-            sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
-            c.execute(sql)
-            conn.commit()
+#            sql = 'UPDATE USER_TABLE SET STAGE = 1 WHERE USER_ID = ' + str(user_id)
+#            c.execute(sql)
+#            conn.commit()
             conn.close()
             return user_id
         else:
@@ -104,7 +112,8 @@ def getUserInfo(user_id):
     c = conn.cursor()
     sql = 'SELECT lastname, firstname, lastyomi, firstyomi, ' \
           'tel1, tel2, tel3, zip1, zip2, company, department, prefecture, city, ' \
-          'town, building ,mail_adr ,status FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
+          'town, building ,mail_adr ,status, begin, end ' \
+          'FROM USER_TABLE WHERE USER_ID = ' + str(user_id)
     try:
         c.execute(sql)
         items = c.fetchall()
@@ -348,3 +357,43 @@ def getMailadress(user_id):
         print('sqlite3.Error occurred:', e.args[0])
         conn.close()
         return False
+
+def checkPeriod(user_id):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT BEGIN, END FROM USER_TABLE where USER_ID = ' + str(user_id)
+
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return False
+        conn.close()
+        beginDate = items[0][0]
+        endDate = items[0][1]
+
+        date = datetime.date.today()
+        strToday = date.strftime('%Y%m%d')
+        if items[0][0] != '0':
+            beginDate = re.sub('-', '',  items[0][0])
+            if strToday < beginDate:
+                return 99
+
+        if items[0][1] != '0':
+            endDate = re.sub('-', '',  items[0][1])
+            if strToday > endDate:
+                return 101
+        return 1
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False
+
+def makePassword():
+    letters_and_digits = string.ascii_letters + string.digits
+    result_str = ''.join((random.choice(letters_and_digits) for i in range(8)))
+    # print("Random alphanumeric String is:", result_str)
+    return result_str
+

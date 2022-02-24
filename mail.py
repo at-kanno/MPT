@@ -11,22 +11,33 @@ PASS3_MASSAGE = "おめでとうございます。合格です。\n頑張って�
     + "これより、本試験（認定試験）の手配を行います。\n　" \
     + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
 
+NEW_ACCOUNT_MESSAGE1 = "演習システムのアカウントを作成しました。\n" \
+    + "このメールの送信先であるメールアドレスをログイン名、\n" \
+    + "パスワードは「"
+NEW_ACCOUNT_MESSAGE2 = "」で以下のURLからログインしてください。\n" \
+    + "http://www.olivenet.co.jp:5000/"
+
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
 
 def sendMail(to_name, to_email, message):
 
 # 送受信先
-#    cc_email = "at.kanno@icloud.com"
-#    bcc_email = "atsushi.kanno@nifty.com"
-    cc_email = "ark@gigamall.ne.jp"
-    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+    cc_email = "at.kanno@icloud.com"
+    bcc_email = "atsushi.kanno@nifty.com"
+#    cc_email = "ark@gigamall.ne.jp"
+#    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 
     cset = 'utf-8'
 # MIMETextを作成
-    message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
+    if message == '合格です。':
+        message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
+    else:
+        message = to_name + "様、\n\n" + NEW_ACCOUNT_MESSAGE1 \
+                  + message + NEW_ACCOUNT_MESSAGE2 + "\n\n株式会社アーク"
+
     msg = MIMEText(message, 'plain', cset)
     msg["Subject"] = SECOND_TEST + '【合格】'
     msg["From"] = from_email
