@@ -7,15 +7,18 @@ import ssl
 #SECOND_TEST = "修了試験"
 SECOND_TEST = "実力確認試験"
 
-PASS3_MASSAGE = "おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n" \
-    + "これより、本試験（認定試験）の手配を行います。\n　" \
-    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
+LOGIN_URL = 'http://54.163.203.19:5000/'
+PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n' \
+    + 'これより、本試験（認定試験）の手配を行います。\n　' \
+    + '試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。'
 
-NEW_ACCOUNT_MESSAGE1 = "演習システムのアカウントを作成しました。\n" \
-    + "このメールの送信先であるメールアドレスをログイン名、\n" \
-    + "パスワードは「"
-NEW_ACCOUNT_MESSAGE2 = "」で以下のURLからログインしてください。\n" \
-    + "http://www.olivenet.co.jp:5000/"
+NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアクセス権を設定しました。\n\n' \
+    + 'ログインURL\n\n  ' + LOGIN_URL + \
+    '\nログイン名\n  あなたのメールアドレス（このメールの送信先メールアドレス）\n  パスワード\n  '
+NEW_ACCOUNT_MESSAGE2 = '\n\n  合格までがんばってください。\n  ' + \
+    'もし、アクセスできないときは、ご連絡ください。'
+
+END_MESSAGE = '\n\n  株式会社アーク\n\n  電話03-5577-5311'
 
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
@@ -23,23 +26,25 @@ db_path = base_path + '/exam.sqlite'
 def sendMail(to_name, to_email, message):
 
 # 送受信先
-    cc_email = "at.kanno@icloud.com"
-    bcc_email = "atsushi.kanno@nifty.com"
-#    cc_email = "ark@gigamall.ne.jp"
-#    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+#    cc_email = "at.kanno@icloud.com"
+#    bcc_email = "atsushi.kanno@nifty.com"
+    cc_email = "ark@gigamall.ne.jp"
+    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 
     cset = 'utf-8'
 # MIMETextを作成
     if message == '合格です。':
-        message = to_name + "様、\n\n" + PASS3_MASSAGE + "\n\n株式会社アーク"
+        message = to_name + '様、\n\n' + PASS3_MASSAGE + END_MESSAGE
+        subject = SECOND_TEST + '【合格】'
     else:
-        message = to_name + "様、\n\n" + NEW_ACCOUNT_MESSAGE1 \
-                  + message + NEW_ACCOUNT_MESSAGE2 + "\n\n株式会社アーク"
+        message = to_name + '様、\n\n' + NEW_ACCOUNT_MESSAGE1 \
+                  + message + NEW_ACCOUNT_MESSAGE2 + END_MESSAGE
+        subject = '模擬試験システム【アーク】'
 
     msg = MIMEText(message, 'plain', cset)
-    msg["Subject"] = SECOND_TEST + '【合格】'
+    msg["Subject"] = subject
     msg["From"] = from_email
     msg["To"] = to_email
     msg["Cc"] = cc_email
