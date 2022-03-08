@@ -501,7 +501,7 @@ def updateX():
                                error_message='失敗しました。',
                                )
     if autoPassword == 'on' or autoPassword == 'Checked':
-        sendMail(lastname + firstname, mail_adr, password)
+        sendMail(lastname + '  ' + firstname, mail_adr, password)
     return render_template('success.html',
                            user_id=user_id,
                            message='成功しました。',
