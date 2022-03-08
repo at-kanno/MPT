@@ -3,7 +3,7 @@ from flask import Flask, session, render_template, request, jsonify
 import logging
 import sqlite3, os, sys, cgi
 import datetime
-import requests
+#import requests
 import re
 from datetime import timedelta
 from users import check_login, getStage, setStage, getUserList, makePassword,\
@@ -498,7 +498,7 @@ def updateX():
                                error_message='失敗しました。',
                                )
     if autoPassword == 'on' or autoPassword == 'Checked':
-        sendMail(lastname + firstname, mail_adr, password)
+        sendMail(lastname + '  ' + firstname, mail_adr, password)
     return render_template('success.html',
                            user_id=user_id,
                            message='成功しました。',

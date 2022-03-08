@@ -9,13 +9,13 @@ PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張って�
     + 'これより、本試験（認定試験）の手配を行います。\n　' \
     + '試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。'
 
-NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアクセス権を設定しました。\n\n' \
-    + 'ログインURL\n\n  ' + LOGIN_URL + \
-    '\nログイン名\n  あなたのメールアドレス（このメールの送信先メールアドレス）\n  パスワード\n  '
-NEW_ACCOUNT_MESSAGE2 = '\n\n  合格までがんばってください。\n  ' + \
-    'もし、アクセスできないときは、ご連絡ください。'
+NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアカウントを作成しました。\n\n' \
+    + '模擬試験システムには、以下のURLからログインしてください。\n  ' + LOGIN_URL + \
+    '\nログイン名は、研修お申込み時に記載のメールアドレスです。\n\n初期パスワードは「'
+NEW_ACCOUNT_MESSAGE2 = '」です。\nパスワードの変更は、システムの管理画面から可能です。\n\n' + \
+    'ご不明な点がございましたら、遠慮なくご連絡ください。'
 
-END_MESSAGE = '\n\n  株式会社アーク\n\n  電話03-5577-5311'
+END_MESSAGE = '\n\n株式会社アーク\nTEL：03-5577-5311\n代表email: ark@gigamall.ne.jp'
 
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
@@ -33,12 +33,12 @@ def sendMail(to_name, to_email, message):
     cset = 'utf-8'
 # MIMETextを作成
     if message == '合格です。':
-        message = to_name + '様、\n\n' + PASS3_MASSAGE + END_MESSAGE
+        message = to_name + '様\n\n' + PASS3_MASSAGE + END_MESSAGE
         subject = "修了試験【合格】"
     else:
-        message = to_name + '様、\n\n' + NEW_ACCOUNT_MESSAGE1 \
+        message = to_name + '様\n\n' + NEW_ACCOUNT_MESSAGE1 \
                   + message + NEW_ACCOUNT_MESSAGE2 + END_MESSAGE
-        subject = '模擬試験システム【アーク】'
+        subject = '【アーク】模擬試験システム　ログイン名とパスワードのご案内'
 
     msg = MIMEText(message, 'plain', cset)
     msg["Subject"] = subject
