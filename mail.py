@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 from email.header import Header
 import ssl
 
-SECOND_TEST = "修了試験"
-#SECOND_TEST = "実力確認試験"
+#SECOND_TEST = "修了試験"
+SECOND_TEST = "実力確認試験"
 
 LOGIN_URL = 'http://54.163.203.19:5000/'
 PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n' \

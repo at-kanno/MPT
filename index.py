@@ -20,8 +20,8 @@ from sql import convertQuestions, convertComments
 import time
 
 DIFF_JST_FROM_UTC = 9
-SECOND_TEST = "修了試験"
-#SECOND_TEST = "実力確認試験"
+#SECOND_TEST = "修了試験"
+SECOND_TEST = "実力確認試験"
 
 PASS1_MASSAGE = "おめでとうございます。" + SECOND_TEST + "の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
     + "あと１回" + SECOND_TEST + "の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
