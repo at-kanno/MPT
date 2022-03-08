@@ -7,7 +7,7 @@ import datetime
 import re
 from datetime import timedelta
 from users import check_login, getStage, setStage, getUserList, makePassword,\
-    deleteUser, getUserInfo, addUser, password_verify, setPassword, resetPassword, getLoginName, \
+    deleteUser, getUserInfo, addUser, password_verify, setPassword, checkMailaddress, getLoginName, \
     getLoginPassword, getStatus, rankUp, rankDown, modifyUser,getMailadress, checkPeriod
 from exam_test import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
@@ -290,6 +290,9 @@ def confirmation():
         error_no = 12
     if mail_adr != retype:
         error_no = 1
+    mail_adrX = mail_adr.lower()
+    if checkMailaddress(mail_adrX):
+        error_no = 13
 
     if error_no != 0:
         # エラー処理
@@ -507,11 +510,12 @@ def updateX():
 # ユーザー認証
 @app.route('/login', methods=['POST'])
 def login():
-    id = request.form.get('id')
+    xid = request.form.get('id')
     pw = request.form.get('pw')
-    if id == '':
+    if xid == '':
         return '<h3>失敗:IDが空です。</h3>'
     # パスワードを照合
+    id = xid.lower()
     user_id = check_login(id, pw)
     if user_id == False:
         return '<h3>パスワードが一致しません。</h3>'
@@ -1860,7 +1864,7 @@ def display():
 @app.route('/setpassword', methods=['POST'])
 def setpassword():
     user_id = int(request.form.get('user_id'))
-    id = request.form.get('id')
+    id = str(request.form.get('id'))
     name = getLoginName(id)
     return render_template('setpassword.html',
                            user_id=user_id,
@@ -1872,7 +1876,8 @@ def setpassword():
 @app.route('/setpasswd', methods=['POST'])
 def setpasswd():
     user_id = int(request.form.get('user_id'))
-    name = request.form.get('name')
+    xname = str(request.form.get('name'))  #
+    name = xname.lower()                   # ログイン名は使っていない
     id = request.form.get('id')
     password = request.form.get('password')
     if setPassword(id, password):
