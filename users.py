@@ -29,6 +29,7 @@ def password_verify(password, hash):
 def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zip2,\
             company, department, prefecture, city, town, building, status, password, mail_adr, beginDate, endDate):
 
+    mail_adrX = mail_adr.lower()
     hashedPassword = password_hash(password)
 
     conn = sqlite3.connect(db_path)
@@ -39,7 +40,7 @@ def addUser(lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, zip1, zi
            + lastname + '", "' + firstname + '", "' + lastyomi + '", "' + firstyomi + '", "'\
            + str(tel1) + '", "' + str(tel2) + '", "' + str(tel3) + '", "' + str(zip1) + '", "' + str(zip2) + '", "'\
            + company + '", "' + department + '", "' + str(prefecture) + '", "' + city + '", "' + town + '", "'\
-           + building + '", ' + str(status) + ', "' + hashedPassword + '", "' + mail_adr + '", "'\
+           + building + '", ' + str(status) + ', "' + hashedPassword + '", "' + mail_adrX + '", "'\
            + beginDate + '", "' + endDate + '")'
     try:
         # INSERT
@@ -67,7 +68,7 @@ def modifyUser(id, lastname, firstname, lastyomi, firstyomi, tel1, tel2, tel3, z
           '", mail_adr="' + mail_adr + '", begin="' + beginDate + '", end="' + endDate + \
           '" where user_id = ' + id
     try:
-        # INSERT
+        # UPDATE
         c.execute(sql)
         conn.commit()
         conn.close()
@@ -397,3 +398,20 @@ def makePassword():
     # print("Random alphanumeric String is:", result_str)
     return result_str
 
+def checkMailaddress(mail_address):
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    sql = 'SELECT USER_ID FROM USER_TABLE where MAIL_ADR = "' + str(mail_address) + '"'
+    try:
+        c.execute(sql)
+        items = c.fetchall()
+        n = len(items)
+        if n < 1:
+            return False
+        conn.close()
+        return True
+    except sqlite3.Error as e:
+        print('sqlite3.Error occurred:', e.args[0])
+        conn.close()
+        return False

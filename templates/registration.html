@@ -101,6 +101,8 @@
             <td><input type="text" name="mail_adr" value={{ mail_adr }}>
                 {% if error_no == 12 %}
                 <font style="color:red;font-size:85%;">入力してください。</font>
+                {% elif error_no == 13 %}
+                <font style="color:red;font-size:85%;">既に登録されています。</font>
                 {% endif %}
             </td>
         </tr>
@@ -145,5 +147,5 @@
     </form>
 
 </div>
-</body></body>
+</body></body></body></body>
 </html>
