@@ -12,11 +12,21 @@
                     padding: 1px; margin: 1px; }
     </style>
 </head>
+
 {% if mode == 1 %}
-<body bgcolor="#FFFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#FFFFCC">
+    {% else %}
+        <body bgcolor="#CCFFCC">
+    {% endif %}
 {% else %}
-<body bgcolor="#CCFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#CCCCFF">
+    {% else %}
+        <body bgcolor="#CCFFFF">
+    {% endif %}
 {% endif %}
+
     <h3 style="text-align:center;">ユーザ・リスト</h3>
 
 <div class="buttonwrap">

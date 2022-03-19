@@ -12,11 +12,20 @@
 </head>
 
 {% if mode == 1 %}
-<body bgcolor="#FFFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#FFFFCC">
+    {% else %}
+        <body bgcolor="#CCFFCC">
+    {% endif %}
 {% else %}
-<body bgcolor="#CCFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#CCCCFF">
+    {% else %}
+        <body bgcolor="#CCFFFF">
+    {% endif %}
 {% endif %}
-<div class="content">
+
+    <div class="content">
 
     <h2 style="text-align:center;"><b><ul>管理画面</ul></b></h2>
 

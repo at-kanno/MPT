@@ -13,9 +13,17 @@
 </head>
 
 {% if mode == 1 %}
-<body bgcolor="#FFFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#FFFFCC">
+    {% else %}
+        <body bgcolor="#CCFFCC">
+    {% endif %}
 {% else %}
-<body bgcolor="#CCFFCC">
+    {% if user_id <= 5 %}
+        <body bgcolor="#CCCCFF">
+    {% else %}
+        <body bgcolor="#CCFFFF">
+    {% endif %}
 {% endif %}
 
 <div class="content">
@@ -23,9 +31,9 @@
     <h3 style="text-align:center;"><b><ul>【一問一答】</ul></b></h3>
         <form action="makeExam3" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
-        <div id="main">
+        <div id="main0" >
             <div class="row">
-                <div class="six cols">
+                <div class="six cols" >
                     <div class="row">
                         <div class="six mobile-two cols">
                             <button class="top-buttons" type="submit" name="category" value="91" style="color:black;background:#FFCCCC">
@@ -42,12 +50,12 @@
                 <div class="six cols">
                     <div class="row">
                         <div class="six mobile-two cols">
-                            <button class="top-buttons" type="submit" name="category" value="93" style="color:black;background:#FFFFCC">
+                            <button class="top-buttons" type="submit" name="category" value="93" style="color:black;background:#FFFF88">
                                 ４つの側面<br>［時間:1分30秒 / 1問］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
-                            <button class="top-buttons" type="submit" name="category" value="94" style="color:black;background:#CCFFCC">
+                            <button class="top-buttons" type="submit" name="category" value="94" style="color:black;background:#AAFFAA">
                                 サービスバリュー・システム<br>［時間:1分30秒 / 1問］
                             </button>
                         </div>
@@ -60,7 +68,7 @@
                 <div class="six cols">
                     <div class="row">
                         <div class="six mobile-two cols">
-                            <button class="top-buttons" type="submit" name="category" value="95" style="color:black;background:#CCFFFF">
+                            <button class="top-buttons" type="submit" name="category" value="95" style="color:black;background:#AAFFFF">
                                 サービスバリューチェーン<br>［時間:1分30秒 / 1問］
                             </button>
                         </div>
@@ -220,8 +228,10 @@
                         </div>
                     </div>
                 </div>
-            </div></div></form>
             </div>
+        </div>
+        </form>
+        </div>
         </div>
 
 <div class="buttonwrap" style="display:inline-flex">
