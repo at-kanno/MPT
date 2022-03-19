@@ -18,10 +18,9 @@ from mail import sendMail
 from test import setGrade
 from sql import convertQuestions, convertComments
 import time
+from constant import SECOND_TEST, MODE
 
 DIFF_JST_FROM_UTC = 9
-#SECOND_TEST = "修了試験"
-SECOND_TEST = "実力確認試験"
 
 PASS1_MASSAGE = "おめでとうございます。" + SECOND_TEST + "の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
     + "あと１回" + SECOND_TEST + "の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
@@ -135,6 +134,7 @@ prefec = ["都道府県",
 @app.route('/')
 def index():
     return render_template('login.html',
+                           mode=MODE,
                            )
 
 # ログアウト処理
@@ -147,6 +147,7 @@ def logout():
 #    session.pop('login', None)
     return render_template(
         'login.html',
+        mode=MODE,
         )
 
 return1 = '<form action="makeExam" method="POST">' + \
@@ -236,6 +237,7 @@ def registration():
                            retype=retype,
                            user_id=user_id,
                            error_no=error_no,
+                           mode=MODE,
                            )
 
 
@@ -326,6 +328,7 @@ def confirmation():
                                    retype=retype,
                                    user_id=user_id,
                                    error_no=error_no,
+                                   mode=MODE,
                                    )
 
         else:
@@ -354,6 +357,7 @@ def confirmation():
                                    user_id=user_id,
                                    id=id,
                                    error_no=error_no,
+                                   mode=MODE,
                                    )
 
     return render_template('confirm.html',
@@ -439,6 +443,7 @@ def modification():
                            user_id=user_id,
                            id=id,
                            error_no=error_no,
+                           mode=MODE,
                            )
 
 
@@ -533,6 +538,7 @@ def login():
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
+                               mode=MODE,
                                )
 
 # ログインしているか調べる
@@ -608,6 +614,7 @@ def makeExam():
             return render_template('main-menu.html',
                                    user_id=user_id,
                                    status=status,
+                                   mode=MODE,
                                    )
         elif (category == '80'):
             amount = 10
@@ -655,7 +662,10 @@ def makeExam():
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         else:
             setStage(user_id, 9)
-            return render_template('admin.html', user_id=int(user_id))
+            return render_template('admin.html',
+                                   user_id=int(user_id),
+                                   mode=MODE,
+                                   )
         try:
             exam_id = saveExam(user_id, category, level, amount, examlist, arealist)
             return render_template('startExam.html',
@@ -684,6 +694,7 @@ def makeExam3():
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
+                               mode=MODE,
                                )
 
     category = request.form['category']
@@ -762,6 +773,7 @@ def makeExam3():
             return render_template('main-menu.html',
                                    user_id=user_id,
                                    status=status,
+                                   mode=MODE,
                                    )
 
     area = ['基本概念', '従うべき原則', '４つの側面', 'サービスバリュー・システム', 'サービスバリュー・チェーン', \
@@ -1078,6 +1090,7 @@ def exercise():
                                stage=stage,
                                title=title,
                                flag=flag,
+                               mode=MODE,
                                )
 
 # 分析結果をフィードバックする
@@ -1226,6 +1239,7 @@ def summary():
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
+                               mode=MODE,
                                )
 
     rate = correct / total * 100
@@ -1442,6 +1456,7 @@ def summary():
         return render_template('main-menu.html',
                                user_id=user_id,
                                status=status,
+                               mode=MODE,
                                )
 
 
@@ -1517,6 +1532,7 @@ def admin():
                                user_id=user_id,
                                user_list=user_list,
                                command=command,
+                               mode=MODE,
                                )
 
         s = '<div>'
@@ -1593,6 +1609,7 @@ def admin():
                                user_id=user_id,
                                result_list=result_list,
                                n=n,
+                               mode=MODE,
                                )
 
     elif command == '40':
@@ -1605,7 +1622,9 @@ def admin():
 
     else:
         return render_template('registration.html',
-                               user_id=user_id)
+                               user_id=user_id,
+                               mode=MODE,
+                               )
         return 'NO request'
 
 
@@ -1675,12 +1694,6 @@ def delete():
             ''' + return1 + user_id + return2 + s + '<br></body>' \
            + return1 + user_id + return2 + '</html>'
 
-
-#    return render_template('admin.html',
-#                           user_id = user_id,
-#                           command = '10'
-#                           )
-
 @app.route('/display', methods=['POST'])
 def display():
     user_info = [0 for i in range(100)]
@@ -1711,6 +1724,7 @@ def display():
                                user_id=user_id,
                                result_list=result_list,
                                n=n,
+                               mode=MODE,
                                )
     elif command == 'status':
         status = getStatus(id)
@@ -1737,6 +1751,7 @@ def display():
                                result_list2=result_list2,
                                n=n,
                                m=m,
+                               mode=MODE,
                                )
 
     else:
@@ -1791,6 +1806,7 @@ def display():
                                user_id=user_id,
                                id=id,
                                error_no=error_no,
+                               mode=MODE,
                                )
 
 
@@ -1803,6 +1819,7 @@ def setpassword():
                            user_id=user_id,
                            name=name,
                            id=id,
+                           mode=MODE,
                            )
 
 
@@ -1832,6 +1849,7 @@ def resetpassword():
                            user_id=user_id,
                            name=name,
                            password=password,
+                           mode=MODE,
                            )
 
 
@@ -1908,6 +1926,7 @@ def database():
     return render_template('getfile.html',
                            user_id=user_id,
                            title=title,
+                           mode=MODE,
                            )
 
 

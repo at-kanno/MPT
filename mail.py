@@ -3,11 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 import ssl
+from constant import SECOND_TEST, LOGIN_URL
 
-#SECOND_TEST = "修了試験"
-SECOND_TEST = "実力確認試験"
-
-LOGIN_URL = 'http://54.163.203.19:5000/'
 PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n' \
     + 'これより、本試験（認定試験）の手配を行います。\n　' \
     + '試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。'
@@ -26,10 +23,10 @@ db_path = base_path + '/exam.sqlite'
 def sendMail(to_name, to_email, message):
 
 # 送受信先
-#    cc_email = "at.kanno@icloud.com"
-#    bcc_email = "atsushi.kanno@nifty.com"
-    cc_email = "ark@gigamall.ne.jp"
-    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+    cc_email = "at.kanno@icloud.com"
+    bcc_email = "atsushi.kanno@nifty.com"
+#    cc_email = "ark@gigamall.ne.jp"
+#    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 

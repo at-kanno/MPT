@@ -9,13 +9,18 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 </head><body><div class="content">
+
 <!--
 研修用：ITIL4 ファンデーション<br>研修ログイン
 外部用：ITIL4 ファンデーション<br>無料模擬試験サービス
 -->
-    <h2><center><b><ul>ITIL4 ファンデーション<br>無料模擬試験サービス</ul></b></center></h2>
-    <!-- メニュー -->
-<form action="login" method="POST">
+{% if mode == 1 %}
+    <h2><center><b><ul>ITIL4 ファンデーション<br>研修ログイン</ul></b></center></h2>
+{% else %}
+    <h2><center><b><ul>ITIL4 ファンデーション<br>模試ログイン</ul></b></center></h2>
+{% endif %}
+
+    <form action="login" method="POST">
     <center><table>
         <tr>
             <td><label>ログイン名</label>

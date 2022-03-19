@@ -7,8 +7,8 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-{% if user_id <= 5 %}
-<body bgcolor="#FFD7AF">
+{% if mode == 1 %}
+<body bgcolor="#FFFFCC">
 {% else %}
 <body bgcolor="#CCFFCC">
 {% endif %}

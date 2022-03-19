@@ -1,12 +1,5 @@
 <!DOCTYPE html>
 
-<!--
-【main-menu.html】修了試験⇔実力確認試験（ここを含めて６か所）
-【status.html】２か所
-【finish.html】１か所
-【index.py, exam_test.py, mail.py, result_info.py】
--->
-
 <html lang="ja"><head><meta charset="UTF-8">
 
   <meta name="viewport"
@@ -17,7 +10,14 @@
 
   <title>メインメニュー</title>
 
-</head><body>
+</head>
+
+{% if mode == 1 %}
+<body bgcolor="#FFFFCC">
+{% else %}
+<body bgcolor="#CCFFCC">
+{% endif %}
+
 <div class="content">
     <h2 style="text-align:center;"><b><ul>メインメニュー</ul></b></h2>
     <h3 style="text-align:center;"><b><ul>【一問一答】</ul></b></h3>
@@ -170,7 +170,7 @@
                         </div>
                         <div class="six mobile-two cols">
     {% if status >= 30 %}
-        模擬試験で５回以上、合格することができました。実力確認試験に挑戦することができます。
+        模擬試験で５回以上、合格することができました。{% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}に挑戦することができます。
     {% else %}
         模擬試験に挑戦できるようになりました。
     {% endif %}
@@ -195,13 +195,13 @@
                         <div class="six mobile-two cols">
 {% if 30 <= status%}
                             <button class="top-buttons" type="submit" name="category" value="86" style="background:#D4AF37">
-                                実力確認試験【40問】<br>［時間：60分］
+                                {% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}【40問】<br>［時間：60分］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
 
     {% if status == 30 %}
-        実力確認試験に挑戦できるようになりました。２回連続で合格すると終了です。
+        {% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}に挑戦できるようになりました。２回連続で合格すると終了です。
     {% elif status == 31 %}
         合格することができました。連続してもう一度、合格すると終了です。
     {% else %}
@@ -211,11 +211,11 @@
                             <button class="top-buttons" type="submit" name="category" value="01"
                                     style="background:#D4AF37;color:#D0D0D0"
                                     onclick='alert("模擬試験に挑戦することはできません。");'>
-                                実力確認試験【40問】<br>［時間：60分］
+                                {% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}【40問】<br>［時間：60分］
                             </button>
                         </div>
                         <div class="six mobile-two cols">
-実力確認試験には、まだ挑戦できません。模擬試験に少なくとも5回の合格が必要です。
+{% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}には、まだ挑戦できません。模擬試験に少なくとも5回の合格が必要です。
 {% endif %}
                         </div>
                     </div>

@@ -3,9 +3,8 @@ import sqlite3, os, json
 import random
 import datetime
 import re
+from constant import SECOND_TEST
 
-#SECOND_TEST = "修了試験"
-SECOND_TEST = "実力確認試験"
 DIFF_JST_FROM_UTC = 9
 
 # データベースのパスを特定

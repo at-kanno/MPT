@@ -8,8 +8,7 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 db_path = base_path + '/exam.sqlite'
 form_path = base_path
 
-#SECOND_TEST = "修了試験"
-SECOND_TEST = "実力確認試験"
+from constant import SECOND_TEST
 
 NumOfArea = 7
 NumOfCategory = 12
