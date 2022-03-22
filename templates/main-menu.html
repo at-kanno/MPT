@@ -13,17 +13,7 @@
 </head>
 
 {% if mode == 1 %}
-    {% if user_id <= 5 %}
-        <body bgcolor="#FFFFCC">
-    {% else %}
-        <body bgcolor="#CCFFCC">
-    {% endif %}
-{% else %}
-    {% if user_id <= 5 %}
-        <body bgcolor="#CCCCFF">
-    {% else %}
-        <body bgcolor="#CCFFFF">
-    {% endif %}
+    <body bgcolor="#E2EFDA">
 {% endif %}
 
 <div class="content">
@@ -192,7 +182,6 @@
                         </div>
                         <div class="six mobile-two cols">
 模擬試験には、まだ挑戦できません。
-</script>
 {% endif %}
                         </div>
                     </div>
@@ -216,11 +205,19 @@
         おめでとうございます。終了しました。
     {% endif %}
 {% else %}
+    {% if mode == 1 %}
                             <button class="top-buttons" type="submit" name="category" value="01"
                                     style="background:#D4AF37;color:#D0D0D0"
-                                    onclick='alert("模擬試験に挑戦することはできません。");'>
-                                {% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}【40問】<br>［時間：60分］
+                                    onclick='alert("修了試験に挑戦することはできません。");'>
+                                    修了試験【40問】<br>［時間：60分］
                             </button>
+    {% else %}
+                            <button class="top-buttons" type="submit" name="category" value="01"
+                                    style="background:#D4AF37;color:#D0D0D0"
+                                    onclick='alert("実力確認試験に挑戦することはできません。");'>
+                                    実力確認試験【40問】<br>［時間：60分］
+                            </button>
+    {% endif %}
                         </div>
                         <div class="six mobile-two cols">
 {% if mode == 1 %}修了試験{% else %}実力確認試験{% endif %}には、まだ挑戦できません。模擬試験に少なくとも5回の合格が必要です。

@@ -1017,6 +1017,10 @@ def exercise():
             else:
                 resultlist = resultlist + "0"
 
+        # デバックのためのコード
+        # 正解数を35にする
+        # correct =35
+
         # データベースへ試験結果を格納
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
@@ -1057,7 +1061,7 @@ def exercise():
             username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
             to_email = str(userInfo[0][2])
             if old_status == 31:
-                sendMail(username, to_email, "合格です！")
+                sendMail(username, to_email, "合格です。")
 
         if old_status >= 30 and type == SECOND_TEST + '(40問)':
             if rate < PassScore2:
