@@ -4,19 +4,12 @@
 	<title>分析結果</title>
 </head>
 
-<body>
-<!-- 受取情報
- USER_ID = {{ user_id }}<br>
- EXAM_ID = {{ exam_id }}<br>
- STARTTIME = {{ stime }} <br>
- ANSWERLIST = {{ answerlist }}<br>
- AREALIST = {{ arealist }}<br>
- CORRECTLIST = {{ correctlist }} <br>
- NUM OF CORRECT = {{ correct }} <br>
- RATE = {{ RATE }}<br>
- RESULTLIST = {{ resultlist }}<br>
- RESULT = {{ result }}<br>
--->
+{% if mode == 2 %}
+    <body bgcolor="#FFF2CC">
+{% else %}
+    <body bgcolor="#FFFFFF">
+{% endif %}
+
 <h3><b><ul>{{ title }}（分析結果）</ul></b></h3>
 実施日時：{{ stime }}<br>
 採点結果：{{ rate }}   正答率：{{ correct }} / {{ total }}  合否： {{ result }}

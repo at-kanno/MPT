@@ -5,20 +5,13 @@
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 </head>
 
+{% if mode == 2 %}
+    <body bgcolor="#FFF2CC">
+{% else %}
+    <body bgcolor="#FFFFFF">
+{% endif %}
+
 <h3><b><ul>{{ area }}：一問一答（解説）</ul></b></h3>
-<body>
-<!-- 受取情報
- USER_ID = {{ user_id }}<br>
- EXAM_ID = {{ exam_id }}<br>
- STARTTIME = {{ stime }} <br>
- ANSWERLIST = {{ answerlist }}<br>
- AREALIST = {{ arealist }}<br>
- CORRECTLIST = {{ correctlist }} <br>
- NUM OF CORRECT = {{ correct }} <br>
- RATE = {{ rate }}<br>
- RERULTLIST = {{ resultlist }}<br>
- RERULT = {{ result }}<br>
--->
 <br>
 {{ correct }}<br>
 <br><TABLE style="margin:0;padding=0">

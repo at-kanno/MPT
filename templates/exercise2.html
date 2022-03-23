@@ -69,7 +69,12 @@
 
 <h3><b><ul>{{ area }}：一問一答（問題）</ul></b></h3>
 
-<body onload="timer1=setInterval('countTime()',1000);func()" style="background:white">
+{% if mode == 2 %}
+    <body onload="timer1=setInterval('countTime()',1000);func()" style="background:#FFF2CC">
+{% else %}
+    <body onload="timer1=setInterval('countTime()',1000);func()" style="background:white">
+{% endif %}
+
 <!-- 制御変数 -->
 <form action="makeExam3" name="selectionForm" method="POST">
     <input type="hidden" name="user_id" value={{ user_id }} />

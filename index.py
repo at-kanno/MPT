@@ -28,7 +28,7 @@ PASS1_MASSAGE = "おめでとうございます。" + SECOND_TEST + "の前半�
 
 PASS2_MASSAGE = "おめでとうございます。合格です。<br>頑張ってこられた成果が出ました。<br>" \
     + "これより、本試験（認定試験）の手配を行います。<br>" \
-    + "試験実施機関のPeopleCer社tから連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
+    + "試験実施機関のPeopleCert社から連絡がありますので、その内容に従い、都合のよい日時を設定してください。"
 
 FAIL_MESSAGE = "残念ながら、今回合格ラインに達していませんでした。<br>" \
               + "模擬試験に立ち返り、弱い分野を確認して補強するようにしてください。<br>" \
@@ -229,7 +229,6 @@ def registration():
                            zip2=zip2,
                            prefecture=prefecture,
                            prefec=prefec,
-                           #                           pref = pref,
                            city=city,
                            town=town,
                            building=building,
@@ -587,7 +586,9 @@ def api():
                            selection1=ans1,
                            selection2=ans2,
                            selection3=ans3,
-                           selection4=ans4)
+                           selection4=ans4,
+                           mode=MODE,
+                           )
 
 # 基本概念を選択
 @app.route('/makeExam', methods=['POST'])
@@ -679,6 +680,7 @@ def makeExam():
                                    examlist=examlist,
                                    arealist=arealist,
                                    title=title,
+                                   mode=MODE,
                                    )
         except:
             return "Error...."
@@ -742,6 +744,7 @@ def makeExam3():
                                answer="ABCD"[crct],
                                category=category,
                                area=area,
+                               mode=MODE,
                                )
     else:
         stage = getStage(user_id)
@@ -798,6 +801,7 @@ def makeExam3():
                            num=num,
                            permutation=permutation,
                            category=category,
+                           mode=MODE,
                            area=area[n]
                            )
 
@@ -897,6 +901,7 @@ def exercise():
                                timeSec=timeSec,
                                title=title,
                                Y=Y,
+                               mode=MODE,
                                )
 
     elif command == 'next':
@@ -931,6 +936,7 @@ def exercise():
                                timeSec=timeSec,
                                title=title,
                                Y=Y,
+                               mode=MODE,
                                )
 
     elif command == 'previous':
@@ -965,6 +971,7 @@ def exercise():
                                timeSec=timeSec,
                                title=title,
                                Y=Y,
+                               mode=MODE,
                                )
 
     elif command == 'move':
@@ -1000,6 +1007,7 @@ def exercise():
                                timeSec=timeSec,
                                title=title,
                                Y=Y,
+                               mode=MODE,
                                )
 
     elif (command == 'finish') or (command == 'timeout'):
@@ -1080,6 +1088,7 @@ def exercise():
                                 user_id=user_id,
                                 title=title,
                                 message=message,
+                                mode=MODE,
                                 )
         else:
             return render_template('finish.html',
@@ -1390,14 +1399,19 @@ def summary():
 
         #   制御の返却
 
+        if MODE == 2:
+            bcolor = '#FFF2CC'
+        else:
+            bcolor = '#FFFFFF'
+
         return '''
                 <!DOCTYPE html>
                 <html>
                 <head>
                 <title>詳細結果</title>
                 </head>
-                <body>
-                <h3><b><ul>''' + title + '（分野ごとの結果）</ul></b></h3>' \
+                <body bgcolor="''' + bcolor + '">' \
+               + '<h3><b><ul>' + title + '（分野ごとの結果）</ul></b></h3>' \
                + s + f + yyy + e + \
                return3 + user_id + return4 + \
                r'<form action="summary" method="post">' + \
@@ -1433,6 +1447,7 @@ def summary():
                                arealist=arealist,
                                result=result,
                                title=title,
+                               mode=MODE,
                                )
     elif (command == 50):
         print('command=50')
@@ -1457,6 +1472,7 @@ def summary():
                                arealist=arealist,
                                result=result,
                                title=title,
+                               mode=MODE,
                                )
     else:
         setStage(user_id, 1)
@@ -1514,6 +1530,7 @@ def analize():
                                arealist=arealist,
                                answer=answer,
                                title=title,
+                               mode=MODE,
                                )
 
 @app.route('/admin', methods=['GET', 'POST'])

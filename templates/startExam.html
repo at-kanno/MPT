@@ -5,14 +5,12 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
-<!-- 受取情報
- USER_ID = {{ user_id }}<br>
- EXAM_ID = {{ exam_id }}<br>
- TOTAL = {{ total }}<br>
- EXAMLIST_= {{ examlist }} <br>
- AREALIST = {{ arealist }}<br>
--->
+{% if mode == 2 %}
+    <body bgcolor="#FFF2CC">
+{% else %}
+    <body bgcolor="#FFFFFF">
+{% endif %}
+
 <center><h2><b><ul>問題画面の説明</ul></b></h2></center>
 
 <!--

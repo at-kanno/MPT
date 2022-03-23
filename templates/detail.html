@@ -4,15 +4,11 @@
 	<title>詳細結果</title>
 </head>
 
-<body>
-<!-- 受取情報 -->
-// USER_ID = {{ user_id }}<br>
-// EXAM_ID = {{ exam_id }}<br>
-// STARTTIME = {{ stime }} <br>
-// ANSWERLIST = {{ answerlist }}<br>
-// RESULTLIST = {{ resultlist }} <br>
-// NUM OF CORRECT = {{ correct }} <br>
-// RATE = {{ rate }}<br>
+{% if mode == 2 %}
+    <body bgcolor="#FFF2CC">
+{% else %}
+    <body bgcolor="#FFFFFF">
+{% endif %}
 
 ユーザID：{{ user_id }}
 演習問題番号：{{ exam_id }}
