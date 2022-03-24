@@ -3,11 +3,17 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 import ssl
-from constant import SECOND_TEST, LOGIN_URL
+from constant import MODE
 
-PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n' \
-    + 'これより、本試験（認定試験）の手配を行います。\n　' \
-    + '試験実施機関のPeopleCert社から連絡がありますので、その内容に従い、都合のよい日時を設定してください。'
+if MODE == 1:
+    LOGIN_URL = 'http://54.163.203.19:7000/'
+else:
+    LOGIN_URL = 'http://54.163.203.19:5000/'
+
+PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n\n' \
+    + 'これより、本試験（認定試験）の手配を行います。\n\n' \
+    + '試験実施機関のPeopleCert社からバウチャー（ITIL本試験受験権利コード)の通知連絡がありますので、\n' \
+    + 'その内容に従い、都合のよい受験日時を予約登録してください。'
 
 NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアカウントを作成しました。\n\n' \
     + '模擬試験システムには、以下のURLからログインしてください。\n  ' + LOGIN_URL + \
@@ -34,7 +40,10 @@ def sendMail(to_name, to_email, message):
 # MIMETextを作成
     if message == '合格です。':
         message = to_name + '様\n\n' + PASS3_MASSAGE + END_MESSAGE
-        subject = SECOND_TEST + '【合格】'
+        if MODE == 1:
+            subject = '【アーク】ITIL４ファンデーション　修了試験（合格）のお知らせ'
+        else:
+            subject = '【アーク】ITIL４ファンデーション　実力確認試験（合格）のお知らせ'
     else:
         message = to_name + '様\n\n' + NEW_ACCOUNT_MESSAGE1 \
                   + message + NEW_ACCOUNT_MESSAGE2 + END_MESSAGE
