@@ -5,9 +5,11 @@ from email.header import Header
 import ssl
 
 LOGIN_URL = 'http://www.olivenet.co.jp:5000/'
-PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n' \
-    + 'これより、本試験（認定試験）の手配を行います。\n　' \
-    + '試験実施機関のPeopleCert社から連絡がありますので、その内容に従い、都合のよい日時を設定してください。'
+PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n\n' \
+    + '修了試験と提出課題の２つをクリアすることで、PeopleCertの本試験を受験することができます。\n' \
+    + 'まだ課題を提出していない場合は、提出をお願いします。\n\n' \
+    + '受験要件を満たしたことがアークで確認できましたら、バウチャー（ITIL本試験受験権利コード)を発行します。\n\n' \
+    + '試験実施機関のPeopleCert社から連絡がありますので、その内容に従い、都合のよい受験日時を予約登録してください。'
 
 NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアカウントを作成しました。\n\n' \
     + '模擬試験システムには、以下のURLからログインしてください。\n  ' + LOGIN_URL + \
@@ -34,7 +36,7 @@ def sendMail(to_name, to_email, message):
 # MIMETextを作成
     if message == '合格です。':
         message = to_name + '様\n\n' + PASS3_MASSAGE + END_MESSAGE
-        subject = "修了試験【合格】"
+        subject = "【アーク】ITIL４MP移行　修了試験（合格）のお知らせ"
     else:
         message = to_name + '様\n\n' + NEW_ACCOUNT_MESSAGE1 \
                   + message + NEW_ACCOUNT_MESSAGE2 + END_MESSAGE
