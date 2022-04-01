@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 import ssl
 
-LOGIN_URL = 'http://www.olivenet.co.jp:5000/'
+LOGIN_URL = 'http://54.163.203.19:5000/'
 PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n\n' \
     + '修了試験と提出課題の２つをクリアすることで、PeopleCertの本試験を受験することができます。\n' \
     + 'まだ課題を提出していない場合は、提出をお願いします。\n\n' \
@@ -17,7 +17,8 @@ NEW_ACCOUNT_MESSAGE1 = '模擬試験システムのアカウントを作成し�
 NEW_ACCOUNT_MESSAGE2 = '」です。\nパスワードの変更は、システムの管理画面から可能です。\n\n' + \
     'ご不明な点がございましたら、遠慮なくご連絡ください。'
 
-END_MESSAGE = '\n\n株式会社アーク\nTEL：03-5577-5311\n代表email: ark@gigamall.ne.jp'
+END_MESSAGE = '\n\n株式会社アーク\nTEL：03-5577-5311\n代表email: ark@gigamall.ne.jp\n' + \
+    '\n本メールにご返信いただいても対応できせん。\n上記メールアドレスにご連絡ください。'
 
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'
