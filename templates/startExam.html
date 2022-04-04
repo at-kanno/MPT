@@ -10,18 +10,13 @@
 {% else %}
     <body bgcolor="#FFFFFF">
 {% endif %}
-
+<!-- 正解情報
+  {{ correctlist }}
+-->
 <center><h2><b><ul>問題画面の説明</ul></b></h2></center>
 
-<!--
-<img src="/static/exam.PNG"  width="561" height="289" alt="演習画面" title="演習画面">
-<img src="/static/exam.svg"  width="700" height="360" alt="演習画面" title="演習画面">
--->
 <img src="/static/exam.png"  width="700" height="360" border="1" alt="演習画面" title="演習画面">
-<!--
-<img src={{ image_path }} width="540" height="320"
-     border="1" alt="演習画面" title="演習画面">
--->
+
 <br>
 <div class="buttonwrap" style="display:inline-flex">
 <form action="summary" >

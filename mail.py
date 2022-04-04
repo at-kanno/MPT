@@ -22,7 +22,7 @@ NEW_ACCOUNT_MESSAGE2 = '」です。\nパスワードの変更は、システム
     'ご不明な点がございましたら、遠慮なくご連絡ください。'
 
 END_MESSAGE = '\n\n株式会社アーク\nTEL：03-5577-5311\n代表email: ark@gigamall.ne.jp\n' + \
-    '\n本メールにご返信いただいても対応できせん。\n上記メールアドレスにご連絡ください。'
+    '\n本メールにご返信いただいても対応できません。\n上記メールアドレスにご連絡ください。'
 
 base_path = os.path.dirname(__file__)
 db_path = base_path + '/exam.sqlite'

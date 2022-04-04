@@ -674,6 +674,8 @@ def makeExam():
                                    )
         try:
             exam_id = saveExam(user_id, category, level, amount, examlist, arealist)
+            # for debug
+            correctlist = getCorrectList(examlist)
             return render_template('startExam.html',
                                    user_id=user_id,
                                    exam_id=exam_id,
@@ -682,6 +684,7 @@ def makeExam():
                                    arealist=arealist,
                                    title=title,
                                    mode=MODE,
+                                   correctlist=correctlist,
                                    )
         except:
             return "Error...."
