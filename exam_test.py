@@ -342,27 +342,20 @@ def getQuestionFromNum(number,permutation):
     return q,a[0],a[1],a[2],a[3],cid
 
 def saveExam(user, category, level, amount, examlist, arealist):
-    #    examlist = ""
-    #    arealist = ""
-    #    user = 1
 
-    #    for i in index:
-    #        permutation = GetRandom()
-    #        examlist = examlist + "(" + str(i) + ":" + str(permutation[0])\
-    #        + "," + str(permutation[1]) + "," + str(permutation[2])\
-    #        + "," + str(permutation[3]) + ")"
-    #        print(examlist)
+    if os.name != 'nt':
+        now = datetime.datetime.now() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
+    else:
+        now = datetime.datetime.now()
 
-    now = datetime.datetime.now() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-#    cdate = now.date()
     cdate = now.strftime("%Y-%m-%d")
     ctime = now.strftime("%H:%M:%S")
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
+#   演習テーブルを再構成したい場合
     sql = "DROP TABLE EXAM_TABLE;"
-
 #    c.execute(sql)
 
     sql = "CREATE TABLE IF NOT EXISTS EXAM_TABLE (" \

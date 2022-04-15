@@ -824,8 +824,11 @@ def exercise():
 
     if command == 'start':
 
-        now = datetime.datetime.now() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-        #        now = datetime.datetime.now()
+        if os.name != 'nt':
+            now = datetime.datetime.now() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
+        else:
+            now = datetime.datetime.now()
+
         stime = now.strftime("%H:%M:%S")
         sdate = now.strftime("%Y-%m-%d")
         stime = sdate + " " + stime
