@@ -507,29 +507,18 @@ def getUserResultList(user_id):
     userlist = []
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = 'SELECT USER_TABLE.LASTNAME, RESULT_TABLE.TOTAL, RESULT_TABLE.TOTAL_R,'\
-       'RESULT_TABLE.TOTAL_P, EXAM_TABLE.START_TIME, EXAM_TABLE.EXAM_TYPE, '\
-       'USER_TABLE.MAIL_ADR FROM RESULT_TABLE INNER JOIN EXAM_TABLE ON '\
-       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID JOIN USER_TABLE ON '\
-       'RESULT_TABLE.USER_ID = USER_TABLE.USER_ID '
 
-#    sql = 'SELECT RESULT_TABLE.EXAM_ID, RESULT_TABLE.TOTAL, RESULT_TABLE.TOTAL_R,'\
-#       'RESULT_TABLE.TOTAL_P, EXAM_TABLE.START_TIME, EXAM_TABLE.EXAM_TYPE '\
-#       'FROM RESULT_TABLE INNER JOIN EXAM_TABLE ON '\
-#       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID '
-#    if user_id > '3':
-    sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) + \
-          ' AND EXAM_TABLE.EXAM_TYPE != "' + SECOND_TEST + '(40問)"'
+    sql = 'SELECT USER_TABLE.LASTNAME, AMOUNT, SCORE,'\
+       'RATE, START_TIME, EXAM_TYPE, '\
+       'USER_TABLE.MAIL_ADR FROM EXAM_TABLE INNER JOIN USER_TABLE ON '\
+       'EXAM_TABLE.USER_ID = USER_TABLE.USER_ID '
+    sql = sql + 'where USER_TABLE.USER_ID = ' + str(user_id) + \
+          ' AND EXAM_TYPE != "' + SECOND_TEST + '(40問)" and score != ""'
+
     try:
         c.execute(sql)
         items = c.fetchall()
         n = len(items)
-        # 結果を入手
-#        res = []
-#        for i, r in enumerate(items):
-#            user_id, name, mail_adr = (r[0], r[1], r[2])
-#            userlist.append(user_id,name,mail_adr)
-
         conn.close()
         return items, n
     except sqlite3.Error as e:
@@ -561,14 +550,14 @@ def getUserResultList1(user_id):
     n = 0
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = 'SELECT USER_TABLE.LASTNAME, USER_TABLE.STATUS, RESULT_TABLE.TOTAL, RESULT_TABLE.TOTAL_R,'\
-       'RESULT_TABLE.TOTAL_P, EXAM_TABLE.START_TIME, EXAM_TABLE.EXAM_TYPE, '\
-       'USER_TABLE.MAIL_ADR FROM RESULT_TABLE INNER JOIN EXAM_TABLE ON '\
-       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID JOIN USER_TABLE ON '\
-       'RESULT_TABLE.USER_ID = USER_TABLE.USER_ID '
 
-    sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) \
-          + ' AND (EXAM_TABLE.EXAM_TYPE = "模擬試験(40問)") '
+    sql = 'SELECT USER_TABLE.LASTNAME, USER_TABLE.STATUS, AMOUNT, SCORE,'\
+       'RATE, START_TIME, EXAM_TYPE, '\
+       'USER_TABLE.MAIL_ADR FROM EXAM_TABLE INNER JOIN USER_TABLE ON '\
+       'EXAM_TABLE.USER_ID = USER_TABLE.USER_ID '
+    sql = sql + 'where USER_TABLE.USER_ID = ' + str(user_id) + \
+          ' AND EXAM_TYPE = "模擬試験(40問)" and score != ""'
+
     try:
         c.execute(sql)
         items = c.fetchall()
@@ -586,14 +575,14 @@ def getUserResultList2(user_id):
     userlist = []
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = 'SELECT USER_TABLE.LASTNAME, USER_TABLE.STATUS, '\
-       'RESULT_TABLE.TOTAL_P, EXAM_TABLE.START_TIME, EXAM_TABLE.EXAM_TYPE, '\
-       'USER_TABLE.MAIL_ADR FROM RESULT_TABLE INNER JOIN EXAM_TABLE ON '\
-       'RESULT_TABLE.EXAM_ID = EXAM_TABLE.EXAM_ID JOIN USER_TABLE ON '\
-       'RESULT_TABLE.USER_ID = USER_TABLE.USER_ID '
 
-    sql = sql + 'where RESULT_TABLE.USER_ID = ' + str(user_id) \
-          + ' AND (EXAM_TABLE.EXAM_TYPE = "' + SECOND_TEST + '(40問)") '
+    sql = 'SELECT USER_TABLE.LASTNAME, USER_TABLE.STATUS, '\
+       'RATE, START_TIME, EXAM_TYPE, '\
+       'USER_TABLE.MAIL_ADR FROM EXAM_TABLE INNER JOIN USER_TABLE ON '\
+       'EXAM_TABLE.USER_ID = USER_TABLE.USER_ID '
+    sql = sql + 'where USER_TABLE.USER_ID = ' + str(user_id) + \
+          ' AND EXAM_TYPE = "' + SECOND_TEST + '(40問)" and score != ""'
+
     try:
         c.execute(sql)
         items = c.fetchall()

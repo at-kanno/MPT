@@ -365,7 +365,7 @@ def saveExam(user, category, level, amount, examlist, arealist):
           + "	CATEGORY INTEGER, LEVEL INTEGER, AMOUNT INTEGER," \
           + " EXAMLIST LONG VARCHAR, AREALIST LONG VARCHAR," \
           + " RESULTLIST LONG VARCHAR,  EXAM_TYPE LONG VARCHAR," \
-          + "	SCORE INTEGER, TOTAL_TIME INTEGER, USED_TIME INTEGER," \
+          + " SCORE INTEGER, RATE FLOAT, TOTAL_TIME INTEGER, USED_TIME INTEGER," \
           + " START_TIME TIMESTAMP);"
 
     c.execute(sql)

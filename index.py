@@ -1044,7 +1044,8 @@ def exercise():
         total_time = total * 90
 
         sql = "UPDATE EXAM_TABLE SET RESULTLIST = " + resultlist + ", SCORE = " + str(correct) + ", USED_TIME = " \
-              + str(usedTime) + ", TOTAL_TIME = " + str(total_time) + " WHERE EXAM_ID = " + exam_id + ";"
+              + str(usedTime) + ", TOTAL_TIME = " + str(total_time) + ", RATE = " + str(rate) \
+              + " WHERE EXAM_ID = " + exam_id + ";"
         print(sql)
         c.execute(sql)
 
