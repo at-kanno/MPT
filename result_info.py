@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import sqlite3, os, json
 import datetime
 import re
+from constant import AREANAME_BASE, CATEGORY_BASE, NumOfCategories
 
 # データベースのパスを特定
 base_path = os.path.dirname(os.path.abspath(__file__))
@@ -10,15 +11,16 @@ form_path = base_path
 
 from constant import SECOND_TEST
 
-NumOfArea = 7
+NumOfArea = 8
 NumOfCategory = 12
-NumOfCategory1 = 3
-NumOfCategory2 = 5
-NumOfCategory3 = 6
-NumOfCategory4 = 7
+NumOfCategory1 = 1
+NumOfCategory2 = 2
+NumOfCategory3 = 3
+NumOfCategory4 = 4
 NumOfCategory5 = 9
-NumOfCategory6 = 11
-NumOfCategory7 = 12
+NumOfCategory6 = 10
+NumOfCategory7 = 11
+NumOfCategory8 = 12
 NumOfCheckArea = 20
 
 # 33だが、多めに設定している
@@ -69,9 +71,12 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
         elif n < NumOfCategory6:
             areaNumber[5] += 1
             areaScore[5] = areaScore[5] + flag
-        else:
+        elif n < NumOfCategory7:
             areaNumber[6] += 1
             areaScore[6] = areaScore[6] + flag
+        else:
+            areaNumber[7] += 1
+            areaScore[7] = areaScore[7] + flag
 
     for i in range(NumOfCategory):
         if categoryNumber[i] != 0:
@@ -121,7 +126,7 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     sql = "DROP TABLE RESULT_TABLE;"
-    # c.execute(sql)
+#    c.execute(sql)
     sql = "CREATE TABLE IF NOT EXISTS RESULT_TABLE ( EXAM_ID INTEGER, USER_ID INTEGER, EXAM_TYPE LONG VARCHAR,"\
         + "TOTAL INTEGER, TOTAL_R INTEGER, TOTAL_P FLOAT," \
         + "C1_NUMBER INTEGER, C1_SCORE INTEGER, C1_PERCENT FLOAT," \
@@ -143,6 +148,7 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
         + "A5_NUMBER INTEGER, A5_SCORE INTEGER, A5_PERCENT FLOAT," \
         + "A6_NUMBER INTEGER, A6_SCORE INTEGER, A6_PERCENT FLOAT," \
         + "A7_NUMBER INTEGER, A7_SCORE INTEGER, A7_PERCENT FLOAT," \
+        + "A8_NUMBER INTEGER, A8_SCORE INTEGER, A8_PERCENT FLOAT," \
         + "HALF1 FLOAT, HALF2 FLOAT, RESPONSE INTEGER, CORRECT_RES_RATE FLOAT," \
         + "REMAIN_TIME INTEGER, REMAIN_TIME_RATE FLOAT, LAST3 INTEGER);"
     c.execute(sql)
@@ -261,7 +267,8 @@ def makeComments(exam_id):
           'A4_NUMBER , A4_SCORE , A4_PERCENT,'\
           'A5_NUMBER , A5_SCORE , A5_PERCENT,'\
           'A6_NUMBER , A6_SCORE , A6_PERCENT,'\
-          'A7_NUMBER , A7_SCORE , A7_PERCENT'\
+          'A7_NUMBER , A7_SCORE , A7_PERCENT,'\
+          'A8_NUMBER , A8_SCORE , A8_PERCENT'\
           ' FROM RESULT_TABLE WHERE EXAM_ID = ' + str(exam_id)
     c.execute(sql)
     items = c.fetchall()
@@ -301,53 +308,52 @@ def makeComments(exam_id):
 
     weakArea = [0 for i in range(NumOfArea)]
     weakCategory = [0 for i in range(NumOfCategory)]
-    weakAreaList1 = ""
-    weakAreaList2 = ""
-    weakCategoryList1 = ""
-    weakCategoryList2 = ""
+    weakAreaList1 = []
+    weakAreaList2 = []
+    weakCategoryList1 = []
+    weakCategoryList2 = []
 
 # カテゴリごとの正答率で、弱点を２段階（0点、50%以下）でリストする
     for i in range(NumOfCategory):
         if categoryNumber[i] != 0:
             if categoryPercent[i] == 0:
                 weakCategory[i] = 1
-                if( weakCategoryList1 != ""):
-                    weakCategoryList1 = weakCategoryList1 + ',' + str(i)
-                else:
-                    weakCategoryList1 = weakCategoryList1 + str(i)
+                weakCategoryList1.append(i)
             elif categoryPercent[i] < 50:
                 weakCategory[i] = 2
-                if( weakCategoryList2 != ""):
-                    weakCategoryList2 = weakCategoryList2 + ',' + str(i)
-                else:
-                    weakCategoryList2 = weakCategoryList2 + str(i)
+                weakCategoryList2.append(i)
             else:
                 weakCategory[i] = 0
 
-    n = 0
     for i in range(NumOfArea):
         if areaNumber[i] != 0:
             if areaPercent[i] == 0:
                 weakArea[i] = 1
-                n += 1
-                weakAreaList1 = weakAreaList1 + str(i)
+                weakAreaList1.append(i)
             elif areaPercent[i] < 50:
                 weakArea[i] = 2
-                weakAreaList2 = weakAreaList2 + str(i)
+                weakAreaList2.append(i)
             else:
                 weakArea[i] = 0
 
-# 選択された領域を明かにする
+    comment = ""
+    # 選択された領域を明かにする
     select = 0
     j = 0
-    for i in range(NumOfArea):
+    for i in range(NumOfArea-1):  # 特殊ケース for ITIL3 [通常は range(NumOfArea1)]
         if areaNumber[i] != 0:
             j += 1
-            select = i+1
-# j = 1 でなければ、全領域を指定しているはず
+            select = i + 1
+    # j = 1 でなければ、全領域を指定しているはず
     if j != 1:
         select = 0
+    else:
+        cid = AREANAME_BASE + select - 1
+        comment = "<BR>" + comment + '「' + getComment(cid) + '」'
+        cid = 589
+        comment = comment + getComment(cid) + "<BR>"
 
+    # 全体的な評価をする
     if total_p >= 90:
         cid =500
     elif total_p >= 75:
@@ -363,15 +369,7 @@ def makeComments(exam_id):
     else:
         cid = 505
 
-#    conn = sqlite3.connect(db_path)
-#    c = conn.cursor()
-
-#    sql = "SELECT  COMMENT FROM COMMENTS_TABLE" \
-#          + " WHERE COMMENT_ID = " + str(cid) + ";"
-#    c.execute(sql)
-#    items = c.fetchall()
-#    comment = items[0][0] + "<br>"
-    comment = "<br>" + getComment(cid) + "<br>"
+    comment = comment + "<br>" + getComment(cid) + "<br>"
 
 # 残り時間の量で試験への取り組みを判別する
     if remain_time_rate > 0.5:
@@ -398,29 +396,35 @@ def makeComments(exam_id):
         comment = comment + getComment(cid) + "<br>"
 
 #   解答結果の分析とコメント選択
+
 #   全領域選択の場合
-    if total == 40 or total == 10:
+    if select == 0:
 #   すべての領域で 50 % 以下の正答率の場合
         if areaPercent[0] < 50 and areaPercent[1] < 50 and areaPercent[2] < 50 \
-                and areaPercent[3] < 50 and areaPercent[4] :
+                and areaPercent[3] < 50 and areaPercent[4] < 50 and areaPercent[5] < 50 \
+                and areaPercent[6] < 50 and areaPercent[7] < 50:
             cid = 538
 #   全領域で 80 % 以上、正解している場合
         elif areaPercent[0] > 80 and areaPercent[1] > 80 and areaPercent[2] > 80\
-                and areaPercent[3] > 80 and areaPercent[4] > 80:
+                and areaPercent[3] > 80 and areaPercent[4] > 80 and areaPercent[5] > 80 \
+                and areaPercent[6] > 80 and areaPercent[7] > 80:
             cid = 590
 #   50 % 以下の正答率の領域があった場合
-        elif areaPercent[0] < 50 or areaPercent[1] < 50 or areaPercent[2] < 50\
-                or areaPercent[3] or areaPercent[4] :
+        elif areaPercent[0] < 50 or areaPercent[1] < 50 or areaPercent[2] < 50 \
+                or areaPercent[3] or areaPercent[4] < 50 or areaPercent[5] < 50 \
+                or areaPercent[6] < 50 or areaPercent[7] < 50:
 #   かつ、80 % 以上の正答率の領域もある場合
-            if areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80\
-                or areaPercent[3] > 80 or areaPercent[4] > 80:
+            if areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80 \
+                or areaPercent[3] > 80 or areaPercent[4] > 80 or areaPercent[5] > 80 \
+                and areaPercent[6] > 80 or areaPercent[7] > 80:
                 cid = 591
 #   かつ、80 % 　以上正答した領域がない場合
             else:
                 cid = 537
 #   すべての領域が 50 % 以上の正答率であり、80 % を超える領域もある場合
-        elif areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80\
-                or areaPercent[3] > 80 or areaPercent[4] > 80 :
+        elif areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80 \
+                or areaPercent[3] > 80 or areaPercent[4] > 80 or areaPercent[5] > 80 \
+                and areaPercent[6] > 80 and areaPercent[7] > 80 :
             cid = 592
 # すべての領域が 50 % 以上、79 % 以下の正答率である場合
         else:
@@ -430,43 +434,63 @@ def makeComments(exam_id):
 
 #   弱点を指摘する
         list = ""
-        if (cid == 537 or cid == 538 or cid == 591) and n != 0:
-
+        if cid == 537 or cid == 538 or cid == 591:
             j = 0
-            for i, n in enumerate(weakArea) :
-                if n == 1:
-                    if j != 0:
-                        list = list + '、'
-                    list = list + '「' + getComment(750 + i) + '」'
-                    j += 1
+            sw = 0
+            for i,n in enumerate(weakAreaList1):
+                if n == 6:     # ITIL3特有
+                    sw = 1
+                if n == 7 and sw == 0:
+                    n = 6
+                elif n ==7 and sw ==1:
+                    break      # ITIL3特有END
+                if j != 0:
+                    list = list + '、'
+                list = list + '「' + getComment(AREANAME_BASE + n ) + '」'
+                j += 1
             list = list + getComment(539)
         comment = comment + list
         comment = comment + "<BR>"
 
 #   出題領域を選択している場合
     else:
-        if select != 0 :
-            cid = 700 + select
-            comment = comment + '「' + getComment(cid) + '」'
-            cid = 589
-            comment = comment + getComment(cid) + "<BR>"
-
-        #   不得意領域を指摘する
-        m = 0
-        list = ""
-        for i in range(NumOfCategory-1):
-            if weakCategory[i] == 1:
+    #    if select != 0 :
+        if select == 7:  # ITIL3 特別ルール（select == 7）
+            m = 0
+            list = ""
+            for i,n in enumerate(weakCategoryList1):
                 if m != 0:
                     list = list + "、"
                 m = m + 1
-                list = list + '「' + getComment(750 + i) + '」'
-        #   不得意領域がない場合
-        if m == 0:
-            cid = 595
-            comment = comment + getComment(cid)
-        else:
-            comment = comment + list + getComment(539)
-    comment = comment + "<BR>"
+                list = list + '「' + getComment(CATEGORY_BASE + n - 5) + '」'
+            #   不得意領域がない場合
+            if m == 0:
+                cid = 595
+                comment = comment + getComment(cid)
+            else:
+                comment = comment + list + getComment(539)
+        elif NumOfCategories[select-1] != 1:
+        #   不得意領域を指摘する
+            m = 0
+            n = 0
+            list = ""
+            for i in range(select-1):
+                n = n + NumOfCategories[i]
+            for j in range(NumOfCategories[select-1]):
+#           for i in range(NumOfCategory-1):
+                if weakCategory[j+n] == 1:
+                    if m != 0:
+                        list = list + "、"
+                    m = m + 1
+                    list = list + '「' + getComment(CATEGORY_BASE + n + j - 4) + '」'
+
+            #   不得意領域がない場合
+            if m == 0:
+                cid = 595
+                comment = comment + getComment(cid)
+            else:
+                comment = comment + list + getComment(539)
+        comment = comment + "<BR>"
     return comment
 
 def getResultData(exam_id):
@@ -485,17 +509,17 @@ def getResultData(exam_id):
     area[45] = items[0][3]
     score[45] = items[0][4]
     percent[45] = items[0][5]
-    for i in range(19):
+    for i in range(20):
         area[i]= items[0][i*3+6]
         score[i]= items[0][i*3+7]
         percent[i]= items[0][i*3+8]
-    half1 = items[0][63]
-    half2 = items[0][64]
-    res = items[0][65]
-    correct_rate = items[0][66]
-    remain_time = items[0][67]
-    remain_time_rate = items[0][68]
-    last3 = items[0][69]
+    half1 = items[0][66]
+    half2 = items[0][67]
+    res = items[0][68]
+    correct_rate = items[0][69]
+    remain_time = items[0][70]
+    remain_time_rate = items[0][71]
+    last3 = items[0][72]
 
     conn.close()
     return area, score, percent, user_id, half1, half2, res, correct_rate, \

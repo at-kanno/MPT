@@ -3,7 +3,8 @@ import sqlite3, os, json
 import random
 import datetime
 import re
-from constant import SECOND_TEST
+from constant import SECOND_TEST, ETYPE1, ETYPE2, ETYPE3, ETYPE4, ETYPE5, ETYPE6, \
+    ETYPE7, ETYPE8, ETYPE9, ETYPE10, ETYPE11
 
 DIFF_JST_FROM_UTC = 9
 
@@ -371,27 +372,27 @@ def saveExam(user, category, level, amount, examlist, arealist):
     c.execute(sql)
 
     if category == '10':
-        examType = '基本概念(5問)'
+        examType = ETYPE1
     elif category == '20':
-        examType = '原則(5問)'
+        examType = ETYPE2
     elif category == '30':
-        examType = '４側面(5問)'
+        examType = ETYPE3
     elif category == '40':
-        examType = 'SVS(5問)'
+        examType = ETYPE4
     elif category == '50':
-        examType = 'SVC(5問)'
+        examType = ETYPE5
     elif category == '60':
-        examType = '主要目的(5問)'
+        examType = ETYPE6
     elif category == '70':
-        examType = '重要実践(5問)'
+        examType = ETYPE7
     elif category == '80':
-        examType = '全体(10問)'
+        examType = ETYPE8
     elif category == '85':
-        examType = '模擬試験(40問)'
+        examType = ETYPE9
     elif category == '86':
-        examType = SECOND_TEST + '(40問)'
+        examType = ETYPE10
     else:
-        examType = 'その他'
+        examType = ETYPE11
 
     sql = 'INSERT INTO EXAM_TABLE( USER_ID, CDATE, CTIME,'\
           + 'CATEGORY, LEVEL, AMOUNT, EXAMLIST, AREALIST, EXAM_TYPE ) VALUES ("'\
@@ -424,13 +425,12 @@ def saveExam(user, category, level, amount, examlist, arealist):
 # 出題カテゴリから問題列を生成する
 MaxQuestions = 40
 
-NumOfArea = 7
+NumOfArea = 8
 NumOfCategory = 12
 
 categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-categoryNumber = [11, 12, 13, 21, 22, \
-                  31, 41, 51, 52, 61, 62, 71]
+categoryNumber = [11, 21, 31, 41, 51, 52, 53, 54, 55, 61, 71, 81]
 
 def makeExam2(userid, amount, category: int, level, time, arealist):
     print('userid={0},amount={1}, category={2}, level={3},\
@@ -456,13 +456,14 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
 
 # 選択された「エリア（領域）の個数」と「カテゴリの個数」を算出する
 # それまでのカテゴリ数を加算する
-    NumOfCategory1=3
-    NumOfCategory2=5
-    NumOfCategory3=6
-    NumOfCategory4=7
+    NumOfCategory1=1
+    NumOfCategory2=2
+    NumOfCategory3=3
+    NumOfCategory4=4
     NumOfCategory5=9
-    NumOfCategory6=11
-    NumOfCategory7=12
+    NumOfCategory6=10
+    NumOfCategory7=11
+    NumOfCategory8=12
 
     arealist = ''
     for i in range(total):
@@ -487,8 +488,10 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
                     selectArea[5] += 1
                 elif (j < NumOfCategory7):
                     selectArea[6] += 1
-                else:                    # ありえないデータ
+                elif (j < NumOfCategory8):
                     selectArea[7] += 1
+                else:                    # ありえないデータ
+                    selectArea[8] += 1
                 break
             else:
                 pass
@@ -571,17 +574,17 @@ def assignQuestions(amount, assign, category:int):
 
 # FND
     if category == 10:
-        assign[0] = 12
+        assign[0] = 11
         assign[1] = 11
-        assign[2] = 13
+        assign[2] = 11
         assign[3] = 11
-        assign[4] = 12
+        assign[4] = 11
     elif category == 20:
-        assign[0] = 22
-        assign[1] = 22
+        assign[0] = 21
+        assign[1] = 21
         assign[2] = 21
-        assign[3] = 22
-        assign[4] = 22
+        assign[3] = 21
+        assign[4] = 21
     elif category == 30:
         assign[0] = 31
         assign[1] = 31
@@ -595,65 +598,65 @@ def assignQuestions(amount, assign, category:int):
         assign[3] = 41
         assign[4] = 41
     elif category == 50:
-        assign[0] = 51
+        assign[0] = 54
         assign[1] = 52
-        assign[2] = 52
+        assign[2] = 55
         assign[3] = 51
-        assign[4] = 51 + random.randint(0, 1)
+        assign[4] = 53
     elif category == 60:
         assign[0] = 61
-        assign[1] = 61 + random.randint(0, 1)
+        assign[1] = 61
         assign[2] = 61
-        assign[3] = 62
+        assign[3] = 61
         assign[4] = 61
     elif category == 70:
         assign[0] = 71
         assign[1] = 71
-        assign[2] = 71
+        assign[2] = 81
         assign[3] = 71
         assign[4] = 71
     elif category == 80 or category == 85 or category == 86:
-        assign[0] = 31    # ４つの側面
-        assign[1] = 71    # ７つの重要プラクティス
-        assign[2] = 12    # 価値の創出
-        assign[3] = 22    # 従うべき原則（個別）
-        assign[4] = 41    # サービスバリュー・システム
-        assign[5] = 71    # ７つの重要プラクティス
-        assign[6] = 51    # サービスバリュー・チェーン
-        assign[7] = 21    # 従うべき原則の概念
-        assign[8] = 71    # ７つの重要プラクティス
-        assign[9] = 61    # 主要プラクティスの目的
+        assign[0] = 54    # サービスオペレーション
+        assign[1] = 21    # サービスライフサイクル
+        assign[2] = 51    # サービスストラテジ
+        assign[3] = 31    # 一般的な概念と定義
+        assign[4] = 55 + (random.randint(0, 1) * 26)   # 継続的サービス改善/技術とアーキテクチャ(55/81)
+        assign[5] = 11    # プラクティスとしてのサービスマネジメント
+        assign[6] = 52    # サービスデザイン
+        assign[7] = 61 + (random.randint(0, 1) * 10)    # 機能/役割(61/71)
+        assign[8] = 41    # 主要な原則とモデル
+        assign[9] = 53    # サービストランジション
         if amount == 40:
-            assign[10] = 22                           # 従うべき原則
-            assign[11] = 71                           # ７つの重要プラクティス
-            assign[12] = 62                           # プラクティスにおける重要概念
-            assign[13] = 71                           # ７つの重要プラクティス
-            assign[14] = 11                           # サービスマネジメントの基本概念
-            assign[15] = 61                           # 主要プラクティスの目的
-            assign[16] = 71                           # ７つの重要プラクティス
-            assign[17] = 13                           # サービス関係
-            assign[18] = 61                           # 主要プラクティスの目的
-            assign[19] = 71                           #７つの重要プラクティス
-            assign[20] = 22                           # 従うべき原則
-            assign[21] = 71                           # ７つの重要プラクティス
-            assign[22] = 61                           # 主要プラクティスの目的
-            assign[23] = 71                           # ７つの重要プラクティス
-            assign[24] = 11                           # サービスマネジメントの基本概念
-            assign[25] = 62                           # プラクティスにおける重要概念
-            assign[26] = 71                           # ７つの重要プラクティス
-            assign[27] = 22                           #　従うべき原則
-            assign[28] = 71                           # ７つの重要プラクティス
-            assign[29] = 71                           # ７つの重要プラクティス
-            assign[30] = 61                           # 主要プラクティスの目的
-            assign[31] = 31                           # ４つの側面
-            assign[32] = 71                           # ７つの重要プラクティス
-            assign[33] = 12                           # 価値の創出
-            assign[34] = 71                           # ７つの重要プラクティス
-            assign[35] = 71                           # ７つの重要プラクティス
-            assign[36] = 52                           # バリュー・チェーン活動
-            assign[37] = 71                           # ７つの重要プラクティス
-            assign[38] = 22                           # 従うべき原則
-            assign[39] = 71                           # ７つの重要プラクティス
+            assign[10] = 31                           # 一般的な概念と定義
+            assign[11] = 52                           # サービスデザイン
+            assign[12] = 41                           # 主要な原則とモデル
+            assign[13] = 11                           # プラクティスとしてのサービスマネジメント
+            assign[14] = 54                           # サービスオペレーション
+            assign[15] = 71                           # 役割
+            assign[16] = 21                           # サービスライフサイクル
+            assign[17] = 31                           # 一般的な概念と定義
+            assign[18] = 53                           # サービストランジション
+            assign[19] = 11                           # プラクティスとしてのサービスマネジメント
+            assign[20] = 52                           # サービスデザイン
+            assign[21] = 53 + random.randint(0, 1)    # サービスオペレーション(53/54)
+            assign[22] = 31                           # 一般的な概念と定義
+            assign[23] = 51                           # サービスストラテジ
+            assign[24] = 21                           # サービスライフサイクル
+            assign[25] = 41                           # 主要な原則とモデル
+            assign[26] = 54                           # サービスオペレーション
+            assign[27] = 11                           # プラクティスとしてのサービスマネジメント
+            assign[28] = 52                           # サービスデザイン
+            assign[29] = 31                           # 一般的な概念と定義
+            assign[30] = 53                           # サービストランジション
+            assign[31] = 55                           # 継続的サービス改善
+            assign[32] = 52                           # サービスデザイン
+            assign[33] = 61                           # 機能
+            assign[34] = 41                           # 主要な原則とモデル
+            assign[35] = 81                           # 技術とアーキテクチャ
+            assign[36] = 54                           # サービスオペレーション
+            assign[37] = 53                           # サービストランジション
+            assign[38] = 31                           # 一般的な概念と定義
+            assign[39] = 52                           # サービスデザイン
     else:
         print("Error!")
         return -1

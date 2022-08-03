@@ -6,9 +6,9 @@ import ssl
 from constant import MODE
 
 if MODE == 1:
-    LOGIN_URL = 'http://54.163.203.19:7000/'
+    LOGIN_URL = 'http://54.163.203.19:3000/'
 else:
-    LOGIN_URL = 'http://54.163.203.19:4000/'
+    LOGIN_URL = 'http://54.163.203.19:6000/'
 
 PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n\n' \
     + 'これより、本試験（認定試験）の手配を行います。\n\n' \
@@ -42,9 +42,9 @@ def sendMail(to_name, to_email, message):
     if message == '合格です。':
         message = to_name + '様\n\n' + PASS3_MASSAGE + END_MESSAGE
         if MODE == 1:
-            subject = '【アーク】ITIL４ファンデーション　修了試験（合格）のお知らせ'
+            subject = '【アーク】ITIL Ver.3 ファンデーション　修了試験（合格）のお知らせ'
         else:
-            subject = '【アーク】ITIL４ファンデーション　実力確認試験（合格）のお知らせ'
+            subject = '【アーク】ITIL Ver.3 ファンデーション　実力確認試験（合格）のお知らせ'
     else:
         message = to_name + '様\n\n' + NEW_ACCOUNT_MESSAGE1 \
                   + message + NEW_ACCOUNT_MESSAGE2 + END_MESSAGE

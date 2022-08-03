@@ -4,20 +4,20 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0">
 
-  <title>ITIL4 ファンデーション</title>
+  <title>ITIL Ver.3 ファンデーション</title>
 
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 </head><body><div class="content">
 
 <!--
-研修用：ITIL4 ファンデーション<br>研修ログイン
-外部用：ITIL4 ファンデーション<br>無料模擬試験サービス
+研修用：ITIL Ver.3 ファンデーション<br>研修ログイン
+外部用：ITIL Ver.3 ファンデーション<br>無料模擬試験サービス
 -->
 {% if mode == 1 %}
-    <h2><center><b><ul>ITIL4 ファンデーション<br>研修ログイン</ul></b></center></h2>
+    <h2><center><b><ul>ITIL Ver.3 ファンデーション<br>研修ログイン</ul></b></center></h2>
 {% else %}
-    <h2><center><b><ul>ITIL4 ファンデーション<br>模試ログイン</ul></b></center></h2>
+    <h2><center><b><ul>ITIL Ver.3 ファンデーション<br>模試ログイン</ul></b></center></h2>
 {% endif %}
 
     <form action="login" method="POST">

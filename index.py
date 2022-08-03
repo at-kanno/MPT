@@ -77,7 +77,7 @@ log_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(log_handler)
 
 
-NumOfArea = 7
+NumOfArea = 8
 NumOfCategory = 12
 PassScore1 = 65
 PassScore2 = 75
@@ -636,31 +636,31 @@ def makeExam():
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '10'):
             amount = 5
-            title = '基本概念：確認問題'
+            title = 'プラクティスとしてのサービスマネジメント：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '20'):
             amount = 5
-            title = '従うべき原則：確認問題'
+            title = 'サービスライフサイクル：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '30'):
             amount = 5
-            title = '４つの側面：確認問題'
+            title = '一般的な概念と定義：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '40'):
             amount = 5
-            title = 'サービスバリュー・システム：確認問題'
+            title = '主要な原則とモデル：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '50'):
             amount = 5
-            title = 'サービスバリュー・チェーン活動：確認問題'
+            title = 'プロセス：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '60'):
             amount = 5
-            title = '主要プラクティスの目的：確認問題'
+            title = '機能：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '70'):
             amount = 5
-            title = '重要プラクティス：確認問題'
+            title = '役割・技術とアーキテクチャ：確認問題'
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '91' or category == '92' or category == '93' \
               or category == '94' or category == '95' or category == '96' or category == '97'):
@@ -787,8 +787,9 @@ def makeExam3():
                                    mode=MODE,
                                    )
 
-    area = ['基本概念', '従うべき原則', '４つの側面', 'サービスバリュー・システム', 'サービスバリュー・チェーン', \
-            '主要プラクティス', '７つの重要プラクティス']
+    area = ['プラクティスとしてのサービスマネジメント', 'サービスライフサイクル', '一般的な概念と定義',\
+            '主要な原則とモデル', 'プロセス', \
+            '機能', '役割', '技術とアーキテクチャ']
     n = int(category) - 91
     return render_template('exercise2.html',
                            user_id=user_id,
@@ -840,11 +841,13 @@ def exercise():
     stage = getStage(user_id)
     if (stage != 2 and stage != 3 and stage != 4):
         return render_template('error.html',
+                               user_id=user_id,
                                error_message='エラーが発生しました。')
     if (stage == 2):
         setStage(user_id, 3)
     if (stage == 4):
         return render_template('error.html',
+                               user_id=user_id,
                                error_message='試験が終了してから演習に戻ることはできません。ログインし直してください。')
 
     qlist = [0 for QuestionList in range(40)]
@@ -1034,7 +1037,10 @@ def exercise():
 
         # デバックのためのコード
         # 正解数を35にする
-        # correct =35
+        # if total == 40:
+        #    correct = 35
+        # elif total == 10:
+        #    correct = 8
 
         # データベースへ試験結果を格納
         conn = sqlite3.connect(db_path)
@@ -1142,32 +1148,28 @@ def summary():
         setStage(user_id, 5)
 
         areaname = [
-            ["サービスの基本概念", 3, "", "", ""],
-            ["従うべき原則", 2, "", "", ""],
-            ["４つの側面", 1, "", "", ""],
-            ["サービスバリュー・システム", 1, "", "", ""],
-            ["サービスバリューチェーン活動", 2, "", "", ""],
-            ["主要プラクティスの目的", 2, "", "", ""],
-            ["重要プラクティス", 1, "", "", ""],
+            ["プラクティスとしてのサービスマネジメント", 1, "", "", ""],
+            ["サービスライフサイクル", 1, "", "", ""],
+            ["一般的な概念と定義", 1, "", "", ""],
+            ["主要な原則とモデル", 1, "", "", ""],
+            ["プロセス", 5, "", "", ""],
+            ["機能", 1, "", "", ""],
+            ["役割", 1, "", "", ""],
+            ["技術とアーキテクチャ", 1, "", "", ""],
         ]
         practice = [
-            ["サービスマネジメントの基本概念", "価値創出の基本概念", "サービス関係"],
-            ["従うべき原則の概念", "７つの原則"],
-            ["４つの側面"],
-            ["サービスバリュー・システム"],
-            ["サービスバリューチェーン", "バリューチェーン活動"],
-            ["主要プラクティスの目的", "プラクティスにおける重要概念"],
-            ["７つの重要プラクティス"],
+            ["-"],
+            ["-"],
+            ["-"],
+            ["-"],
+            ["サービスストラテジ", "サービスデザイン", "サービストランジション", "サービスオペレーション", "継続的サービス改善"],
+            ["-"],
+            ["-"],
+            ["-"],
         ]
         practice2 = [
             [
                 ["-", "-", ""],
-                ["-", "-", ""],
-                ["-", "-", ""],
-            ],
-            [
-                ["-", "-", ""],
-                ["-", "-", ""],
             ],
             [
                 ["-", "-", ""],
@@ -1177,10 +1179,18 @@ def summary():
             ],
             [
                 ["-", "-", ""],
+            ],
+            [
+                ["-", "-", ""],
+                ["-", "-", ""],
+                ["-", "-", ""],
+                ["-", "-", ""],
                 ["-", "-", ""],
             ],
             [
                 ["-", "-", ""],
+            ],
+            [
                 ["-", "-", ""],
             ],
             [
@@ -1193,56 +1203,63 @@ def summary():
         for i, c in enumerate(arealist):
             p = categoryCode.find(c)
             if p != -1:
-                if p < 3: # 11, 12, 13
+                if p < 1: # 11
                     if (practice2[0][p][2] != ""):
                         practice2[0][p][2] += str(",")
                     if (resultlist[i] == '1'):
                         practice2[0][p][2] = practice2[0][p][2] + str(i + 1)
                     else:
                         practice2[0][p][2] = practice2[0][p][2] + "-" + str(i + 1)
-                elif p < 5: # 21, 22
-                    if (practice2[1][p-3][2] != ""):
-                        practice2[1][p-3][2] += str(",")
+                elif p < 2: # 21
+                    if (practice2[1][p-1][2] != ""):
+                        practice2[1][p-1][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[1][p-3][2] = practice2[1][p-3][2] + str(i + 1)
+                        practice2[1][p-1][2] = practice2[1][p-1][2] + str(i + 1)
                     else:
-                        practice2[1][p-3][2] = practice2[1][p-3][2] + "-" + str(i + 1)
-                elif p < 6: # 31
-                    if (practice2[2][p-5][2] != ""):
-                        practice2[2][p-5][2] += str(",")
+                        practice2[1][p-1][2] = practice2[1][p-1][2] + "-" + str(i + 1)
+                elif p < 3: # 31
+                    if (practice2[2][p-2][2] != ""):
+                        practice2[2][p-2][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[2][p-5][2] = practice2[2][p-5][2] + str(i + 1)
+                        practice2[2][p-2][2] = practice2[2][p-2][2] + str(i + 1)
                     else:
-                        practice2[2][p-5][2] = practice2[2][p-5][2] + "-" + str(i + 1)
+                        practice2[2][p-2][2] = practice2[2][p-2][2] + "-" + str(i + 1)
                 #   SVS
-                elif p < 7: # 41
-                    if (practice2[3][p-6][2] != ""):
-                        practice2[3][p-6][2] += str(",")
+                elif p < 4: # 41
+                    if (practice2[3][p-3][2] != ""):
+                        practice2[3][p-3][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[3][p-6][2] = practice2[3][p-6][2] + str(i + 1)
+                        practice2[3][p-3][2] = practice2[3][p-3][2] + str(i + 1)
                     else:
-                        practice2[3][p-6][2] = practice2[3][p-6][2] + "-" + str(i + 1)
-                elif p < 9: # 51, 52
-                    if (practice2[4][p-7][2] != ""):
-                        practice2[4][p-7][2] += str(",")
+                        practice2[3][p-3][2] = practice2[3][p-3][2] + "-" + str(i + 1)
+                elif p < 9: # 51, 52, 53, 54, 55
+                    if (practice2[4][p-4][2] != ""):
+                        practice2[4][p-4][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[4][p-7][2] = practice2[4][p-7][2] + str(i + 1)
+                        practice2[4][p-4][2] = practice2[4][p-4][2] + str(i + 1)
                     else:
-                        practice2[4][p-7][2] = practice2[4][p-7][2] + "-" + str(i + 1)
-                elif p < 11: # 61, 62
+                        practice2[4][p-4][2] = practice2[4][p-4][2] + "-" + str(i + 1)
+                elif p < 10: # 61
                     if (practice2[5][p-9][2] != ""):
                         practice2[5][p-9][2] += str(",")
                     if (resultlist[i] == '1'):
                         practice2[5][p-9][2] = practice2[5][p-9][2] + str(i + 1)
                     else:
                         practice2[5][p-9][2] = practice2[5][p-9][2] + "-" + str(i + 1)
-                elif p < 12: # 71
-                    if (practice2[6][p - 11][2] != ""):
-                        practice2[6][p - 11][2] += str(",")
+                elif p < 11: # 71
+                    if (practice2[6][p - 10][2] != ""):
+                        practice2[6][p - 10][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[6][p - 11][2] = practice2[6][p - 11][2] + str(i + 1)
+                        practice2[6][p - 10][2] = practice2[6][p - 10][2] + str(i + 1)
                     else:
-                        practice2[6][p - 11][2] = practice2[6][p - 11][2] + "-" + str(i + 1)
+                        practice2[6][p - 10][2] = practice2[6][p - 10][2] + "-" + str(i + 1)
+                elif p < 12: # 81
+                    if (practice2[7][p - 11][2] != ""):
+                        practice2[7][p - 11][2] += str(",")
+                    if (resultlist[i] == '1'):
+                        practice2[7][p - 11][2] = practice2[7][p - 11][2] + str(i + 1)
+                    else:
+                        practice2[7][p - 11][2] = practice2[7][p - 11][2] + "-" + str(i + 1)
                 else:
                     pass
 
@@ -1282,55 +1299,62 @@ def summary():
         for i, c in enumerate(arealist):
             p = categoryCode.find(c)
             if p != -1:
-                if p < 3: # 11, 12, 13
-                    for i in range(0, 3):
+                if p < 1: # 11
+                    for i in range(0, 1):
                         practice2[0][i][0] = str(categoryScore[i]) + "/" + str(categoryNumber[i])
                         if (categoryNumber[i] != 0):
                             practice2[0][i][1] = str(f'{categoryPercent[i]:.1f}') + "%"
                         else:
                             practice2[0][i][1] = "-"
-                elif p < 5: # 21, 22
-                    for i in range(0, 2):
-                        practice2[1][i][0] = str(categoryScore[i + 3]) + "/" + str(categoryNumber[i + 3])
-                        if (categoryNumber[i + 3] != 0):
-                            practice2[1][i][1] = str(f'{categoryPercent[i + 3]:.1f}') + "%"
+                elif p < 2: # 21
+                    for i in range(0, 1):
+                        practice2[1][i][0] = str(categoryScore[i + 1]) + "/" + str(categoryNumber[i + 1])
+                        if (categoryNumber[i + 1] != 0):
+                            practice2[1][i][1] = str(f'{categoryPercent[i + 1]:.1f}') + "%"
                         else:
                             practice2[1][i][1] = "-"
-                elif p < 6: # 31
+                elif p < 3: # 31
                     for i in range(0, 1):
-                        practice2[2][i][0] = str(categoryScore[i + 5]) + "/" + str(categoryNumber[i + 5])
-                        if (categoryNumber[i + 5] != 0):
-                            practice2[2][i][1] = str(f'{categoryPercent[i + 5]:.1f}') + "%"
+                        practice2[2][i][0] = str(categoryScore[i + 2]) + "/" + str(categoryNumber[i + 2])
+                        if (categoryNumber[i + 2] != 0):
+                            practice2[2][i][1] = str(f'{categoryPercent[i + 2]:.1f}') + "%"
                         else:
                             practice2[2][i][1] = "-"
-                elif p < 7: # 41
+                elif p < 4: # 41
                     for i in range(0, 1):
-                        practice2[3][i][0] = str(categoryScore[i + 6]) + "/" + str(categoryNumber[i + 6])
-                        if (categoryNumber[i + 6] != 0):
-                            practice2[3][i][1] = str(f'{categoryPercent[i + 6]:.1f}') + "%"
+                        practice2[3][i][0] = str(categoryScore[i + 3]) + "/" + str(categoryNumber[i + 3])
+                        if (categoryNumber[i + 3] != 0):
+                            practice2[3][i][1] = str(f'{categoryPercent[i + 3]:.1f}') + "%"
                         else:
                             practice2[3][i][1] = "-"
-                elif p < 9: # 51, 52
-                    for i in range(0, 2):
-                        practice2[4][i][0] = str(categoryScore[i + 7]) + "/" + str(categoryNumber[i + 7])
-                        if (categoryNumber[i + 7] != 0):
-                            practice2[4][i][1] = str(f'{categoryPercent[i + 7]:.1f}') + "%"
+                elif p < 9: # 51, 52, 53, 54, 55
+                    for i in range(0, 5):
+                        practice2[4][i][0] = str(categoryScore[i + 4]) + "/" + str(categoryNumber[i + 4])
+                        if (categoryNumber[i + 4] != 0):
+                            practice2[4][i][1] = str(f'{categoryPercent[i + 4]:.1f}') + "%"
                         else:
                             practice2[4][i][1] = "-"
-                elif p < 11: # 61, 62
-                    for i in range(0, 2):
+                elif p < 10: # 61
+                    for i in range(0, 1):
                         practice2[5][i][0] = str(categoryScore[i + 9]) + "/" + str(categoryNumber[i + 9])
                         if (categoryNumber[i + 9] != 0):
                             practice2[5][i][1] = str(f'{categoryPercent[i + 9]:.1f}') + "%"
                         else:
                             practice2[5][i][1] = "-"
-                elif p < 12: # 71
+                elif p < 11: # 71
                     for i in range(0, 1):
-                        practice2[6][i][0] = str(categoryScore[i + 11]) + "/" + str(categoryNumber[i + 11])
+                        practice2[6][i][0] = str(categoryScore[i + 10]) + "/" + str(categoryNumber[i + 10])
+                        if (categoryNumber[i + 10] != 0):
+                            practice2[6][i][1] = str(f'{categoryPercent[i + 10]:.1f}') + "%"
+                        else:
+                            practice2[6][i][1] = "-"
+                elif p < 12: # 81
+                    for i in range(0, 1):
+                        practice2[7][i][0] = str(categoryScore[i + 11]) + "/" + str(categoryNumber[i + 11])
                         if (categoryNumber[i + 11] != 0):
-                            practice2[6][i][1] = str(f'{categoryPercent[i + 11]:.1f}') + "%"
+                            practice2[7][i][1] = str(f'{categoryPercent[i + 11]:.1f}') + "%"
                 else:
-                    practice2[6][i][1] = "-"
+                    practice2[7][i][1] = "-"
 
         if rate >= PassScore1:
             result = "合格"
@@ -1955,8 +1979,12 @@ def database():
     command = request.form.get('command')
     if (command == 'questions'):
         title = '演習問題の更新'
-    else:
+    elif (command == 'comments'):
         title = 'コメントデータの更新'
+    else:
+        return render_template('mentenance.html',
+                               user_id=user_id,
+                               )
     return render_template('getfile.html',
                            user_id=user_id,
                            title=title,
@@ -1998,6 +2026,252 @@ def upload():
                            user_id=user_id,
                            message='成功しました。'
                            )
+
+@app.route('/mentenance', methods=['POST'])
+def mentenance():
+    user_id = int(request.form.get('user_id'))
+    command = request.form.get('command')
+    if (command == 'retrieve' or command == 'new'):
+        if (command == 'retrieve'):
+            try:
+                qid = int(request.form.get('number'))
+            except:
+                return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='問題番号が入力されていません。',
+                                   )
+            conn = sqlite3.connect(db_path)
+            c = conn.cursor()
+            sql = "SELECT Q,A1,A2,A3,A4,CID1 FROM knowledge_base WHERE " \
+              "NUMBER == " + str(qid) + ";"
+            try:
+                c.execute(sql)
+                print("Success!")
+            except Exception as e:
+                return render_template('error2.html',
+                                   user_id=user_id,
+                                   error_message='エラーが発生しました。',
+                                   )
+            else:
+                items = c.fetchall()
+                n = len(items)
+                if n < 1:
+                    return render_template('error3.html',
+                                       user_id=user_id,
+                                       error_message='該当する演習問題はありません。',
+                                       )
+                question = items[0][0]
+                answer = items[0][1]
+                choice1 = items[0][2]
+                choice2 = items[0][3]
+                choice3 = items[0][4]
+                cid = items[0][5]
+                try:
+                    comments = getComment(cid)
+                except:
+                    error_message = '該当する解説がありません。解説番号＝' + str(cid)
+                    return render_template('error3.html',
+                                       user_id=user_id,
+                                       error_message=error_message,
+                                       )
+        else:
+            qid = 0
+            question = ""
+            answer = ""
+            choice1 = ""
+            choice2 = ""
+            choice3 = ""
+            cid = 0
+            comments = ""
+
+        return render_template('question.html',
+                               user_id=user_id,
+                               qid = qid,
+                               question = question,
+                               answer = answer,
+                               choice1 = choice1,
+                               choice2 = choice2,
+                               choice3 = choice3,
+                               cid = cid,
+                               comments = comments
+                               )
+    elif (command == 'confirm'):
+        old_comments = ''
+        qid = int(request.form.get('qid'))
+        question = request.form.get('question')
+        answer = request.form.get('answer')
+        choice1 = request.form.get('choice1')
+        choice2 = request.form.get('choice2')
+        choice3 = request.form.get('choice3')
+        cid = int(request.form.get('cid'))
+        comments = request.form.get('comments')
+        try:
+            flag = int(request.form.get('flag'))
+        except:
+            flag = 0
+        else:
+            flag = 1
+        if (question == '' or answer == '' or choice1 == '' or
+                choice2 == '' or choice3 == ''):
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='問題文、選択肢に適切な文字列が記されていません。',
+                                   )
+        if (flag == 1 ):
+            if (cid <= 0 or comments == ''):
+                return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='解説番号か解説が適切ではありません。',
+                                   )
+            else:
+                try:
+                    old_comments = getComment(cid)
+                except:
+                    old_comments =''
+                else:
+                    if(old_comments == comments):
+                        flag = 3
+                    else:
+                        flag = 2
+        return render_template('qconfirm.html',
+                               user_id=user_id,
+                               qid=qid,
+                               question=question,
+                               answer=answer,
+                               choice1=choice1,
+                               choice2=choice2,
+                               choice3=choice3,
+                               cid=cid,
+                               comments=comments,
+                               flag=flag,
+                               old_comments=old_comments,
+                               )
+    elif(command == 'update'):
+        qid = int(request.form.get('qid'))
+        question = request.form.get('question')
+        answer = request.form.get('answer')
+        choice1 = request.form.get('choice1')
+        choice2 = request.form.get('choice2')
+        choice3 = request.form.get('choice3')
+        cid = int(request.form.get('cid'))
+        comments = request.form.get('comments')
+        flag = int(request.form.get('flag'))
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        if (qid != 0):
+            sql = 'UPDATE knowledge_base SET Q=?,A1=?,A2=?,A3=?,A4=?,CID1=? WHERE NUMBER = ' + str(qid)
+        else:
+            sql = 'INSERT INTO knowledge_base (Q,A1,A2,A3,A4,CID1) VALUES (?, ?, ?, ?, ?, ?)'
+        try:
+            if (qid == 0):
+                conn.execute(sql, [question, answer, choice1, choice2, choice3,cid])
+            else:
+                conn.execute(sql, [question, answer, choice1, choice2, choice3,cid])
+            conn.commit()
+            if (qid == 0):
+                sql = 'select NUMBER from knowledge_base where cid1 = ' + str(cid) + ';'
+                c.execute(sql)
+                result = c.fetchall()
+                qid = result[0][0]
+            if(flag == 1):
+                conn.execute(
+                    'INSERT INTO comments_table ( comment_id, comment ) ' +
+                    'VALUES (?, ?)', [cid, comments])
+                conn.commit()
+            elif(flag == 2):
+                sql = "UPDATE comments_table SET COMMENT = '" + comments \
+                      + "' WHERE COMMENT_ID = " + str(cid) + ";"
+                conn.execute(sql)
+                conn.commit()
+            conn.close()
+            print("Success!")
+        except Exception as e:
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='エラーが発生しました。',
+                                   )
+        else:
+            message = "問題番号＝" + str(qid) + "で登録（更新）しました。"
+            return render_template('success3.html',
+                               user_id=user_id,
+                               message = message,
+                               )
+    elif(command == 'delete'):
+        qid = int(request.form.get('qid'))
+        question = request.form.get('question')
+        answer = request.form.get('answer')
+        choice1 = request.form.get('choice1')
+        choice2 = request.form.get('choice2')
+        choice3 = request.form.get('choice3')
+        cid = int(request.form.get('cid'))
+        comments = request.form.get('comments')
+        flag = 1
+
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        sql = 'SELECT number from knowledge_base where cid1 = ' + str(cid) + ';'
+        try:
+            c.execute(sql)
+            result = c.fetchall()
+        except:
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='エラーが発生しました。',
+                                   )
+        else:
+            n = len(result)
+            if n < 1:
+                message = '解説がないので、演習問題だけ削除します。よろしいですか？'
+                flag = 0
+            elif n == 1:
+                message = '演習問題と解説を削除します。よろしいですか？'
+                flag = 1
+            else:
+                message = '解説は他の演習問題も参照しているので、演習問題だけ削除して解説は削除しません。よろしいですか？'
+                flag = 0
+            return render_template('del_check.html',
+                                   user_id=user_id,
+                                   qid=qid,
+                                   question=question,
+                                   answer=answer,
+                                   choice1=choice1,
+                                   choice2=choice2,
+                                   choice3=choice3,
+                                   cid=cid,
+                                   comments=comments,
+                                   message=message,
+                                   flag=flag,
+                                   )
+    elif(command == 'deletey'):
+        qid = int(request.form.get('qid'))
+        cid = int(request.form.get('cid'))
+        flag = int(request.form.get('flag'))
+        conn = sqlite3.connect(db_path)
+
+        sql = 'DELETE from knowledge_base where number = ' + str(qid) + ';'
+        try:
+            conn.execute(sql)
+            if flag == 1:
+                sql = 'DELETE from comments_table where comment_id = ' + str(cid) + ';'
+                conn.execute(sql)
+            conn.commit()
+        except:
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='エラーが発生しました。',
+                                   )
+        else:
+            message = "問題番号＝" + str(qid) + "を削除しました。"
+            return render_template('success3.html',
+                                   user_id=user_id,
+                                   message=message,
+                                   )
+        conn.close()
+    else:
+        return render_template('error2.html',
+                               user_id=user_id,
+                               error_message='要求を処理できませんでした。',
+                               )
 
 
 # if __name__ == '__main__':
