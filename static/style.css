@@ -1,8 +1,10 @@
-.no-spin::-webkit-inner-spin-button,
-.no-spin::-webkit-outer-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-    -moz-appearance:textfield !important;
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance:textfield;
 }
 
 button[type="submit"] {
@@ -25,7 +27,7 @@ form table{
     border-spacing: 0;
 }
 form td{
-    padding: 10px;
+    padding: 3px;
     border-bottom: 1px solid #EEE;
 }
 form th{
@@ -45,7 +47,7 @@ form th{
     display: inline-block;
     position: absolute;
     right: 1px;
-    top: 15px;
+    top: 5px;
     border: 1px solid #CCC;
     padding: 0 5px;
     font-size: 85%;
@@ -82,12 +84,12 @@ form input[type="text"],form textarea{
 .smallinput{
     width: 80px !important;
 }
+
 .buttonwrap{
     text-align: center;
     padding: 20px 0;
 }
 
-#form input[type="button"],form input[type="submit"],form button[type="submit"]{
 form input[type="button"],form input[type="submit"]{
     display:inline-block;
     background:#d13415;
@@ -114,6 +116,23 @@ form button[type="submit"]{
     box-sizing: border-box;
 }
 
+.normalButton button {
+    -webkit-appearance: none;
+    display:inline-block;
+    background:#EEE;
+    padding:1px;
+    text-align:center;
+    color:black;
+    margin:5px;
+    border:1px solid;
+    cursor:pointer;
+    width: 150px;
+}
+
+
+.new {
+    margin: 20px;
+}
 
 @media (max-width:500px){
     form table,form tr,form th,form td{

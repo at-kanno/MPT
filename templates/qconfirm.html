@@ -22,12 +22,16 @@
 {% endif %}
     </ul></b></h2></center>
 
-    <!-- メニュー -->
-下表の問題を登録します。
-    <table border="1">
+
+<center>
+    <p>下表の問題を登録します。</p>
+
+    <table border="1" style="border-collapse: collapse">
 {% if qid != 0 %}
-        <tr><td>問題番号</td><td>{{ qid }}</td></tr>
+        <tr><td width="80">問題番号</td><td width="420">{{ qid }}</td></tr>
 {% endif %}
+        <tr><td>領域</td><td>{{ category }}</td></tr>
+        <tr><td>カテゴリ</td><td>{{ level }}</td></tr>
         <tr><td>問題</td><td>{{ question }}</td></tr>
         <tr><td>正解</td><td>{{ answer }}</td></tr>
         <tr><td>選択１</td><td>{{ choice1 }}</td></tr>
@@ -44,19 +48,21 @@
     解説番号と解説内容は変わらないので更新しません。
     {% endif %}
 
-    <table border="1">
-        <tr><td>解説番号</td><td>{{ cid }}</td></tr>
+    <table  border="1" style="border-collapse: collapse">
+        <tr><td width="80">解説番号</td><td width="420">{{ cid }}</td></tr>
     {% if old_comments != '' %}
         <tr><td>以前の解説</td><td>{{ old_comments }}</td></tr>
     {% endif %}
         <tr><td>解説</td><td>{{ comments }}</td></tr>
 {% endif %}
     </table>
-
-    <div class="question">
+<br>
+<div class="normalButton">
         <form action="mentenance" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <input type="hidden" name="qid" readonly="true" value={{ qid }} >
+        <input type="hidden" name="category" readonly="true" value={{ category }} >
+        <input type="hidden" name="level" readonly="true" value={{ level }} >
         <input type="hidden" name="question" readonly="true" value={{ question }} />
         <input type="hidden" name="answer" readonly="true" value={{ answer }} />
         <input type="hidden" name="choice1" readonly="true" value={{ choice1 }} />
@@ -72,19 +78,20 @@
         <input type="submit" value="新規登録">
 {% endif %}
         </form>
-    </div>
-
-    <input type="button" onclick="history.back()" value="演習問題管理画面へ戻る"
-           style="background:#f2f2f2;color:black;border:1"></input>
 
     <div class="buttonwrap" style="display:inline-flex">
+    <button onclick="history.back()" width="250px" padding="100"
+           cursor="pointer">
+        演習問題管理<br>画面へ戻る</button>
     <form action="makeExam" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <input type="hidden" name="category" value="99">
         <input type="submit" value="管理画面へ戻る"
                style="background:#f2f2f2;color:black;border:1">
     </form>
-
 </div>
+</div>
+
+</center>>
 </body></body>
 </html>
