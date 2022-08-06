@@ -16,7 +16,7 @@ from result_info import putResult, getResult, makeComments, getComment, \
     getUserResultList, getUserResultList1, getUserResultList2, getStartTime
 from mail import sendMail
 from test import setGrade
-from sql import convertQuestions, convertComments
+from sql import convertQuestions, convertComments, retrieveData
 
 DIFF_JST_FROM_UTC = 9
 
@@ -1984,7 +1984,12 @@ def setData():
 def database():
     user_id = int(request.form.get('user_id'))
     command = request.form.get('command')
-    if (command == 'questions'):
+    if (command == 'download'):
+        title = '演習問題のダウンロード'
+        return render_template('download.html',
+                               user_id=user_id,
+                               )
+    elif (command == 'questions'):
         title = '演習問題の更新'
     elif (command == 'comments'):
         title = 'コメントデータの更新'
@@ -2033,6 +2038,23 @@ def upload():
                            message='成功しました。'
                            )
 
+@app.route('/download', methods=['POST'])
+def download():
+    user_id = int(request.form.get('user_id'))
+
+    result = retrieveData()
+    if (result == 1):
+        return render_template('download2.html',
+                           user_id=user_id,
+                           message='成功しました。'
+                           )
+    else:
+        return render_template('error2.html',
+                           user_id=user_id,
+                           message='失敗しました。'
+                           )
+
+
 @app.route('/mentenance', methods=['POST'])
 def mentenance():
     user_id = int(request.form.get('user_id'))
@@ -2048,7 +2070,7 @@ def mentenance():
                                    )
             conn = sqlite3.connect(db_path)
             c = conn.cursor()
-            sql = "SELECT Q,A1,A2,A3,A4,CID1 FROM knowledge_base WHERE " \
+            sql = "SELECT CATEGORY,LEVEL,Q,A1,A2,A3,A4,CID1 FROM knowledge_base WHERE " \
               "NUMBER == " + str(qid) + ";"
             try:
                 c.execute(sql)
@@ -2066,12 +2088,14 @@ def mentenance():
                                        user_id=user_id,
                                        error_message='該当する演習問題はありません。',
                                        )
-                question = items[0][0]
-                answer = items[0][1]
-                choice1 = items[0][2]
-                choice2 = items[0][3]
-                choice3 = items[0][4]
-                cid = items[0][5]
+                category = items[0][0]
+                level = items[0][1]
+                question = items[0][2]
+                answer = items[0][3]
+                choice1 = items[0][4]
+                choice2 = items[0][5]
+                choice3 = items[0][6]
+                cid = items[0][7]
                 try:
                     comments = getComment(cid)
                 except:
@@ -2082,6 +2106,8 @@ def mentenance():
                                        )
         else:
             qid = 0
+            category = 0
+            level = 0
             question = ""
             answer = ""
             choice1 = ""
@@ -2093,6 +2119,8 @@ def mentenance():
         return render_template('question.html',
                                user_id=user_id,
                                qid = qid,
+                               category = category,
+                               level = level,
                                question = question,
                                answer = answer,
                                choice1 = choice1,
@@ -2104,6 +2132,14 @@ def mentenance():
     elif (command == 'confirm'):
         old_comments = ''
         qid = int(request.form.get('qid'))
+        try:
+            category = int(request.form.get('category'))
+            level = int(request.form.get('level'))
+        except:
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='領域、カテゴリに適切な値が入力されていません。',
+                                   )
         question = request.form.get('question')
         answer = request.form.get('answer')
         choice1 = request.form.get('choice1')
@@ -2117,6 +2153,11 @@ def mentenance():
             flag = 0
         else:
             flag = 1
+        if (category < 1 or level < 1):
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='領域、カテゴリに適切な値が入力されていません。',
+                                   )
         if (question == '' or answer == '' or choice1 == '' or
                 choice2 == '' or choice3 == ''):
             return render_template('error3.html',
@@ -2142,6 +2183,8 @@ def mentenance():
         return render_template('qconfirm.html',
                                user_id=user_id,
                                qid=qid,
+                               category = category,
+                               level = level,
                                question=question,
                                answer=answer,
                                choice1=choice1,
@@ -2154,6 +2197,8 @@ def mentenance():
                                )
     elif(command == 'update'):
         qid = int(request.form.get('qid'))
+        category = int(request.form.get('category'))
+        level = int(request.form.get('level'))
         question = request.form.get('question')
         answer = request.form.get('answer')
         choice1 = request.form.get('choice1')
@@ -2165,14 +2210,14 @@ def mentenance():
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
         if (qid != 0):
-            sql = 'UPDATE knowledge_base SET Q=?,A1=?,A2=?,A3=?,A4=?,CID1=? WHERE NUMBER = ' + str(qid)
+            sql = 'UPDATE knowledge_base SET CATEGORY=?,LEVEL=?,Q=?,A1=?,A2=?,A3=?,A4=?,CID1=? WHERE NUMBER = ' + str(qid)
         else:
-            sql = 'INSERT INTO knowledge_base (Q,A1,A2,A3,A4,CID1) VALUES (?, ?, ?, ?, ?, ?)'
+            sql = 'INSERT INTO knowledge_base (CATEGORY,LEVEL,Q,A1,A2,A3,A4,CID1) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         try:
             if (qid == 0):
-                conn.execute(sql, [question, answer, choice1, choice2, choice3,cid])
+                conn.execute(sql, [category,level,question, answer, choice1, choice2, choice3,cid])
             else:
-                conn.execute(sql, [question, answer, choice1, choice2, choice3,cid])
+                conn.execute(sql, [category,level,question, answer, choice1, choice2, choice3,cid])
             conn.commit()
             if (qid == 0):
                 sql = 'select NUMBER from knowledge_base where cid1 = ' + str(cid) + ';'
@@ -2230,7 +2275,7 @@ def mentenance():
                 message = '解説がないので、演習問題だけ削除します。よろしいですか？'
                 flag = 0
             elif n == 1:
-                message = '演習問題と解説を削除します。よろしいですか？'
+                message = '演習問題と解説を削除します。'
                 flag = 1
             else:
                 message = '解説は他の演習問題も参照しているので、演習問題だけ削除して解説は削除しません。よろしいですか？'
