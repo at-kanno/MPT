@@ -12,14 +12,15 @@
     <p>
     {{ error_message }}
     <br><br>
-
     <div class="buttonwrap" style="display:inline-flex">
-    <form action="makeExam" method="POST">
-        <input type="hidden" name="user_id" value={{ user_id }} />
-        <input type="hidden" name="category" value="99">
-        <input type="submit"value="管理画面へ戻る"
+        <form action="summary">
+            <input type="hidden" name="user_id" value={{ user_id }} />
+            <input type="hidden" name="category" value="99">
+            <input type="submit" value="メインメニューへ戻る"
                style="background:#f2f2f2;color:black;border:1">
-    </form>
+        </form>
+    </div>
 </div>
-</div></body>
+
+</body>
 </html>

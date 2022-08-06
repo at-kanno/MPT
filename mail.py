@@ -30,10 +30,10 @@ db_path = base_path + '/exam.sqlite'
 def sendMail(to_name, to_email, message):
 
 # 送受信先
-#    cc_email = "at.kanno@icloud.com"
-#    bcc_email = "atsushi.kanno@nifty.com"
-    cc_email = "ark@gigamall.ne.jp"
-    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+    cc_email = "at.kanno@icloud.com"
+    bcc_email = "atsushi.kanno@nifty.com"
+#    cc_email = "ark@gigamall.ne.jp"
+#    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 
