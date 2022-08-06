@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="ja"><head><meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <title>コメント確認画面</title>
+  <link rel="stylesheet" href="static/pure-min.css">
+  <link rel="stylesheet" href="static/style.css?v=0220">
+</head><body><div class="content">
+    <h2><b><ul>エラー表示画面</ul></b></h2>
+    <br>
+    <p>
+    {{ message }}
+    <table border="1">
+        <tr><td>問題番号</td><td>{{ qid }}</td></tr>
+        <tr><td>問題</td><td>{{ question }}</td></tr>
+        <tr><td>正解</td><td>{{ answer }}</td></tr>
+        <tr><td>選択１</td><td>{{ choice1 }}</td></tr>
+        <tr><td>選択２</td><td>{{ choice2 }}</td></tr>
+        <tr><td>選択３</td><td>{{ choice3 }}</td></tr>
+        <tr><td>解説番号</td><td>{{ cid }}</td></tr>
+        <tr><td>解説</td><td>{{ comments }}</td></tr>
+    </table>
+<br>
+    本当に削除しますか？。
+<br>
+    <form action="mentenance" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        <input type="hidden" name="qid" value={{ qid }} />
+        <input type="hidden" name="cid" value={{ cid }} />
+        <input type="hidden" name="flag" value={{ flag }} />
+　      <input type="hidden" name="command" value="deletey">
+        <input type="submit" value="はい"
+               style="background:#f2f2f2;color:black;border:1">
+    </form>
+
+    <input type="button" onclick="history.back()" value="いいえ"
+           style="background:#f2f2f2;color:black;border:1"></input>
+
+</div></body>
+</html>
