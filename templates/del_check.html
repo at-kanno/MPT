@@ -8,8 +8,6 @@
   <link rel="stylesheet" href="static/style.css?v=0220">
 </head><body><div class="content">
     <h2><b><ul>エラー表示画面</ul></b></h2>
-    <br>
-    <p>
     {{ message }}
     <table border="1">
         <tr><td>問題番号</td><td>{{ qid }}</td></tr>
@@ -24,6 +22,8 @@
 <br>
     本当に削除しますか？。
 <br>
+    <div class="buttonwrap" style="display:inline-flex">
+
     <form action="mentenance" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <input type="hidden" name="qid" value={{ qid }} />
@@ -37,5 +37,6 @@
     <input type="button" onclick="history.back()" value="いいえ"
            style="background:#f2f2f2;color:black;border:1"></input>
 
-</div></body>
+
+    </div></body>
 </html>
