@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="ja"><head><meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <title>メンテナンス</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+{% if mode == 1 %}
+        <body bgcolor="#F8CBAD">
+{% else %}
+        <body bgcolor="#CCCCFF">
+{% endif %}
+
+    <center><h2><b><ul>
+{% if qid == 0 %}
+        演習問題管理（新規登録）
+{% else %}
+        演習問題管理（問題更新）
+{% endif %}
+    </ul></b></h2></center>
+    <!-- メニュー -->
+
+    <div class="question">
+        <form action="mentenance" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        問題番号<input type="number" name="qid" readonly="true" size="5" value={{ qid }} ><br>
+        問題<textarea cols="40" width="500" name="question" >{{ question }}</textarea><br>
+        正解<textarea cols="40" width="500" name="answer" >{{ answer }}</textarea><br>
+        選択肢１<textarea cols="40" width="500" name="choice1" >{{ choice1 }}</textarea><br>
+        選択肢２<textarea cols="40" width="500" name="choice2" >{{ choice2 }}</textarea><br>
+        選択肢３<textarea cols="40" width="500" name="choice3" >{{ choice3 }}</textarea><br>
+{% if qid == 0 %}
+　       <input type="hidden" name="flag" value="1">
+{% else %}
+        解説の更新 <input type="checkbox" id="flag" name="flag" value="0" />
+{% endif %}
+        解説番号<input type="number" name="cid" size="5" value={{ cid }}  class="no-spin"><br>
+        解説<textarea cols="40" width="500" name="comments" >{{ comments }}</textarea><br>
+　       <input type="hidden" name="command" value="confirm">
+         <input type="submit" value="確認">
+        </form>
+    </div>
+
+    <input type="button" onclick="history.back()" value="番号入力へ戻る"
+           style="background:#f2f2f2;color:black;border:1"></input>
+
+{% if qid != 0 %}
+    <form action="mentenance" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+　       <input type="hidden" name="command" value="delete">
+        <input type="hidden" name="qid" value={{ qid }} >
+        <input type="hidden" name="cid" value={{ cid }} >
+        <input type="hidden" name="question" value={{ question }} >
+        <input type="hidden" name="answer" value={{ answer }} >
+        <input type="hidden" name="choice1" value={{ choice1 }} >
+        <input type="hidden" name="choice2" value={{ choice2 }} >
+        <input type="hidden" name="choice3" value={{ choice3 }} >
+        <input type="hidden" name="comments" value={{ comments }} >
+        <input type="submit" value="削除"
+               style="background:#f2f2f2;color:black;border:1">
+    </form>
+{% endif %}
+
+    <div class="buttonwrap" style="display:inline-flex">
+    <form action="makeExam" method="POST">
+        <input type="hidden" name="user_id" value={{ user_id }} />
+        <input type="hidden" name="category" value="99">
+        <input type="submit" value="管理画面へ戻る"
+               style="background:#f2f2f2;color:black;border:1">
+    </form>
+
+</div>
+</body></body>
+</html>
