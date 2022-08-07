@@ -105,22 +105,15 @@ def retrieveData():
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM knowledge_base")
-        rows = cursor.fetchall()
-
-        for row in rows:
-            print(row)
-
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM knowledge_base")
-        with open( qfile , "w") as csv_file:
+        with open( qfile , "w", newline='') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=",")
-            csv_writer.writerow([i[0] for i in cursor.description])
+            csv_writer.writerow([i[1] for i in cursor.description])
             csv_writer.writerows(cursor)
 
         cursor.execute("SELECT * FROM comments_table")
-        with open( cfile , "w") as csv_file:
+        with open( cfile , "w", newline='') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=",")
-            csv_writer.writerow([i[0] for i in cursor.description])
+            csv_writer.writerow([i[1] for i in cursor.description])
             csv_writer.writerows(cursor)
 
     except:
