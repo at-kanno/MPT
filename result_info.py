@@ -1,25 +1,10 @@
+from constant import db_path, NumOfCategory, NumOfArea, categoryCode, \
+     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5, \
+     NumOfCheckArea
 from flask import Flask, request, render_template
 import sqlite3, os, json
 import datetime
 import re
-
-# データベースのパスを特定
-base_path = os.path.dirname(os.path.abspath(__file__))
-db_path = base_path + '/exam.sqlite'
-form_path = base_path
-
-NumOfArea = 5
-NumOfCategory = 33
-NumOfCategory1 = 7
-NumOfCategory2 = 12
-NumOfCategory3 = 21
-NumOfCategory4 = 27
-NumOfCategory5 = 33
-NumOfCategory6 = 0
-NumOfCheckArea = 20
-
-# 33だが、多めに設定している
-categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 class ResultInfo:
     def __init__(self, user_id, exam_id, arealist, answerlist, resultlist):

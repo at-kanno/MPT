@@ -1,9 +1,82 @@
-import sqlite3, csv, os
+from constant import db_path
+import sqlite3, csv
+from flask import Flask, render_template, request, Blueprint
 
-# 保存先の指定
-base_path = os.path.dirname(__file__)
-db_path = base_path + '/exam.sqlite'
-FILES_DIR = base_path + '/static'
+database_module = Blueprint("database", __name__, static_folder='./static')
+
+@database_module.route('/database', methods=['POST'])
+def database():
+    user_id = int(request.form.get('user_id'))
+    command = request.form.get('command')
+    if (command == 'download'):
+        title = '演習問題のダウンロード'
+        return render_template('download.html',
+                               user_id=user_id,
+                               )
+    elif (command == 'questions'):
+        title = '演習問題の更新'
+    elif (command == 'comments'):
+        title = 'コメントデータの更新'
+    else:
+        return render_template('maintenance.html',
+                               user_id=user_id,
+                               )
+    return render_template('getfile.html',
+                           user_id=user_id,
+                           title=title,
+                           )
+
+
+@database_module.route('/upload', methods=['POST'])
+def upload():
+    user_id = int(request.form.get('user_id'))
+    title = request.form.get('title')
+    if title == '演習問題の更新':
+        filename = 'QUESTIONS.CSV'
+    else:
+        filename = 'COMMENTS.CSV'
+
+    # アップロードしたファイルのオブジェクト
+    upfile = request.files.get('upfile', None)
+    if upfile is None:
+        return render_template('error2.html',
+                           user_id=user_id,
+                           message='ファイル名が入力されていません。アップロードが失敗しました。'
+                           )
+    if upfile.filename == '':
+        return render_template('error2.html',
+                               user_id=user_id,
+                               message='ファイル名が入力されていません。アップロードが失敗しました。'
+                               )
+    # ファイルを保存
+    upfile.save(FILES_DIR + '/' + filename)
+    # ダウンロード先の表示
+
+    if title == '演習問題の更新':
+        convertQuestions()
+    else:
+        convertComments()
+
+    return render_template('success.html',
+                           user_id=user_id,
+                           message='成功しました。'
+                           )
+
+@database_module.route('/download', methods=['POST'])
+def download():
+    user_id = int(request.form.get('user_id'))
+
+    result = retrieveData()
+    if (result == 1):
+        return render_template('download2.html',
+                           user_id=user_id,
+                           message='成功しました。'
+                           )
+    else:
+        return render_template('error2.html',
+                           user_id=user_id,
+                           message='失敗しました。'
+                           )
 
 def convertQuestions():
 

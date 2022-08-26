@@ -1,16 +1,10 @@
+from constant import db_path, MaxQuestions, NumOfArea, NumOfCategory, categoryNumber, categoryCode, \
+     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5
 from flask import Flask, request, render_template
 import sqlite3, os, json
 import random
 import datetime
 import re
-
-DIFF_JST_FROM_UTC = 9
-
-# データベースのパスを特定
-base_path = os.path.dirname(os.path.abspath(__file__))
-db_path = base_path + '/exam.sqlite'
-form_path = base_path
-
 
 class Question:
     def __init__(self, category, level, q, a1, a2, a3, a4, correct, cid):
@@ -415,22 +409,6 @@ def saveExam(user, category, level, amount, examlist, arealist):
     print(items[0][0])
     return (items[0][0])
 
-
-# 出題カテゴリから問題列を生成する
-MaxQuestions = 40
-
-NumOfArea = 5
-NumOfCategory = 33
-categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW" \
-               + "XYZ[]^`abcdefghijklmnopqrstuvwxyz"
-
-categoryNumber = [11, 12, 13, 14, 15, 16, 17, \
-                  21, 22, 23, 24, 25, \
-                  31, 32, 33, 34, 35, 36, 37, 38, 39, \
-                  41, 42, 43, 44, 45, 46, \
-                  51, 52, 53, 54, 55, 56]
-
-
 def makeExam2(userid, amount, category: int, level, time, arealist):
     print('userid={0},amount={1}, category={2}, level={3},\
           time={4}, arealist={5}'.format(userid, amount, \
@@ -454,14 +432,6 @@ def makeExam2(userid, amount, category: int, level, time, arealist):
     print("Total:" + str(total))
 
 # 選択された「エリア（領域）の個数」と「カテゴリの個数」を算出する
-
-    NumOfCategory1=7
-    NumOfCategory2=12
-    NumOfCategory3=21
-    NumOfCategory4=27
-    NumOfCategory5=33
-    NumOfCategory6=0
-
     arealist = ''
     for i in range(total):
         for j in range(NumOfCategory):

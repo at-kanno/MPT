@@ -1,14 +1,80 @@
-from flask import Flask, session
-import sqlite3, os, json, hashlib, base64
+from constant import db_path
+from flask import Flask, session, render_template, request, Blueprint
+import sqlite3, json, hashlib, base64
 import random
 import string
 import time, datetime
 import re
 
-base_path = os.path.dirname(__file__)
-DATA_FILE = base_path + '/venv/data/users.json'
-db_path = base_path + '/exam.sqlite'
-form_path = base_path + '/templates'
+user_module = Blueprint("user", __name__, static_folder='./static')
+
+@user_module.route('/setpassword', methods=['POST'])
+def setpassword():
+    user_id = int(request.form.get('user_id'))
+    id = str(request.form.get('id'))
+    name = getLoginName(id)
+    return render_template('setpassword.html',
+                           user_id=user_id,
+                           name=name,
+                           id=id,
+                           )
+
+
+@user_module.route('/setpasswd', methods=['POST'])
+def setpasswd():
+    user_id = int(request.form.get('user_id'))
+    xname = str(request.form.get('name'))  #
+    name = xname.lower()                   # ログイン名は使っていない
+    id = request.form.get('id')
+    password = request.form.get('password')
+    if setPassword(id, password):
+        return render_template('success.html',
+                               message='成功しました。',
+                               user_id=user_id)
+    else:
+        return render_template('error2.html',
+                               error_message='エラーが発生しました。',
+                               user_id=user_id
+                               )
+
+
+@user_module.route('/resetpassword', methods=['POST'])
+def resetpassword():
+    user_id = int(request.form.get('user_id'))
+    name = getLoginName(user_id)
+    password = getLoginPassword(user_id)
+    return render_template('resetpassword.html',
+                           user_id=user_id,
+                           name=name,
+                           password=password,
+                           )
+
+
+@user_module.route('/resetpasswd', methods=['POST'])
+def resetpasswd():
+    user_id = int(request.form.get('user_id'))
+    name = request.form.get('name')
+    hashed_password = request.form.get('password')
+    new_password = request.form.get('new_password')
+    old_password = request.form.get('old_password')
+
+#    if password == old_password:
+    if password_verify(old_password, hashed_password):
+        status = setPassword(user_id, new_password)
+    else:
+        return render_template('error2.html',
+                               error_message='現在のパスワードが入力されていない。もしくは、正しくありません。',
+                               user_id=user_id
+                               )
+    if status:
+        return render_template('success.html',
+                               message='成功しました。',
+                               user_id=user_id)
+    else:
+        return render_template('error2.html',
+                               error_message='エラーが発生しました。',
+                               user_id=user_id
+                               )
 
 # パスワードからハッシュを生成する
 def password_hash(password):

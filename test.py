@@ -1,8 +1,6 @@
-import sqlite3,os
+from constant import db_path
+import sqlite3
 from flask import Flask, render_template
-
-base_path = os.path.dirname(__file__)
-db_path = base_path + '/exam.sqlite'
 
 def setGrade(grade):
 

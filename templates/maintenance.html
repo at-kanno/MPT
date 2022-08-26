@@ -17,7 +17,7 @@
     <center><h2><b><ul>演習問題管理画面</ul></b></h2>
     <!-- メニュー -->
     <div class="buttonwrap" style="display:inline-flex">
-    <form action="mentenance" method="POST">
+    <form action="maintenance" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         問題番号（登録済みの場合）<br>
         <input type="number" name="number" margin-left="50" class="smallinput"/>
@@ -27,7 +27,7 @@
     </div>
 
 <br>新規登録の場合、問題番号は無視されます。<br>
-    <form action="mentenance" method="POST">
+    <form action="maintenance" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <input type="hidden" name="command" value="new">
         <input type="submit" value="新規登録">
