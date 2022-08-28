@@ -91,10 +91,9 @@
 
         <div id="mainY" >
             <div class="row">
-                <div class="six cols">
 
     <form action="database" method="POST">
-
+                <div class="six cols">
                     <div class="row">
                         <div class="six mobile-two cols">
                 <input type="hidden" name="user_id" value={{ user_id }} />
@@ -133,21 +132,17 @@
         </div>
 
 <div class="buttonwrap" >
-
-<form action="summary" >
+    <form action="summary" >
         <input type="hidden" name="user_id" value={{ user_id }} />
         <input type="hidden" name="category" value="99" />
         <input type="submit" name="category" value="メインメニューへ戻る"
                style="background:#d13415">
-</form>
-
+    </form>
 </div>
 
 
 <div class="buttonwrap" style="display:inline-flex">
-
 {% if user_id == 1 %}
-
     <form action="sendMsg" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <button type="submit" name="type" value="inform" style="background:#ff8888">
@@ -157,8 +152,7 @@
         <input type="hidden" name="message" value="Hello!" />
     </form>
 
-
-<form action="setData" method="POST">
+    <form action="setData" method="POST">
         <input type="hidden" name="user_id" value={{ user_id }} />
         <button type="submit" name="grade" value="30" style="background:#ff8888">
             修了試験到達データ設定</button>
@@ -166,12 +160,11 @@
             修了試験１回合格設定</button>
         <button type="submit" name="grade" value="40" style="background:#ff8888">
             修了試験終了設定</button>
-</form>
- {% endif %}
-
+    </form>
+{% endif %}
 </div>
 
 </div>
 
-</div></body>
+</div></body></body>
 </html>

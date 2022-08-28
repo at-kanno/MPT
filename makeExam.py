@@ -1,4 +1,5 @@
-from constant import db_path
+from constant import db_path, examTitle1, examTitle2, examTitle3, examTitle4, examTitle5, \
+     examTitle10, examTitle11, examTitle12, abbreviation
 from flask import Flask, session, render_template, request, Blueprint
 import sqlite3, os
 from users import getStage, setStage, getStatus
@@ -38,35 +39,35 @@ def makeExam():
                                    )
         elif (category == '60'):
             amount = 10
-            title = '確認問題（全領域）'
+            title = examTitle10
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 900, '')
         elif (category == '70'):
             amount = 40
-            title = '模擬試験'
+            title = examTitle11
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '80'):
             amount = 40
-            title = '修了試験'
+            title = examTitle12
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 3600, '')
         elif (category == '10'):
             amount = 5
-            title = 'FND：確認問題'
+            title = examTitle1
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '20'):
             amount = 5
-            title = 'CDS：確認問題'
+            title = examTitle2
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '30'):
             amount = 5
-            title = 'DSV：確認問題'
+            title = examTitle3
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '40'):
             amount = 5
-            title = 'HVIT：確認問題'
+            title = examTitle4
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '50'):
             amount = 5
-            title = 'DPI：確認問題'
+            title = examTitle5
             examlist, arealist = makeExam2(user_id, amount, int(category), level, 450, '')
         elif (category == '91' or category == '92' or category == '93' \
               or category == '94' or category == '95'):
@@ -164,6 +165,7 @@ def makeExam3():
         #        category = request.form['category']
         print('category=' + str(category))
 
+# １問１答の処理（91:FND,92:CDS,93:DSV,94:HVIT,95:DPI）
         if (category == '91'):
             q, a1, a2, a3, a4, crct, cid, num, permutation = getQuestionFromCategory(11, 19)
         elif (category == '92'):
@@ -182,7 +184,6 @@ def makeExam3():
                                    status=status,
                                    )
 
-    area = ['FND', 'CDS', 'DSV', 'HVIT', 'DPI']
     n = int(category) - 91
     return render_template('exercise2.html',
                            user_id=user_id,
@@ -199,7 +200,7 @@ def makeExam3():
                            num=num,
                            permutation=permutation,
                            category=category,
-                           area=area[n]
+                           area=abbreviation[n] # 領域（エリア）名：constant.pyで定義
                            )
 
 # ログインしているか調べる

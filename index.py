@@ -1,4 +1,4 @@
-from constant import db_path, PassScore1, PassScore2, categoryCode, practice, practice2, \
+from constant import db_path, PassScore1, PassScore2, categoryCode, practice, \
      NumOfArea, areaname, return1, return2, return3, return4, prefec
 from flask import Flask, session, render_template, request, jsonify
 #from flask_login import LoginManager, UserMixin, login_user, logout_user
@@ -14,7 +14,7 @@ from users import check_login, getStage, setStage, getUserList, makePassword,\
 from examDB import getQuestion, getQuestions, Question, \
     makeExam2, saveExam, getCorrectList, stringToButton, getExamlist, \
     getQuestionFromCategory, getQuestionFromNum
-from result_info import putResult, getResult, makeComments, getComment, \
+from resultDB import putResult, getResult, makeComments, getComment, \
     getUserResultList, getUserResultList1, getUserResultList2, getStartTime
 from mail import sendMail
 from test import setGrade

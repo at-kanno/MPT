@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, Blueprint
 from constant import db_path
 import sqlite3
-from result_info import getComment
+from resultDB import getComment
 
 maintenance_module = Blueprint("maintenance", __name__, static_folder='./static')
 

@@ -96,7 +96,7 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    sql = "DROP TABLE EXAM_TABLE;"
+    sql = "DROP TABLE RESULT_TABLE;"
     #    c.execute(sql)
     sql = "CREATE TABLE IF NOT EXISTS RESULT_TABLE ( EXAM_ID INTEGER, USER_ID INTEGER, EXAM_TYPE LONG VARCHAR,"\
         + "TOTAL INTEGER, TOTAL_R INTEGER, TOTAL_P FLOAT," \
@@ -296,7 +296,7 @@ def getResult(exam_id):
                 categoryPercent[19] = categoryScore[19] / categoryNumber[19] * 100
 
     for i in range(NumOfArea):
-        areaNumber[i] = items[0][i*3+120]
+        areaNumber[i] = items[0][i*3+120]    # 120 = 6 + (38 x 3)
         areaScore[i] = items[0][i*3+121]
         areaPercent[i] = items[0][i*3+122]
 
@@ -791,20 +791,3 @@ def getUserResultList2(user_id):
         conn.close()
         return False, n
 
-#def getUserStatus(user_id):
-
-#   現在のステータス/総合解答問題数/総合平均正答率
-#    status = getUserStatus(user_id)
-
-#   カテゴリごとの実施回数/平均正答率
-#   FND/CDS/DSV/HVIT/DPI
-
-#   模擬試験の履歴
-#    result_list1 = getUserResultList1(user_id)
-#   修了試験の履歴
-#    result_list2 = getUserResultList2(user_id)
-#    return render_template('status.html',
-#                       user_id=user_id,
-#                       result_list1=result_list1,
-#                       result_list2=result_list2,
-#                       )

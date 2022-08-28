@@ -1,9 +1,9 @@
-from constant import db_path, categoryCode, practice, practice2, PassScore1, NumOfArea, areaname, NumOfCategory, \
+from constant import db_path, categoryCode, practice, PassScore1, NumOfArea, areaname, NumOfCategory, \
      return3, return4
 from flask import Flask, session, render_template, request, Blueprint
 import sqlite3, os
 from users import getStage, setStage, getStatus
-from result_info import getStartTime, getResult, makeComments, getComment
+from resultDB import getStartTime, getResult, makeComments, getComment
 from examDB import stringToButton, getExamlist, Question, getQuestion
 
 result_module = Blueprint("result", __name__, static_folder='./static')

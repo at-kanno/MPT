@@ -1,5 +1,6 @@
 from constant import db_path, MaxQuestions, NumOfArea, NumOfCategory, categoryNumber, categoryCode, \
-     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5
+     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5, \
+     examType1, examType2, examType3, examType4, examType5, examType10, examType11, examType12, examType99
 from flask import Flask, request, render_template
 import sqlite3, os, json
 import random
@@ -364,23 +365,23 @@ def saveExam(user, category, level, amount, examlist, arealist):
     c.execute(sql)
 
     if category == '10':
-        examType = 'FND(5問)'
+        examType = examType1
     elif category == '20':
-        examType = 'CDS(5問)'
+        examType = examType2
     elif category == '30':
-        examType = 'DSV(5問)'
+        examType = examType3
     elif category == '40':
-        examType = 'HVIT(5問)'
+        examType = examType4
     elif category == '50':
-        examType = 'DPI(5問)'
+        examType = examType5
     elif category == '60':
-        examType = '全体(10問)'
+        examType = examType10
     elif category == '70':
-        examType = '模擬試験(40問)'
+        examType = examType11
     elif category == '80':
-        examType = '修了試験(40問)'
+        examType = examType12
     else:
-        examType = 'その他'
+        examType = examType99
 
     sql = 'INSERT INTO EXAM_TABLE( USER_ID, CDATE, CTIME,'\
           + 'CATEGORY, LEVEL, AMOUNT, EXAMLIST, AREALIST, EXAM_TYPE ) VALUES ("'\
