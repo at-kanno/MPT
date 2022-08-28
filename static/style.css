@@ -1,4 +1,56 @@
 /* ================================================================
+   HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
+   Customized to include a flexible grid system, flexible image
+   ================================================================ */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+body {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+
+
+/* ================================================================
+   Author's custom styles
+   ================================================================ */
+
+/* ボックスモデルの指定 */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* ================================================================
    Style.css (27-Aug-2022, A.Kanno)
    ================================================================ */
 
@@ -40,10 +92,10 @@ form th{
     text-align: left;
     font-weight: normal;
     vertical-align: top;
-    width: 6em;
+    width: 9em;
 }
 .hissu,.ninni{
-    padding-right: 4em;
+    padding-right: 2em;
     position: relative;
 }
 .hissu::after,.ninni::after{
@@ -296,3 +348,85 @@ form button[type="submit"]{
   }
 }
 
+/* ================================================================
+   共通ページ要素スタイル
+   ================================================================ */
+
+#main {
+  background: #fff;
+  padding-bottom: 0.2em;
+}
+
+#main h1 {
+  margin: 0.3em 0;
+  padding: 0.2em;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.6em;
+}
+
+#main h2 {
+  margin: 0.3em 0;
+  padding: 0.2em 0.3em;
+  background: #ebddc7;
+  font-size: 1.2em;
+  color: #280e00;
+}
+
+#main p {
+  padding: 0 0 1em;
+}
+
+/* 基本テーブル */
+#main table {
+  width: 100%;
+  margin: 1em 0;
+  border-top: #997f66 1px solid;
+  border-left: #997f66 1px solid;
+  font-size: 0.95em;
+}
+#main th, #main td {
+  border-right: #997f66 1px solid;
+  border-bottom: #997f66 1px solid;
+  padding: 0.2em 0.5em;
+}
+#main th {
+  background: #f7ece1;
+}
+#main td {
+  background: #fff;
+}
+
+/* ----------
+   フォーム
+   ---------- */
+/* Select */
+input, select, textarea {
+  width: 94%;
+  margin-bottom: 0.4em;
+}
+
+/* ================================================================
+   個別ページ特有スタイル
+   ================================================================ */
+/* ----------
+   トップページ メインボタン
+   ---------- */
+#main .top-buttons {
+  margin: 0;
+}
+#main .top-buttons a, button {
+  display: block;
+  padding: 0.5em 0;
+  border-radius: 0.2em;
+/*  background: #37aa3a; */
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+}
+
+button {
+    width: 100%;
+    margin-bottom: 1em;
+    font-size: 1em;
+    border: 0
+}
