@@ -24,7 +24,7 @@ def putResult(user_id, exam_id, amount, arealist, answerlist, resultlist, correc
     areaScore = [0 for i in range(NumOfArea)]
     areaPercent = [0 for i in range(NumOfArea)]
 
-# ITIL 一般に関する出題
+# 領域ごとに採点する
     for i, c in enumerate(arealist):
         if resultlist[i] == '1':
             flag = 1
