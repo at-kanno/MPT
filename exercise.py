@@ -1,5 +1,5 @@
 from constant import db_path, PassScore1, PassScore2, categoryCode, practice, \
-     NumOfArea, areaname, return1, return2, return3, return4
+     NumOfArea, areaname, return1, return2, return3, return4, DIFF_JST_FROM_UTC
 from constant import db_path
 from flask import Flask, session, render_template, request, Blueprint
 from users import getStage, setStage, getStatus

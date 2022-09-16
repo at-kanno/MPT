@@ -1,5 +1,5 @@
 from constant import db_path, MaxQuestions, NumOfArea, NumOfCategory, categoryNumber, categoryCode, \
-     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5, \
+     NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5, DIFF_JST_FROM_UTC, \
      examType1, examType2, examType3, examType4, examType5, examType10, examType11, examType12, examType99
 from flask import Flask, request, render_template
 import sqlite3, os, json

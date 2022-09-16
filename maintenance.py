@@ -95,7 +95,7 @@ def maintenance():
         choice1 = request.form.get('choice1')
         choice2 = request.form.get('choice2')
         choice3 = request.form.get('choice3')
-        qid = int(request.form.get('qid'))
+        qid = int(request.form.get('qid'))  #必要？
         try:
             cid = int(request.form.get('cid'))
         except:
