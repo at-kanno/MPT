@@ -2121,7 +2121,13 @@ def mentenance():
         choice1 = request.form.get('choice1')
         choice2 = request.form.get('choice2')
         choice3 = request.form.get('choice3')
-        cid = int(request.form.get('cid'))
+        try:
+            cid = int(request.form.get('cid'))
+        except:
+            return render_template('error3.html',
+                                   user_id=user_id,
+                                   error_message='解説番号に適切な値が入力されていません。',
+                                   )
         comments = request.form.get('comments')
         try:
             flag = int(request.form.get('flag'))
