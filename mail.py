@@ -33,7 +33,7 @@ def sendMail(to_name, to_email, message):
 #    cc_email = "at.kanno@icloud.com"
 #    bcc_email = "atsushi.kanno@nifty.com"
     cc_email = "ark@gigamall.ne.jp"
-    bcc_email = "hiroko@mail.co.jp,miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
+    bcc_email = "miyauchi.ark@gmail.com,kanno@olivenet.co.jp"
     from_email = "ITIL4 Exercise System"
     rcpt = cc_email.split(",") + bcc_email.split(",") + [to_email]
 

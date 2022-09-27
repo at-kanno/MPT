@@ -1070,11 +1070,11 @@ def exercise():
 
         # ユーザのステータスを更新
         if rate >= PassScore2 and total == 40:
-            status, flag = rankUp(user_id, 2)
+            status, flag = rankUp(user_id, 2, type)
         elif rate >= PassScore1 and total == 40:
-            status, flag = rankUp(user_id, 1)
+            status, flag = rankUp(user_id, 1, type)
 
-        if old_status == 31 and rate < PassScore2:  # 75%を越えなければ、始めからやり直し
+        if old_status == 31 and type == '修了試験(40問)' and rate < PassScore2:  # 75%を越えなければ、始めからやり直し
             rankDown(user_id)
             flag = 4
         if flag == 3:
@@ -1082,7 +1082,7 @@ def exercise():
             userInfo = getMailadress(user_id)
             username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
             to_email = str(userInfo[0][2])
-            if old_status == 31:
+            if old_status == 31 and type == '修了試験(40問)':
                 sendMail(username, to_email, "合格です。")
 
         if old_status >= 30 and type == SECOND_TEST + '(40問)':
@@ -1763,7 +1763,7 @@ def display():
     elif command == 'password':
         setPassword()
     elif command == 'rankup':
-        rankUp(id, 0)
+        rankUp(id, 0, 0)
         user_list = [0 for i in range(100)]
         user_list = getUserList()
         return render_template('success.html',
