@@ -4,6 +4,7 @@ import random
 import string
 import time, datetime
 import re
+from constant import SECOND_TEST
 
 base_path = os.path.dirname(__file__)
 DATA_FILE = base_path + '/venv/data/users.json'
@@ -280,7 +281,7 @@ def getStatus(user_id):
         conn.close()
         return False
 
-def rankUp(user_id, level):
+def rankUp(user_id, level, type):
 
     old_status = getStatus(user_id)
     flag = 0
@@ -305,9 +306,11 @@ def rankUp(user_id, level):
         elif level >=1 and rank < 30:   # 模擬試験カウント >= 5 → 第２試験表示
             status = 30
             flag = 1
+        elif type == '模擬試験(40問)':  # グレード3で模擬試験を受けても、何も変わらない
+            status = rank
         elif level < 2:                 # 第２試験は75点以上
             status = rank
-        elif rank == 30:                # 第２試験カウント = 1
+        elif rank == 30 and type == SECOND_TEST + '(40問)' :   # 第２試験カウント = 1
             status = 31
             flag = 2
         else:                           # 第２試験合格
