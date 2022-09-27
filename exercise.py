@@ -1,12 +1,14 @@
 from constant import db_path, PassScore1, PassScore2, categoryCode, practice, \
-     NumOfArea, areaname, return1, return2, return3, return4, DIFF_JST_FROM_UTC
+     NumOfArea, areaname, return1, return2, return3, return4, DIFF_JST_FROM_UTC, \
+     PASS1_MASSAGE, PASS2_MASSAGE, FAIL_MESSAGE
 from constant import db_path
 from flask import Flask, session, render_template, request, Blueprint
-from users import getStage, setStage, getStatus
+from users import getStage, setStage, getStatus, rankUp, rankDown, getMailadress
 import sqlite3, os
 import datetime
 from examDB import getQuestion, getQuestions, Question, getCorrectList
 from resultDB import putResult
+from mail import sendMail
 
 exec_module = Blueprint("exercise", __name__, static_folder='./static')
 
@@ -262,21 +264,22 @@ def exercise():
 
         # ユーザのステータスを更新
         if rate >= PassScore2 and total == 40:
-            status, flag = rankUp(user_id, 2)
+            status, flag = rankUp(user_id, 2, type)
         elif rate >= PassScore1 and total == 40:
-            status, flag = rankUp(user_id, 1)
+            status, flag = rankUp(user_id, 1, type)
 
-        if old_status == 31 and rate < PassScore2: # 75%を越えなければ、始めからやり直し
+        if old_status == 31 and type == '修了試験(40問)' and rate < PassScore2: # 75%を越えなければ、始めからやり直し
             rankDown(user_id)
             flag = 4
+        # 修了試験で合格点を取った場合
         if flag == 3:
             userInfo = ["", "", ""]
             userInfo = getMailadress(user_id)
             username = str(userInfo[0][0]) + " " + str(userInfo[0][1])
             to_email = str(userInfo[0][2])
-            if old_status == 31:
+            if old_status == 31 and type == '修了試験(40問)':
                 sendMail(username, to_email, "合格です。")
-
+        # 修了試験受験時のメッセージ
         if old_status >= 30 and type == '修了試験(40問)':
             if rate < PassScore2:
                 if old_status >= 40:
@@ -295,6 +298,7 @@ def exercise():
                                title=title,
                                message=message,
                                )
+        # 通常試験時のメッセージ
         else:
             return render_template('finish.html',
                                user_id=user_id,

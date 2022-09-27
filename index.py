@@ -344,7 +344,7 @@ def display():
     elif command == 'password':
         setPassword()
     elif command == 'rankup':
-        rankUp(id, 0)
+        rankUp(id, 0, 0)
         user_list = [0 for i in range(100)]
         user_list = getUserList()
         return render_template('success.html',

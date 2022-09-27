@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 import ssl
+import sqlite3
 
 def sendMail(to_name, to_email, message):
 
