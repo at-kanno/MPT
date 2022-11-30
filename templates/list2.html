@@ -39,7 +39,7 @@
     <div class="item" style="display:inline-flex">
      <table><td style="display:inline-flex">
          {{ lastname }}({{ mail_adr }})：{{ start_time }}【{{ exam_type }}】{{ total_r }}/{{ total }}[{{ total_p }}%]
-   {% if(total_p >70) %}
+   {% if(total_p >= 70) %}
          <font style="color:red">合格</font>
    {% else %}
          不合格

@@ -1,7 +1,8 @@
 from constant import db_path, prefec
 import sqlite3, csv
 from flask import Flask, render_template, request, Blueprint
-from users import checkMailaddress
+from users import checkMailaddress, makePassword, addUser, modifyUser
+from mail import sendMail
 
 regist_module = Blueprint("regist", __name__, static_folder='./static')
 
