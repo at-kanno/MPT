@@ -1,4 +1,4 @@
-from constant import db_path
+from constant import db_path, FILES_DIR
 import sqlite3, csv
 from flask import Flask, render_template, request, Blueprint
 
@@ -177,7 +177,8 @@ def retrieveData():
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM knowledge_base")
+    #    cursor.execute("SELECT * FROM knowledge_base") # levelが「area」になっている（2022,12,25）
+        cursor.execute("SELECT number,level,category,q,a1,a2,a3,a4,cid1,cid2,cid3,cid4,flag FROM knowledge_base")
         with open( qfile , "w", newline='') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=",")
             csv_writer.writerow([i[1] for i in cursor.description])
