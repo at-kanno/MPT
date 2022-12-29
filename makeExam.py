@@ -174,8 +174,6 @@ def makeExam3():
             q, a1, a2, a3, a4, crct, cid, num, permutation = getQuestionFromCategory(31, 39)
         elif (category == '94'):
             q, a1, a2, a3, a4, crct, cid, num, permutation = getQuestionFromCategory(41, 49)
-        elif (category == '95'):
-            q, a1, a2, a3, a4, crct, cid, num, permutation = getQuestionFromCategory(51, 59)
         else:
             setStage(user_id, 1)
             status = getStatus(user_id)

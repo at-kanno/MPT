@@ -10,37 +10,37 @@ db_path = base_path + '/exam.sqlite'
 form_path = base_path + '/templates'
 FILES_DIR = base_path + '/static'
 
-NumOfArea = 5
-NumOfCategory = 33
+NumOfArea = 4
+NumOfCategory = 10
 
-NumOfCategory1 = 7
-NumOfCategory2 = 12
-NumOfCategory3 = 21
-NumOfCategory4 = 27
-NumOfCategory5 = 33
+NumOfCategory1 = 3
+NumOfCategory2 = 4
+NumOfCategory3 = 8
+NumOfCategory4 = 10
+NumOfCategory5 = 0
 NumOfCategory6 = 0
-NumOfCheckArea = 20
+NumOfCheckArea = 10
 
-examType1 = "FND(5問)"
-examType2 = "CDS(5問)"
-examType3 = "DSV(5問)"
-examType4 = "HVIT(5問)"
-examType5 = "DPI(5問)"
+examType1 = "組織(5問)"
+examType2 = "技術(5問)"
+examType3 = "SVS(5問)"
+examType4 = "調整(5問)"
+examType5 = ""
 examType10 = "全体(10問)"
 examType11 = "模擬試験(40問)"
 examType12 = "修了試験(40問)"
 examType99 = "その他"
 
-examTitle1 = "FND：確認問題"
-examTitle2 = "CDS：確認問題"
-examTitle3 = "DSV：確認問題"
-examTitle4 = "HVIT：確認問題"
-examTitle5 = "DPI：確認問題"
+examTitle1 = "組織：確認問題"
+examTitle2 = "技術：確認問題"
+examTitle3 = "SVS：確認問題"
+examTitle4 = "活動調整・調達：確認問題"
+examTitle5 = ""
 examTitle10 = "確認問題（全領域）"
 examTitle11 = "模擬試験"
 examTitle12 = "修了試験"
 
-abbreviation = ['FND', 'CDS', 'DSV', 'HVIT', 'DPI']
+abbreviation = ['組織', '技術', 'SVS', '活動調整・調達']
 
 PassScore1 = 70
 PassScore2 = 75
@@ -52,11 +52,10 @@ categoryCode = "0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW" \
 # 出題カテゴリから問題列を生成する
 MaxQuestions = 40
 
-categoryNumber = [11, 12, 13, 14, 15, 16, 17, \
-                  21, 22, 23, 24, 25, \
-                  31, 32, 33, 34, 35, 36, 37, 38, 39, \
-                  41, 42, 43, 44, 45, 46, \
-                  51, 52, 53, 54, 55, 56]
+categoryNumber = [11, 12, 13, \
+                  21, \
+                  31, 32, 33, 34, \
+                  41, 42]
 
 PASS1_MASSAGE = "おめでとうございます。修了試験の前半合格です。<br>頑張ってこられた成果が出ました。<br>" \
     + "あと１回修了試験の後半があります。<br>それに合格すると、いよいよ本試験（認定試験）です。<br>" \
@@ -134,22 +133,20 @@ return4 = '" /><button type="submit" style="margin:10px" name="category" value="
           'メインメニューへ戻る</button><br></p></form>'
 
 areaname = [
-    ["ファンデーション(FND)", 5, "", "", ""],
-    ["構築,供給,サポート(CDS)", 3, "", "", ""],
-    ["利害関係者の価値を主導(DSV)", 6, "", "", ""],
-    ["ハイベロシティIT(HVIT)", 3, "", "", ""],
-    ["方向付け,計画,改善(DPI)", 3, "", "", ""],
-]
-practice = [
-    ["サービスマネジメントの主要概念", "ITILの従うべき原則", "サービスマネジメントの４つの側面", "ITILサービスバリュー・システム", "サービスバリュー・チェーン"],
-    ["組織構造", "バリューストリームに基づくサービス提供", "サービスを作成、提供およびサポートする方法を知る"],
-    ["カスタマジャニーの概念", "利害関係者との関係を発展させる方法を知る", "需要を具体化し、サービス提供物を定義する", "顧客およびユーザのオンボード",
-     "継続的な価値共創", "サービスの価値を実現し、その妥当性を確認する方法"],
-    ["デジタル企業の高速性", "デジタル製品のライフサイクルおよびITIL", "原則、モデルおよび概念"],
-    ["DPIの主な原則と手法", "GRCの役割とSVSへの統合方法", "組織変更の管理"],
+    ["組織と人材", 3, "", "", ""],
+    ["情報と技術", 1, "", "", ""],
+    ["サービスバリュー・ストリーム", 4, "", "", ""],
+    ["活動の調整とリソースの調達", 2, "", "", ""],
 ]
 
-LOGIN_URL = 'http://54.163.203.19:5000/'
+practice = [
+    ["組織の文化", "シフトレフト", "要員の計画と管理"],
+    ["新たな技術"],
+    ["新サービス導入のバリューストリーム", "新サービス導入に貢献するプラクティス", "ユーザサポートのバリューストリーム", "ユーザサポートに貢献するプラクティス"],
+    ["活動の調整方法", "調達の手段"]
+]
+
+LOGIN_URL = 'http://54.163.203.19:5001/'
 PASS3_MASSAGE = 'おめでとうございます。合格です。\n頑張ってこられた成果が出ました。\n\n' \
     + '修了試験と提出課題の２つをクリアすることで、PeopleCertの本試験を受験することができます。\n' \
     + 'まだ課題を提出していない場合は、提出をお願いします。\n\n' \
@@ -174,5 +171,12 @@ from_email = "ITIL4 Exercise System"
 
 cset = 'utf-8'
 servername = "smtp.gmail.com"
+
+Comment_Base = 500
+# MPT(700),CDS(741),DSV(771),HVIT(831),DPI(861),DITS(901)
+Area_Base = 741
+# MPT(710),CDS(751),DSV(781),HVIT(841),DPI(871),DITS(911)
+Category_Base = 751
+
 
 

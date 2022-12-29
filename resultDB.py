@@ -1,6 +1,6 @@
 from constant import db_path, NumOfCategory, NumOfArea, categoryCode, \
      NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4, NumOfCategory5, \
-     NumOfCheckArea
+     NumOfCheckArea, Area_Base, Category_Base
 from flask import Flask, request, render_template
 import sqlite3, os, json
 import datetime
@@ -199,101 +199,14 @@ def getResult(exam_id):
     correct = items[0][4]
     rate = items[0][5]
 
-    for i in range(NumOfCategory+1):
+    for i in range(NumOfCategory):
         a = items[0][i * 3 + 6]
         b = items[0][i * 3 + 7]
-# サービス関係
-        if i == 0:
-            categoryNumber[i] = items[0][i*3+6]
-            categoryScore[i] = items[0][i*3+7]
-            categoryPercent[i] = items[0][i*3+8]
-# 従うべき原則
-        elif i == 1 or i == 2:
-            categoryNumber[1] = categoryNumber[1] + int(a)
-            categoryScore[1] = categoryScore[1] + int(b)
-            if categoryNumber[1] != 0:
-                categoryPercent[1] = categoryScore[1] / categoryNumber[1] * 100
-# ４つの側面、サービスバリューシステム(SVS)
-        elif i == 3 or i == 4:
-            categoryNumber[i-1] = categoryNumber[i-1] + int(a)
-            categoryScore[i-1] = categoryScore[i-1] + int(b)
-            if categoryNumber[i-1] != 0:
-                categoryPercent[i-1] = categoryScore[i-1] / categoryNumber[i-1] * 100
-# サービスバリューチェーン（活動）
-        elif i == 5 or i == 6:
-            categoryNumber[4] = categoryNumber[4] + int(a)
-            categoryScore[4] = categoryScore[4] + int(b)
-            if categoryNumber[4] != 0:
-                categoryPercent[4] = categoryScore[4] / categoryNumber[4] * 100
-# サービスバリューシステムの構築
-        elif i == 7 or i == 8:
-            categoryNumber[5] = categoryNumber[5] + int(a)
-            categoryScore[5] = categoryScore[5] + int(b)
-            if categoryNumber[5] != 0:
-                categoryPercent[5] = categoryScore[5] / categoryNumber[5] * 100
-# サービスバリューシステムの供給
-        elif i == 9 or i == 10:
-            categoryNumber[6] = categoryNumber[6] + int(a)
-            categoryScore[6] = categoryScore[6] + int(b)
-            if categoryNumber[6] != 0:
-                categoryPercent[6] = categoryScore[6] / categoryNumber[6] * 100
-# サービスバリューシステムのサポート
-# カスタマジャニー(12), エンゲージメント(13), 提案(14)
-        elif i >= 11 and i <= 14:
-            categoryNumber[i-4] = categoryNumber[i-4] + int(a)
-            categoryScore[i-4] = categoryScore[i-4] + int(b)
-            if categoryNumber[i-4] != 0:
-                categoryPercent[i-4] = categoryScore[i-4] / categoryNumber[i-4] * 100
-# オンボーディング(15+16)
-        elif i == 15 or i == 16:
-            categoryNumber[11] = categoryNumber[11] + int(a)
-            categoryScore[11] = categoryScore[11] + int(b)
-            if categoryNumber[11] != 0:
-                categoryPercent[11] = categoryScore[11] / categoryNumber[11] * 100
-# 共創(17+18)
-        elif i == 17 or i == 18:
-            categoryNumber[12] = categoryNumber[12] + int(a)
-            categoryScore[12] = categoryScore[12] + int(b)
-            if categoryNumber[12] != 0:
-                categoryPercent[12] = categoryScore[12] / categoryNumber[12] * 100
-# 実現(19+20)
-        elif i == 19 or i == 20:
-            categoryNumber[13] = categoryNumber[13] + int(a)
-            categoryScore[13] = categoryScore[13] + int(b)
-            if categoryNumber[13] != 0:
-                categoryPercent[13] = categoryScore[13] / categoryNumber[13] * 100
-# HVITの概念
-        elif i == 21 or i == 22 or i == 23:
-            categoryNumber[14] = categoryNumber[14] + int(a)
-            categoryScore[14] = categoryScore[14] + int(b)
-            if categoryNumber[14] != 0:
-                categoryPercent[14] = categoryScore[14] / categoryNumber[14] * 100
-        elif i == 24:
-            categoryNumber[15] = categoryNumber[15] + int(a)
-            categoryScore[15] = categoryScore[15] + int(b)
-            if categoryNumber[15] != 0:
-                categoryPercent[15] = categoryScore[15] / categoryNumber[15] * 100
-        elif i == 25 or i == 26:
-            categoryNumber[16] = categoryNumber[16] + int(a)
-            categoryScore[16] = categoryScore[16] + int(b)
-            if categoryNumber[16] != 0:
-                categoryPercent[16] = categoryScore[16] / categoryNumber[16] * 100
-# DPI
-        elif i == 27:
-            categoryNumber[17] = categoryNumber[17] + int(a)
-            categoryScore[17] = categoryScore[17] + int(b)
-            if categoryNumber[17] != 0:
-                categoryPercent[17] = categoryScore[17] / categoryNumber[17] * 100
-        elif i == 28 or i == 29 or i == 30:
-            categoryNumber[18] = categoryNumber[18] + int(a)
-            categoryScore[18] = categoryScore[18] + int(b)
-            if categoryNumber[18] != 0:
-                categoryPercent[18] = categoryScore[18] / categoryNumber[18] * 100
-        elif i == 31 or i == 32:
-            categoryNumber[19] = categoryNumber[19] + int(a)
-            categoryScore[19] = categoryScore[19] + int(b)
-            if categoryNumber[19] != 0:
-                categoryPercent[19] = categoryScore[19] / categoryNumber[19] * 100
+
+        categoryNumber[i] = int(a)
+        categoryScore[i] = int(b)
+        if categoryNumber[i] != 0:
+            categoryPercent[i] = categoryScore[i] / categoryNumber[i] * 100
 
     for i in range(NumOfArea):
         areaNumber[i] = items[0][i*3+120]    # 120 = 6 + (38 x 3)
@@ -401,100 +314,14 @@ def makeComments(exam_id):
     items = c.fetchall()
 
 # なぜ、NumOfCategory-1)
-    for i in range(NumOfCategory-1):
+    for i in range(NumOfCategory):
         a = items[0][i * 3]
         b = items[0][i * 3 + 1]
-        if i == 0:
-            categoryNumber[i] = items[0][i*3]
-            categoryScore[i] = items[0][i*3+1]
-            categoryPercent[i] = items[0][i*3+2]
-# 従うべき原則
-        elif i == 1 or i == 2:
-            categoryNumber[1] = categoryNumber[1] + int(a)
-            categoryScore[1] = categoryScore[1] + int(b)
-            if categoryNumber[1] != 0:
-                categoryPercent[1] = categoryScore[1] / categoryNumber[1] * 100
-# ４つの側面、サービスバリューシステム(SVS)
-        elif i == 3 or i == 4:
-            categoryNumber[i - 1] = categoryNumber[i - 1] + int(a)
-            categoryScore[i - 1] = categoryScore[i - 1] + int(b)
-            if categoryNumber[i - 1] != 0:
-                categoryPercent[i - 1] = categoryScore[i - 1] / categoryNumber[i - 1] * 100
-# サービスバリューチェーン（活動）
-        elif i == 5 or i == 6:
-            categoryNumber[4] = categoryNumber[4] + int(a)
-            categoryScore[4] = categoryScore[4] + int(b)
-            if categoryNumber[4] != 0:
-                categoryPercent[4] = categoryScore[4] / categoryNumber[4] * 100
-# サービスバリューシステムの構築
-        elif i == 7 or i == 8:
-            categoryNumber[5] = categoryNumber[5] + int(a)
-            categoryScore[5] = categoryScore[5] + int(b)
-            if categoryNumber[5] != 0:
-                categoryPercent[5] = categoryScore[5] / categoryNumber[5] * 100
-# サービスバリューシステムの供給
-        elif i == 9 or i == 10:
-            categoryNumber[6] = categoryNumber[6] + int(a)
-            categoryScore[6] = categoryScore[6] + int(b)
-            if categoryNumber[6] != 0:
-                categoryPercent[6] = categoryScore[6] / categoryNumber[6] * 100
-# サービスバリューシステムのサポート
-# カスタマジャニー(12), エンゲージメント(13), 提案(14)
-        elif i >= 11 and i <= 14:
-            categoryNumber[i - 4] = categoryNumber[i - 4] + int(a)
-            categoryScore[i - 4] = categoryScore[i - 4] + int(b)
-            if categoryNumber[i - 4] != 0:
-                categoryPercent[i - 4] = categoryScore[i - 4] / categoryNumber[i - 4] * 100
-# オンボーディング(15+16)
-        elif i == 15 or i == 16:
-            categoryNumber[11] = categoryNumber[11] + int(a)
-            categoryScore[11] = categoryScore[11] + int(b)
-            if categoryNumber[11] != 0:
-                categoryPercent[11] = categoryScore[11] / categoryNumber[11] * 100
-# 共創(17+18)
-        elif i == 17 or i == 18:
-            categoryNumber[12] = categoryNumber[12] + int(a)
-            categoryScore[12] = categoryScore[12] + int(b)
-            if categoryNumber[12] != 0:
-                categoryPercent[12] = categoryScore[12] / categoryNumber[12] * 100
-# 実現(19+20)
-        elif i == 19 or i == 20:
-            categoryNumber[13] = categoryNumber[13] + int(a)
-            categoryScore[13] = categoryScore[13] + int(b)
-            if categoryNumber[13] != 0:
-                categoryPercent[13] = categoryScore[13] / categoryNumber[13] * 100
-# HVITの概念
-        elif i == 21 or i == 22 or i == 23:
-            categoryNumber[14] = categoryNumber[14] + int(a)
-            categoryScore[14] = categoryScore[14] + int(b)
-            if categoryNumber[14] != 0:
-                categoryPercent[14] = categoryScore[14] / categoryNumber[14] * 100
-        elif i == 24:
-            categoryNumber[15] = categoryNumber[15] + int(a)
-            categoryScore[15] = categoryScore[15] + int(b)
-            if categoryNumber[15] != 0:
-                categoryPercent[15] = categoryScore[15] / categoryNumber[15] * 100
-        elif i == 25 or i == 26:
-            categoryNumber[16] = categoryNumber[16] + int(a)
-            categoryScore[16] = categoryScore[16] + int(b)
-            if categoryNumber[16] != 0:
-                categoryPercent[16] = categoryScore[16] / categoryNumber[16] * 100
-# DPI
-        elif i == 27:
-            categoryNumber[17] = categoryNumber[17] + int(a)
-            categoryScore[17] = categoryScore[17] + int(b)
-            if categoryNumber[17] != 0:
-                categoryPercent[17] = categoryScore[17] / categoryNumber[17] * 100
-        elif i == 28 or i == 29 or i == 30:
-            categoryNumber[18] = categoryNumber[18] + int(a)
-            categoryScore[18] = categoryScore[18] + int(b)
-            if categoryNumber[18] != 0:
-                categoryPercent[18] = categoryScore[18] / categoryNumber[18] * 100
-        elif i == 31 or i == 32:
-            categoryNumber[19] = categoryNumber[19] + int(a)
-            categoryScore[19] = categoryScore[19] + int(b)
-            if categoryNumber[19] != 0:
-                categoryPercent[19] = categoryScore[19] / categoryNumber[19] * 100
+
+        categoryNumber[i] = int(a)
+        categoryScore[i] = int(b)
+        if categoryNumber[i] != 0:
+            categoryPercent[i] = categoryScore[i] / categoryNumber[i] * 100
 
     weakArea = [0 for i in range(NumOfArea)]
     weakCategory = [0 for i in range(NumOfCheckArea)]
@@ -600,25 +427,25 @@ def makeComments(exam_id):
     if total == 40 or total == 10:
 #   すべての領域で 50 % 以下の正答率の場合
         if areaPercent[0] < 50 and areaPercent[1] < 50 and areaPercent[2] < 50 \
-                and areaPercent[3] < 50 and areaPercent[4] :
+                and areaPercent[3] < 50:
             cid = 538
 #   全領域で 80 % 以上、正解している場合
         elif areaPercent[0] > 80 and areaPercent[1] > 80 and areaPercent[2] > 80\
-                and areaPercent[3] > 80 and areaPercent[4] > 80:
+                and areaPercent[3] > 80:
             cid = 590
 #   50 % 以下の正答率の領域があった場合
         elif areaPercent[0] < 50 or areaPercent[1] < 50 or areaPercent[2] < 50\
-                or areaPercent[3] or areaPercent[4] :
+                or areaPercent[3]:
 #   かつ、80 % 以上の正答率の領域もある場合
             if areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80\
-                or areaPercent[3] > 80 or areaPercent[4] > 80:
+                or areaPercent[3] > 80:
                 cid = 591
 #   かつ、80 % 　以上正答した領域がない場合
             else:
                 cid = 537
 #   すべての領域が 50 % 以上の正答率であり、80 % を超える領域もある場合
         elif areaPercent[0] > 80 or areaPercent[1] > 80 or areaPercent[2] > 80\
-                or areaPercent[3] > 80 or areaPercent[4] > 80 :
+                or areaPercent[3] > 80 :
             cid = 592
 # すべての領域が 50 % 以上、79 % 以下の正答率である場合
         else:
@@ -635,7 +462,7 @@ def makeComments(exam_id):
                 if n == 1:
                     if j != 0:
                         list = list + '、'
-                    list = list + '「' + getComment(701 + i) + '」'
+                    list = list + '「' + getComment(Area_Base + i) + '」'
                     j += 1
             list = list + getComment(539)
         comment = comment + list
@@ -644,7 +471,7 @@ def makeComments(exam_id):
 #   出題領域を選択している場合
     else:
         if select != 0 :
-            cid = 700 + select
+            cid = (Area_Base-1) + select
             comment = comment + '「' + getComment(cid) + '」'
             cid = 589
             comment = comment + getComment(cid) + "<BR>"
@@ -657,7 +484,7 @@ def makeComments(exam_id):
                 if m != 0:
                     list = list + "、"
                 m = m + 1
-                list = list + '「' + getComment(710 + i) + '」'
+                list = list + '「' + getComment(Category_Base + i) + '」'
         #   不得意領域がない場合
         if m == 0:
             cid = 595

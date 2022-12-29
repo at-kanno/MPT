@@ -1,5 +1,5 @@
 from constant import db_path, categoryCode, practice, PassScore1, NumOfArea, areaname, NumOfCategory, \
-     return3, return4
+     return3, return4, NumOfCategory1, NumOfCategory2, NumOfCategory3, NumOfCategory4
 from flask import Flask, session, render_template, request, Blueprint
 import sqlite3, os
 from users import getStage, setStage, getStatus
@@ -31,134 +31,39 @@ def summary():
                                    error_message='エラーが発生しました。')
         setStage(user_id, 5)
 
-        practice2 = [[['' for k in range(3)] for j in range(NumOfCategory)] for i in range(5)]
+        practice2 = [[['' for k in range(3)] for j in range(NumOfCategory)] for i in range(NumOfArea)]
 
         for i, c in enumerate(arealist):
             p = categoryCode.find(c)
             if p != -1:
-                if p == 0:
-                    if (practice2[0][0][2] != ""):
-                        practice2[0][0][2] += str(",")
+                if p < NumOfCategory1:
+                    if (practice2[0][p][2] != ""):
+                        practice2[0][p][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[0][0][2] = practice2[0][0][2] + str(i + 1)
+                        practice2[0][p][2] = practice2[0][p][2] + str(i + 1)
                     else:
-                        practice2[0][0][2] = practice2[0][0][2] + "-" + str(i + 1)
-                elif p == 1 or p == 2:
-                    if (practice2[0][1][2] != ""):
-                        practice2[0][1][2] += str(",")
+                        practice2[0][p][2] = practice2[0][p][2] + "-" + str(i + 1)
+                elif p < NumOfCategory2:
+                    if (practice2[1][p-(NumOfCategory1)][2] != ""):
+                        practice2[1][p-(NumOfCategory1)][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[0][1][2] = practice2[0][1][2] + str(i + 1)
+                        practice2[1][p-(NumOfCategory1)][2] = practice2[1][p-(NumOfCategory1)][2] + str(i + 1)
                     else:
-                        practice2[0][1][2] = practice2[0][1][2] + "-" + str(i + 1)
-                elif p < 5:
-                    if (practice2[0][p - 1][2] != ""):
-                        practice2[0][p - 1][2] += str(",")
+                        practice2[1][p-(NumOfCategory1)][2] = practice2[1][p-(NumOfCategory1)][2] + "-" + str(i + 1)
+                elif p < NumOfCategory3:
+                    if (practice2[2][p-(NumOfCategory2)][2] != ""):
+                        practice2[2][p-(NumOfCategory2)][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[0][p - 1][2] = practice2[0][p - 1][2] + str(i + 1)
+                        practice2[2][p-(NumOfCategory2)][2] = practice2[2][p-(NumOfCategory2)][2] + str(i + 1)
                     else:
-                        practice2[0][p - 1][2] = practice2[0][p - 1][2] + "-" + str(i + 1)
-                elif p == 5 or p == 6:
-                    if (practice2[0][4][2] != ""):
-                        practice2[0][4][2] += str(",")
+                        practice2[2][p-(NumOfCategory2)][2] = practice2[2][p-(NumOfCategory2)][2] + "-" + str(i + 1)
+                elif p < NumOfCategory4:
+                    if (practice2[3][p-(NumOfCategory3)][2] != ""):
+                        practice2[3][p-(NumOfCategory3)][2] += str(",")
                     if (resultlist[i] == '1'):
-                        practice2[0][4][2] = practice2[0][4][2] + str(i + 1)
+                        practice2[3][p-(NumOfCategory3)][2] = practice2[3][p-(NumOfCategory3)][2] + str(i + 1)
                     else:
-                        practice2[0][4][2] = practice2[0][4][2] + "-" + str(i + 1)
-                #   CDS
-                elif p == 7 or p == 8:
-                    if (practice2[1][0][2] != ""):
-                        practice2[1][0][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[1][0][2] = practice2[1][0][2] + str(i + 1)
-                    else:
-                        practice2[1][0][2] = practice2[1][0][2] + "-" + str(i + 1)
-                elif p == 9 or p == 10:
-                    if (practice2[1][1][2] != ""):
-                        practice2[1][1][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[1][1][2] = practice2[1][1][2] + str(i + 1)
-                    else:
-                        practice2[1][1][2] = practice2[1][1][2] + "-" + str(i + 1)
-                elif p == 11:
-                    if (practice2[1][2][2] != ""):
-                        practice2[1][2][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[1][2][2] = practice2[1][2][2] + str(i + 1)
-                    else:
-                        practice2[1][2][2] = practice2[1][2][2] + "-" + str(i + 1)
-                #   DSV
-                elif p < 15:
-                    if (practice2[2][p - 12][2] != ""):
-                        practice2[2][p - 12][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[2][p - 12][2] = practice2[2][p - 12][2] + str(i + 1)
-                    else:
-                        practice2[2][p - 12][2] = practice2[2][p - 12][2] + "-" + str(i + 1)
-                elif p < 17:
-                    if (practice2[2][3][2] != ""):
-                        practice2[2][3][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[2][3][2] = practice2[2][3][2] + str(i + 1)
-                    else:
-                        practice2[2][3][2] = practice2[2][3][2] + "-" + str(i + 1)
-                elif p < 19:
-                    if (practice2[2][4][2] != ""):
-                        practice2[2][4][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[2][4][2] = practice2[2][4][2] + str(i + 1)
-                    else:
-                        practice2[2][4][2] = practice2[2][4][2] + "-" + str(i + 1)
-                elif p < 21:
-                    if (practice2[2][5][2] != ""):
-                        practice2[2][5][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[2][5][2] = practice2[2][5][2] + str(i + 1)
-                    else:
-                        practice2[2][5][2] = practice2[2][5][2] + "-" + str(i + 1)
-                #   HVIT
-                elif p < 24:
-                    if (practice2[3][0][2] != ""):
-                        practice2[3][0][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[3][0][2] = practice2[3][0][2] + str(i + 1)
-                    else:
-                        practice2[3][0][2] = practice2[3][0][2] + "-" + str(i + 1)
-                elif p == 24:
-                    if (practice2[3][1][2] != ""):
-                        practice2[3][1][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[3][1][2] = practice2[3][1][2] + str(i + 1)
-                    else:
-                        practice2[3][1][2] = practice2[3][1][2] + "-" + str(i + 1)
-                elif p == 25 or p == 26:
-                    if (practice2[3][2][2] != ""):
-                        practice2[3][2][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[3][2][2] = practice2[3][2][2] + str(i + 1)
-                    else:
-                        practice2[3][2][2] = practice2[3][2][2] + "-" + str(i + 1)
-                #   DPI
-                elif p == 27:
-                    if (practice2[4][0][2] != ""):
-                        practice2[4][0][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[4][0][2] = practice2[4][0][2] + str(i + 1)
-                    else:
-                        practice2[4][0][2] = practice2[4][0][2] + "-" + str(i + 1)
-                elif p < 31:
-                    if (practice2[4][1][2] != ""):
-                        practice2[4][1][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[4][1][2] = practice2[4][1][2] + str(i + 1)
-                    else:
-                        practice2[4][1][2] = practice2[4][1][2] + "-" + str(i + 1)
-                elif p == 31 or p == 32:
-                    if (practice2[4][2][2] != ""):
-                        practice2[4][2][2] += str(",")
-                    if (resultlist[i] == '1'):
-                        practice2[4][2][2] = practice2[4][2][2] + str(i + 1)
-                    else:
-                        practice2[4][2][2] = practice2[4][2][2] + "-" + str(i + 1)
+                        practice2[3][p-(NumOfCategory3)][2] = practice2[3][p-(NumOfCategory3)][2] + "-" + str(i + 1)
                 else:
                     pass
 
@@ -194,42 +99,30 @@ def summary():
             else:
                 areaname[i][3] = "-"
 
-        for i in range(0, 5):
+        for i in range(0, NumOfCategory1):
             practice2[0][i][0] = str(categoryScore[i]) + "/" + str(categoryNumber[i])
             if (categoryNumber[i] != 0):
                 practice2[0][i][1] = str(f'{categoryPercent[i]:.1f}') + "%"
             else:
                 practice2[0][i][1] = "-"
-        for i in range(0, 3):
-            practice2[1][i][0] = str(categoryScore[i + 5]) + "/" + str(categoryNumber[i + 5])
-            if (categoryNumber[i + 5] != 0):
-                practice2[1][i][1] = str(f'{categoryPercent[i + 5]:.1f}') + "%"
+        for i in range(0, (NumOfCategory2 - NumOfCategory1)):
+            practice2[1][i][0] = str(categoryScore[i + NumOfCategory1]) + "/" + str(categoryNumber[i + NumOfCategory1])
+            if (categoryNumber[i + NumOfCategory1] != 0):
+                practice2[1][i][1] = str(f'{categoryPercent[i + NumOfCategory1]:.1f}') + "%"
             else:
                 practice2[1][i][1] = "-"
-        for i in range(0, 6):
-            practice2[2][i][0] = str(categoryScore[i + 8]) + "/" + str(categoryNumber[i + 8])
-            if (categoryNumber[i + 8] != 0):
-                practice2[2][i][1] = str(f'{categoryPercent[i + 8]:.1f}') + "%"
+        for i in range(0, (NumOfCategory3 - NumOfCategory2)):
+            practice2[2][i][0] = str(categoryScore[i + NumOfCategory2]) + "/" + str(categoryNumber[i + NumOfCategory2])
+            if (categoryNumber[i + NumOfCategory2] != 0):
+                practice2[2][i][1] = str(f'{categoryPercent[i + NumOfCategory2]:.1f}') + "%"
             else:
                 practice2[2][i][1] = "-"
-        for i in range(0, 3):
-            practice2[3][i][0] = str(categoryScore[i + 14]) + "/" + str(categoryNumber[i + 14])
-            if (categoryNumber[i + 14] != 0):
-                practice2[3][i][1] = str(f'{categoryPercent[i + 14]:.1f}') + "%"
+        for i in range(0, (NumOfCategory4 - NumOfCategory3)):
+            practice2[3][i][0] = str(categoryScore[i + NumOfCategory3]) + "/" + str(categoryNumber[i + NumOfCategory3])
+            if (categoryNumber[i + NumOfCategory3] != 0):
+                practice2[3][i][1] = str(f'{categoryPercent[i + NumOfCategory3]:.1f}') + "%"
             else:
                 practice2[3][i][1] = "-"
-        for i in range(0, 3):
-            practice2[4][i][0] = str(categoryScore[i + 17]) + "/" + str(categoryNumber[i + 17])
-            if (categoryNumber[i + 17] != 0):
-                practice2[4][i][1] = str(f'{categoryPercent[i + 17]:.1f}') + "%"
-            else:
-                practice2[4][i][1] = "-"
-        #        for i in range(0,2):
-        #            practice2[5][i][0] = str(categoryScore[i+20]) + "/" + str(categoryNumber[i+20])
-        #            if(categoryNumber[i+20] != 0):
-        #                practice2[5][i][1] = str(f'{categoryPercent[i+20]:.1f}') + "%"
-        #            else:
-        #                practice2[5][i][1] = "-"
 
         if rate >= PassScore1:
             result = "合格"

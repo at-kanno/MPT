@@ -538,81 +538,73 @@ def assignQuestions(amount, assign, category:int):
     if (amount > MaxQuestions or amount < 0):
         return -1
 
-# FND
+# CDS (2022.12.27)
     if category == 10:
-        assign[0] = 15
-        assign[1] = 12 + random.randint(0, 1)
-        assign[2] = 16 + random.randint(0, 1)
-        assign[3] = 11
-        assign[4] = 14
+        assign[0] = 11
+        assign[1] = 13
+        assign[2] = 11
+        assign[3] = 12
+        assign[4] = 11
     elif category == 20:
-        assign[0] = 24
-        assign[1] = 25
-        assign[2] = 23
+        assign[0] = 21
+        assign[1] = 21
+        assign[2] = 21
         assign[3] = 21
-        assign[4] = 22
+        assign[4] = 21
     elif category == 30:
-        assign[0] = 36 + random.randint(0, 1)
-        assign[1] = 31 + random.randint(0, 2)
-        if assign[1] != 31:
-            assign[1] = 32
-        assign[2] = 34 + random.randint(0, 1)
-        assign[3] = 38 + random.randint(0, 1)
-        assign[4] = 33
+        assign[0] = 34
+        assign[1] = 31
+        assign[2] = 32 + (random.randint(0, 1)*2)
+        assign[3] = 33
+        assign[4] = 32
     elif category == 40:
-        assign[0] = 46
-        assign[1] = 43 + random.randint(0, 1)
-        assign[2] = 45
-        assign[3] = 41 + random.randint(0, 1)
-        assign[4] = 46
-    elif category == 50:
-        assign[0] = 53
-        assign[1] = 55
-        assign[2] = 51
-        assign[3] = 56
-        assign[4] = 52 + (random.randint(0, 1)*2)
+        assign[0] = 41
+        assign[1] = 42
+        assign[2] = 41
+        assign[3] = 42
+        assign[4] = 41
     elif category == 60 or category == 70 or category == 80:
-        assign[0] = 24    # バリューストリーム（ユーザサポート）
-        assign[1] = 33    # デジタルサービス体験のデザイン
-        assign[2] = 51    # コントロールの範囲の特定
-        assign[3] = 45    # HVITにおける原則や概念
-        assign[4] = 13    # 従うべき原則（個別）
-        assign[5] = 39    # サービス価値の確認
-        assign[6] = 17    # サービスバリューチェーン活動
-        assign[7] = 21    # SVS導入における課題
-        assign[8] = 56    # コミュニケーションの原則
-        assign[9] = 41    # ＤX関連の概念
+        assign[0] = 31    # バリューストリーム（新サービスSVS）
+        assign[1] = 21    # 情報と技術
+        assign[2] = 11    # 組織の文化
+        assign[3] = 42    # 調達の手段
+        assign[4] = 34    # ユーザサポート・プラクティス
+        assign[5] = 12    # シフトレフト
+        assign[6] = 33    # バリューストリーム（ユーザサポート）
+        assign[7] = 41    # 活動の調整
+        assign[8] = 13    # 人材の計画と管理
+        assign[9] = 32    # 新サービス・プラクティス
         if amount == 40:
-            assign[10] = 36 + random.randint(0, 1)    # ユーザ・コミュニティ　& フィードバック管理
-            assign[11] = 25                           # キューとバックログの管理
-            assign[12] = 53                           # ガバナンス
-            assign[13] = 46                           # HVITにおける原則や概念を支える行動
-            assign[14] = 32 + random.randint(0, 1)    # エンゲージメント or 提案
-            assign[15] = 11                           # サービス関係
-            assign[16] = 55                           # 組織変更の管理
-            assign[17] = 43                           # デジタル商品の５つの目標
-            assign[18] = 38                           # 実現(DSV)
-            assign[19] = 23                           # バリューストリーム（新サービス）
-            assign[20] = 14                           # ４つの側面
-            assign[21] = 54                           # コントロール(DPI)
-            assign[22] = 22                           # SVS導入におけるリソース管理
-            assign[23] = 46                           # HVITにおける原則や概念を支える行動
-            assign[24] = 31                           # カスタマジャニー
-            assign[25] = 21                           # SVS導入における課題
-            assign[26] = 52                           # リスク管理(DPI)
-            assign[27] = 42                           # DXに求められる環境と能力
-            assign[28] = 12                           # 従うべき原則（全体）
-            assign[29] = 24                           # バリューストリーム（ユーザ・サポート）
-            assign[30] = 45                           # HVITにおける原則や概念
-            assign[31] = 56                           # コミュニケーションの原則
-            assign[32] = 51                           # コントロールの範囲の特定
-            assign[33] = 34                           # オン/オフ・ボーディング
-            assign[34] = 15                           # サービスバリューシステム
-            assign[35] = 32                           # 関係タイプ
-            assign[36] = 44                           # HVITとITILの関係
-            assign[37] = 23                           # バリューストリーム（新サービス）
-            assign[38] = 43                           # HVITにおける原則や概念を支える行動
-            assign[39] = 35                           # オン/オフ・ボーディング
+            assign[10] = 21    # 情報と技術(2)
+            assign[11] = 32    # 新サービス・プラクティス(2)
+            assign[12] = 41    # 活動の調整(2)
+            assign[13] = 42    # 調達の手段(2)
+            assign[14] = 34    # ユーザサポート・プラクティス(2)
+            assign[15] = 11    # 組織の文化(2)
+            assign[16] = 12    # 組織変更の管理
+            assign[17] = 41    # 活動の調整(3)
+            assign[18] = 33    # バリューストリーム（ユーザサポート）(2)
+            assign[19] = 21    # 情報と技術(3)
+            assign[20] = 31    # バリューストリーム（新サービスSVS）(2)
+            assign[21] = 13    # 人材の計画と管理(2)
+            assign[22] = 32    # 新サービス・プラクティス(3)
+            assign[23] = 13    # 人材の計画と管理(3)
+            assign[24] = 31    # バリューストリーム（新サービスSVS）(3)
+            assign[25] = 11    # 組織の文化(3)
+            assign[26] = 42    # 調達の手段(3)
+            assign[27] = 34    # ユーザサポート・プラクティス(3)
+            assign[28] = 12    # シフトレフト（2）
+            assign[29] = 32    # 新サービス・プラクティス(4)
+            assign[30] = 41    # 活動の調整(4)
+            assign[31] = 34    # ユーザサポート・プラクティス(4)
+            assign[32] = 42    # 調達の手段(4)
+            assign[33] = 33    # バリューストリーム（ユーザサポート）(3)
+            assign[34] = 11    # 組織の文化(4)
+            assign[35] = 13    # 人材の計画と管理(4)
+            assign[36] = 32    # 新サービス・プラクティス(5)
+            assign[37] = 21    # 情報と技術(4)
+            assign[38] = 41    # 活動の調整(5)
+            assign[39] = 34    # ユーザサポート・プラクティス(5)
     else:
         print("Error!")
         return -1
